@@ -1,4 +1,5 @@
 config/local_auth.json
+config/email_auth.json
 system/*.log
 system/*.err
 __pycache__/

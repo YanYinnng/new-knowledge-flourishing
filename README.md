@@ -160,7 +160,11 @@ $env:IDEA_SPROUT_AUTO_GIT_SYNC="0"; python app.py
 
 ## 晚上会发生什么
 
-Codex automation 应在每天 23:00 Asia/Shanghai 读取当天 `inbox/YYYY-MM-DD.md`。它只把网页写入的 `关键词`、`上下文`、`权重` 三类信息当作当天输入依据。
+Codex automation 应提前于 23:00 Asia/Shanghai 运行。它不是 23:00 才开始整理，而是预留时间先生成日报，再尽量在 23:00 把报告发到邮箱。
+
+当前目标：每天 22:50 开始整理，生成 `synthesis/daily_reports/YYYY-MM-DD.md` 后，由邮件脚本等待到 23:00 发送。如果当天内容很多、联网查询很慢或机器休眠，邮件可能晚到；但不会再设计成 23:00 才开始生成。
+
+automation 只把网页写入的 `关键词`、`上下文`、`权重` 三类信息当作当天输入依据。
 
 如果当天有输入，它会：
 
@@ -176,7 +180,49 @@ Codex automation 应在每天 23:00 Asia/Shanghai 读取当天 `inbox/YYYY-MM-DD
 - 复盘高权重或久未更新的节点。
 - 生成一份“无新输入日报”，给出明天一个小动作。
 
-automation 的完整提示词在 `automation/nightly-codex-prompt.md`。如果需要手动创建 automation，就把该文件内容作为任务提示词，工作目录设为本仓库根目录，时间设为每天 23:00 Asia/Shanghai。
+automation 的完整提示词在 `automation/nightly-codex-prompt.md`。如果需要手动创建 automation，就把该文件内容作为任务提示词，工作目录设为本仓库根目录，时间设为每天 22:50 Asia/Shanghai。
+
+## 邮件日报
+
+日报邮件通过本地 SMTP 发送到：
+
+```text
+13583286559@163.com
+```
+
+真实邮箱授权配置放在 `config/email_auth.json`，该文件已被 `.gitignore` 忽略，不会上传 GitHub。先复制示例：
+
+```powershell
+Copy-Item .\config\email_auth.example.json .\config\email_auth.json
+```
+
+然后编辑 `config/email_auth.json`：
+
+```json
+{
+  "smtp_host": "smtp.163.com",
+  "smtp_port": 465,
+  "use_ssl": true,
+  "username": "13583286559@163.com",
+  "password": "这里填 163 邮箱 SMTP 授权码，不是网页登录密码",
+  "from_email": "13583286559@163.com",
+  "to_emails": ["13583286559@163.com"]
+}
+```
+
+163 邮箱通常需要在网页版邮箱设置中开启 SMTP/POP3/IMAP，并生成“授权码”。不要把邮箱网页登录密码填进这里。
+
+手动测试发送：
+
+```powershell
+python .\scripts\send-daily-report.py --date 2026-05-24 --dry-run
+```
+
+去掉 `--dry-run` 会真正发送邮件：
+
+```powershell
+python .\scripts\send-daily-report.py --date 2026-05-24
+```
 
 ## 如何确认
 
