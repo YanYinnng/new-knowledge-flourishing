@@ -119,9 +119,33 @@ Copy-Item .\config\local_auth.example.json .\config\local_auth.json
 - 为这批关键词写一段上下文。
 - 可选填写权重 1-5。
 - 提交后内容会追加到当天 `inbox/YYYY-MM-DD.md`，不会覆盖旧内容。
+- 提交后会自动把当天 `inbox/YYYY-MM-DD.md` 做一次 Git commit，并推送到 `origin` 当前分支。
 - 在“最近日报”里查看 `synthesis/daily_reports/` 中的日报；页面也会兼容读取旧目录 `reports/daily/`。
 - 在“知识节点”里查看 `knowledge/` 中的知识卡片；页面也会兼容读取旧目录 `library/nodes/`。
 - 在“点子种子”里查看 `synthesis/idea_seeds/` 中的点子；页面也会兼容读取旧目录 `library/seeds/`。
+
+### 自动 Git 同步
+
+网页每次成功提交关键词后，会自动同步这次写入：
+
+1. 只暂存当天 `inbox/YYYY-MM-DD.md`。
+2. 自动创建一条提交，格式类似 `Auto sync inbox 2026-05-24 19:30`。
+3. 推送到 `origin` 的当前分支。
+
+如果 GitHub 凭据失效、网络断开或远程仓库不可用，本地 Markdown 仍会先写入成功，网页会提示 Git 同步失败原因。你可以之后手动运行：
+
+```powershell
+git status
+git push
+```
+
+真实密码文件 `config/local_auth.json` 和运行日志已在 `.gitignore` 中，自动同步不会主动添加这些文件。
+
+如果临时不想自动提交和推送，可以这样启动：
+
+```powershell
+$env:IDEA_SPROUT_AUTO_GIT_SYNC="0"; python app.py
+```
 
 ### 网页门禁的安全限制
 

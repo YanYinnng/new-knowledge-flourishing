@@ -8,6 +8,7 @@ import mimetypes
 import os
 import secrets
 import socket
+import subprocess
 import time
 import urllib.parse
 from datetime import datetime
@@ -25,6 +26,7 @@ AUTH_EXAMPLE = CONFIG_DIR / "local_auth.example.json"
 COOKIE_NAME = "idea_sprout_session"
 SESSION_SECONDS = 30 * 24 * 60 * 60
 MAX_BODY_BYTES = 128 * 1024
+GIT_TIMEOUT_SECONDS = 60
 
 PRIMARY_DIRS = {
     "inbox": ROOT / "inbox",
@@ -216,6 +218,128 @@ def create_inbox_if_needed(path: Path) -> None:
     path.write_text(content.rstrip() + "\n", encoding="utf-8")
 
 
+def run_git(args: list[str], timeout: int = GIT_TIMEOUT_SECONDS) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        ["git", *args],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        timeout=timeout,
+    )
+
+
+def short_command_output(process: subprocess.CompletedProcess, limit: int = 500) -> str:
+    output = "\n".join(
+        part.strip()
+        for part in [process.stdout, process.stderr]
+        if part and part.strip()
+    )
+    if len(output) > limit:
+        return output[:limit].rstrip() + "..."
+    return output
+
+
+def auto_git_sync(path: Path) -> dict:
+    disabled = os.environ.get("IDEA_SPROUT_AUTO_GIT_SYNC", "").lower() in {
+        "0",
+        "false",
+        "no",
+        "off",
+    }
+    relative = relative_path(path)
+    if disabled:
+        return {
+            "enabled": False,
+            "committed": False,
+            "pushed": False,
+            "message": "Auto git sync is disabled by IDEA_SPROUT_AUTO_GIT_SYNC.",
+        }
+
+    try:
+        inside = run_git(["rev-parse", "--is-inside-work-tree"])
+        if inside.returncode != 0:
+            return {
+                "enabled": False,
+                "committed": False,
+                "pushed": False,
+                "message": "This folder is not a git repository.",
+            }
+
+        branch = run_git(["branch", "--show-current"])
+        branch_name = branch.stdout.strip() or "main"
+        remote = run_git(["remote", "get-url", "origin"])
+        if remote.returncode != 0:
+            return {
+                "enabled": True,
+                "committed": False,
+                "pushed": False,
+                "message": "No git remote named origin is configured.",
+            }
+
+        status = run_git(["status", "--porcelain", "--", relative])
+        if status.returncode != 0:
+            return {
+                "enabled": True,
+                "committed": False,
+                "pushed": False,
+                "message": short_command_output(status),
+            }
+        if not status.stdout.strip():
+            return {
+                "enabled": True,
+                "committed": False,
+                "pushed": False,
+                "message": "No git changes detected for the inbox file.",
+            }
+
+        added = run_git(["add", "--", relative])
+        if added.returncode != 0:
+            return {
+                "enabled": True,
+                "committed": False,
+                "pushed": False,
+                "message": short_command_output(added),
+            }
+
+        stamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+        commit = run_git(["commit", "-m", f"Auto sync inbox {stamp}", "--", relative])
+        if commit.returncode != 0:
+            return {
+                "enabled": True,
+                "committed": False,
+                "pushed": False,
+                "message": short_command_output(commit),
+            }
+
+        push = run_git(["push", "origin", branch_name], timeout=120)
+        if push.returncode != 0:
+            return {
+                "enabled": True,
+                "committed": True,
+                "pushed": False,
+                "message": short_command_output(push),
+            }
+
+        commit_hash = run_git(["rev-parse", "--short", "HEAD"]).stdout.strip()
+        return {
+            "enabled": True,
+            "committed": True,
+            "pushed": True,
+            "commit": commit_hash,
+            "branch": branch_name,
+            "message": "Committed and pushed to GitHub.",
+        }
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return {
+            "enabled": True,
+            "committed": False,
+            "pushed": False,
+            "message": str(exc),
+        }
+
+
 def append_keywords(payload: dict) -> dict:
     raw_keywords = str(payload.get("keywords", ""))
     keywords = []
@@ -247,7 +371,8 @@ def append_keywords(payload: dict) -> dict:
     with inbox_path.open("a", encoding="utf-8") as file:
         file.write("\n".join(lines))
 
-    return {"path": relative_path(inbox_path), "count": len(keywords)}
+    sync = auto_git_sync(inbox_path)
+    return {"path": relative_path(inbox_path), "count": len(keywords), "sync": sync}
 
 
 def primary_lan_ip() -> str | None:

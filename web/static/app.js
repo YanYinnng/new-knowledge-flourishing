@@ -183,7 +183,19 @@ keywordForm.addEventListener("submit", async (event) => {
       method: "POST",
       body: JSON.stringify(payload),
     });
-    keywordMessage.textContent = `已追加 ${result.count} 条到 ${result.path}`;
+    let syncText = "";
+    if (result.sync) {
+      if (result.sync.pushed) {
+        syncText = `；已同步到 GitHub（${result.sync.commit}）`;
+      } else if (result.sync.committed) {
+        syncText = `；已本地提交，但推送失败：${result.sync.message}`;
+      } else if (result.sync.enabled === false) {
+        syncText = "；自动 Git 同步未启用";
+      } else {
+        syncText = `；Git 同步未完成：${result.sync.message}`;
+      }
+    }
+    keywordMessage.textContent = `已追加 ${result.count} 条到 ${result.path}${syncText}`;
     document.querySelector("#keywords").value = "";
     document.querySelector("#context").value = "";
     document.querySelector("#weight").value = "";
