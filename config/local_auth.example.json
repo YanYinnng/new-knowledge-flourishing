@@ -1,0 +1,5 @@
+{
+  "password": "change-me",
+  "session_secret": "replace-with-a-long-random-local-secret",
+  "note": "复制为 config/local_auth.json 后修改 password 和 session_secret。也可以删除 password，改用 password_sha256。"
+}

@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>点子发芽</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main id="login-view" class="auth-shell" hidden>
+      <section class="auth-panel">
+        <p class="eyebrow">本地入口</p>
+        <h1>点子发芽</h1>
+        <form id="login-form" class="stack">
+          <label for="password">密码</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required>
+          <button type="submit">进入</button>
+          <p id="login-message" class="message" role="status"></p>
+        </form>
+      </section>
+    </main>
+
+    <main id="app-view" class="app-shell" hidden>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">个人新知孵化</p>
+          <h1>点子发芽</h1>
+        </div>
+        <div class="topbar-actions">
+          <button id="refresh-button" type="button" class="secondary">刷新</button>
+          <button id="logout-button" type="button" class="secondary">退出登录</button>
+        </div>
+      </header>
+
+      <section class="input-band">
+        <div class="section-title">
+          <p class="eyebrow">Today</p>
+          <h2>今日关键词</h2>
+        </div>
+        <form id="keyword-form" class="keyword-grid">
+          <label class="field">
+            <span>关键词</span>
+            <textarea id="keywords" rows="7" placeholder="每行一个关键词"></textarea>
+          </label>
+          <label class="field">
+            <span>上下文</span>
+            <textarea id="context" rows="7" placeholder="今天为什么注意到它"></textarea>
+          </label>
+          <label class="field compact">
+            <span>权重</span>
+            <select id="weight">
+              <option value="">暂不填写</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </label>
+          <div class="submit-row">
+            <button type="submit">追加到今日 inbox</button>
+            <p id="keyword-message" class="message" role="status"></p>
+          </div>
+        </form>
+      </section>
+
+      <section class="workspace-grid">
+        <section class="panel reports-panel">
+          <div class="section-title">
+            <p class="eyebrow">Reports</p>
+            <h2>最近日报</h2>
+          </div>
+          <div id="reports-list" class="list"></div>
+          <article id="reader" class="reader empty">选择一篇日报后阅读。</article>
+        </section>
+
+        <section class="panel">
+          <div class="section-title">
+            <p class="eyebrow">Knowledge</p>
+            <h2>知识节点</h2>
+          </div>
+          <div id="knowledge-list" class="list"></div>
+        </section>
+
+        <section class="panel">
+          <div class="section-title">
+            <p class="eyebrow">Seeds</p>
+            <h2>点子种子</h2>
+          </div>
+          <div id="seeds-list" class="list"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>

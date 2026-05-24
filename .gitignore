@@ -1,0 +1,6 @@
+config/local_auth.json
+system/*.log
+system/*.err
+__pycache__/
+*.pyc
+.pytest_cache/
