@@ -214,7 +214,11 @@ def create_inbox_if_needed(path: Path) -> None:
     if template.exists():
         content = template.read_text(encoding="utf-8").replace("YYYY-MM-DD", today)
     else:
-        content = f"# 每日输入 {today}\n\n## 今日关键词\n\n## 补充备注\n\n"
+        content = (
+            f"# 每日输入 {today}\n\n"
+            "> 本文件由网页端自动维护。日常输入只通过网页提交：关键词、上下文、权重。\n\n"
+            "## 网页输入记录\n"
+        )
     path.write_text(content.rstrip() + "\n", encoding="utf-8")
 
 
@@ -359,13 +363,11 @@ def append_keywords(payload: dict) -> dict:
     create_inbox_if_needed(inbox_path)
 
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
-    lines = ["", f"## 网页追加 {now}", ""]
+    lines = ["", f"### 网页输入 {now}", ""]
     for keyword in keywords:
         lines.append(f"- 关键词：{keyword}")
-        if context:
-            lines.append(f"  - 上下文：{context}")
-        if weight:
-            lines.append(f"  - 可选权重：{weight}")
+        lines.append(f"  - 上下文：{context or '未填写'}")
+        lines.append(f"  - 权重：{weight or '未填写'}")
     lines.append("")
 
     with inbox_path.open("a", encoding="utf-8") as file:

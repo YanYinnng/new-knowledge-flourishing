@@ -1,12 +1,12 @@
 # 点子发芽 MVP
 
-这是一个个人自用的新知孵化工作流。它只依赖本地 Markdown 文件、少量 PowerShell 脚本和 Codex automation 提示词，用来支撑每天的轻量输入、晚间整理、旧内容复盘和手动确认。
+这是一个个人自用的新知孵化工作流。日常输入只通过网页完成，系统用本地 Markdown 文件、少量 PowerShell 脚本和 Codex automation 提示词支撑每天的轻量输入、晚间整理和旧内容复盘。
 
-第一版的原则很简单：白天随手记，晚上看一份短日报，最后由你亲手决定什么保留、什么合并、什么升权或降权。
+第一版的原则很简单：白天在网页里写关键词、一点上下文和可选权重；晚上看一份短日报；最后由你决定什么保留、什么合并、什么升权或降权。
 
 ## 每天怎么用
 
-你可以继续直接编辑 Markdown，也可以启动本地网页作为日常入口。
+日常使用只走网页入口。Markdown 文件是本地存储和备份，不再作为主要输入界面。
 
 ### 网页入口
 
@@ -115,10 +115,10 @@ Copy-Item .\config\local_auth.example.json .\config\local_auth.json
 
 ### 网页里能做什么
 
-- 在“今日关键词”里一次输入多个关键词，每行一个。
-- 为这批关键词写一段上下文。
+- 在“网页输入”里一次输入多个关键词，每行一个。
+- 为这批关键词写一点上下文。
 - 可选填写权重 1-5。
-- 提交后内容会追加到当天 `inbox/YYYY-MM-DD.md`，不会覆盖旧内容。
+- 提交后内容会按“网页输入记录”格式追加到当天 `inbox/YYYY-MM-DD.md`，不会覆盖旧内容。
 - 提交后会自动把当天 `inbox/YYYY-MM-DD.md` 做一次 Git commit，并推送到 `origin` 当前分支。
 - 在“最近日报”里查看 `synthesis/daily_reports/` 中的日报；页面也会兼容读取旧目录 `reports/daily/`。
 - 在“知识节点”里查看 `knowledge/` 中的知识卡片；页面也会兼容读取旧目录 `library/nodes/`。
@@ -153,23 +153,18 @@ $env:IDEA_SPROUT_AUTO_GIT_SYNC="0"; python app.py
 
 当前方案适合自己电脑和同一局域网内的个人设备访问。手机访问时，局域网内其他设备也可能看到这个服务入口，所以请务必修改默认密码。不要把它直接暴露到公网；如果未来要公网访问，需要升级认证方式，例如 HTTPS、正式 session 存储、密码哈希策略、CSRF 防护、访问日志和更严格的权限边界。
 
-1. 白天运行脚本创建当天输入文件：
-
-```powershell
-.\scripts\new-today.ps1
-```
-
-2. 打开 `inbox/YYYY-MM-DD.md`，在“今日关键词”里写 3-5 个触发词、链接、人物、问题或粗糙想法。
-3. 晚上查看 `reports/daily/YYYY-MM-DD.md`。日报应该帮助你判断哪些内容值得留下、哪些只是噪音、哪些和旧内容有关。
-4. 根据日报里的“待用户确认”，手动编辑相关 Markdown 文件。
+1. 白天打开网页，在“网页输入”里写 3-5 个触发词、链接、人物、问题或粗糙想法。
+2. 为这批关键词补一点上下文，例如从哪里看到、为什么注意、和你有什么关系。
+3. 可选填写权重 1-5；不确定就留空。
+4. 晚上查看 `synthesis/daily_reports/YYYY-MM-DD.md`。日报应该帮助你判断哪些内容值得留下、哪些只是噪音、哪些和旧内容有关。
 
 ## 晚上会发生什么
 
-Codex automation 应在每天 23:00 Asia/Shanghai 读取当天 `inbox/YYYY-MM-DD.md`。
+Codex automation 应在每天 23:00 Asia/Shanghai 读取当天 `inbox/YYYY-MM-DD.md`。它只把网页写入的 `关键词`、`上下文`、`权重` 三类信息当作当天输入依据。
 
 如果当天有输入，它会：
 
-- 读当天关键词和备注。
+- 读取“网页输入记录”中的关键词、上下文和权重。
 - 对每个关键词做 3-6 行的基础理解。
 - 检查 `library/nodes/` 中是否已有相近节点。
 - 在日报中提出新建、合并、更新、升权、降权或继续追踪建议。
@@ -183,9 +178,11 @@ Codex automation 应在每天 23:00 Asia/Shanghai 读取当天 `inbox/YYYY-MM-DD
 
 automation 的完整提示词在 `automation/nightly-codex-prompt.md`。如果需要手动创建 automation，就把该文件内容作为任务提示词，工作目录设为本仓库根目录，时间设为每天 23:00 Asia/Shanghai。
 
-## 如何手动确认
+## 如何确认
 
-日报里的建议不是最终决定。你可以直接编辑这些文件：
+日报里的建议不是最终决定。第一版网页先覆盖日常输入和查看；如果需要确认节点更新、关系或权重，可以让 Codex 根据日报建议继续处理，或者在后续版本把这些确认动作也搬进网页。
+
+本地文件仍然会保留为可检查的 Markdown：
 
 - 知识节点：`library/nodes/*.md`
 - 来源记录：`library/sources/*.md`
@@ -206,7 +203,7 @@ automation 的完整提示词在 `automation/nightly-codex-prompt.md`。如果�
 
 ## Helper 脚本
 
-创建当天输入文件：
+创建当天输入文件。不建议作为日常入口；网页提交时会自动创建当天文件：
 
 ```powershell
 .\scripts\new-today.ps1
@@ -218,7 +215,7 @@ automation 的完整提示词在 `automation/nightly-codex-prompt.md`。如果�
 .\scripts\validate-structure.ps1
 ```
 
-脚本只辅助，不会替你修复内容。检查失败时，按输出的缺失项手动补齐。
+脚本只辅助，不是主要使用入口。检查失败时，按输出的缺失项修复。
 
 ## 第一版不做
 
