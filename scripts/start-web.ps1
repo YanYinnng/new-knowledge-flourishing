@@ -12,7 +12,7 @@ if (-not $env:IDEA_SPROUT_PORT) {
     $env:IDEA_SPROUT_PORT = "3000"
 }
 
-Write-Host "Starting 点子发芽 web service for computer and phone access..."
+Write-Host "Starting Idea Sprout web service for computer and phone access..."
 Write-Host "Project root: $root"
 Write-Host ""
 Write-Host "Recommended phone links for the same Wi-Fi / LAN:"
@@ -38,6 +38,7 @@ if ($recommendedIps) {
 
 Write-Host ""
 Write-Host "VPN note: if your phone cannot open the link, enable LAN/local-network access in the VPN app or temporarily pause the VPN."
+Write-Host "Campus/company Wi-Fi note: WPA2-Enterprise networks may block device-to-device access. If this is SJTU or another campus Wi-Fi, use a phone hotspot or Windows mobile hotspot."
 Write-Host "Windows Firewall may also ask whether Python can access Private networks; allow it for phone access."
 Write-Host ""
-python (Join-Path $root "app.py")
+python -u (Join-Path $root "app.py")

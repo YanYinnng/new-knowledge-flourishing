@@ -33,6 +33,8 @@ $requiredFiles = @(
     "templates\idea-seed.md",
     "templates\daily-report.md",
     "automation\nightly-codex-prompt.md",
+    "scripts\allow-phone-firewall.ps1",
+    "scripts\diagnose-phone-access.ps1",
     "scripts\new-today.ps1",
     "scripts\start-web.ps1",
     "scripts\validate-structure.ps1"

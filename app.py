@@ -278,21 +278,22 @@ def lan_ip_candidates() -> list[str]:
 
 
 def print_startup_urls(host: str, port: int) -> None:
-    print("点子发芽网页已启动")
-    print(f"电脑本机访问: http://127.0.0.1:{port}")
+    print("点子发芽网页已启动", flush=True)
+    print(f"电脑本机访问: http://127.0.0.1:{port}", flush=True)
     if host in {"0.0.0.0", ""}:
         lan_ips = lan_ip_candidates()
         if lan_ips:
-            print("手机访问链接（手机和电脑需在同一 Wi-Fi / 局域网）：")
+            print("手机访问链接（手机和电脑需在同一 Wi-Fi / 局域网）：", flush=True)
             for ip in lan_ips:
-                print(f"  http://{ip}:{port}")
+                print(f"  http://{ip}:{port}", flush=True)
         else:
-            print("未能自动识别局域网 IP。可在 Windows 网络设置中查看本机 IPv4 地址。")
-        print("如果电脑正在使用 VPN，请确认 VPN 允许局域网 / LAN 访问。")
+            print("未能自动识别局域网 IP。可在 Windows 网络设置中查看本机 IPv4 地址。", flush=True)
+        print("如果电脑正在使用 VPN，请确认 VPN 允许局域网 / LAN 访问。", flush=True)
+        print("如果当前是校园网 / WPA2-Enterprise Wi-Fi，手机打不开时请优先尝试手机热点或电脑移动热点。", flush=True)
     else:
-        print(f"当前仅监听: http://{host}:{port}")
-        print("如需手机访问，请使用 IDEA_SPROUT_HOST=0.0.0.0 启动。")
-    print(f"本地密码配置: {AUTH_CONFIG}")
+        print(f"当前仅监听: http://{host}:{port}", flush=True)
+        print("如需手机访问，请使用 IDEA_SPROUT_HOST=0.0.0.0 启动。", flush=True)
+    print(f"本地密码配置: {AUTH_CONFIG}", flush=True)
 
 
 class IdeaSproutHandler(BaseHTTPRequestHandler):
@@ -438,7 +439,7 @@ class IdeaSproutHandler(BaseHTTPRequestHandler):
 
     def log_message(self, format: str, *args: object) -> None:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        print(f"[{timestamp}] {self.address_string()} {format % args}")
+        print(f"[{timestamp}] {self.address_string()} {format % args}", flush=True)
 
 
 def run() -> None:

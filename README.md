@@ -64,6 +64,26 @@ $env:IDEA_SPROUT_HOST="127.0.0.1"; python app.py
 
 如果电脑正在开 VPN，也可能出现手机打不开的情况。优先检查 VPN 客户端里是否有“允许局域网访问”“Allow LAN”“Bypass local network”之类的开关；如果有，打开它。仍然打不开时，可以临时暂停 VPN 再试。除非手机也接入同一个 VPN，否则不要优先使用 VPN 分配的 IP，优先使用 `WLAN` 或 `Ethernet` 对应的 IPv4 地址。
 
+如果你连接的是校园网、公司网或 `WPA2-Enterprise` Wi-Fi，例如 `SJTU`，即使手机和电脑连着同一个 Wi-Fi，也可能因为网络启用了“客户端隔离”而无法互相访问。这种情况下网页服务本身已经启动成功，防火墙也可能没问题，但手机请求到不了电脑。
+
+校园网下更稳的做法：
+
+1. 让电脑连接手机热点，然后重新运行 `.\scripts\start-web.ps1`，用脚本新打印的手机访问链接。
+2. 或者让电脑开启 Windows 移动热点，手机连接电脑热点，再访问脚本打印的地址。
+3. 如果必须使用校园网，只能看学校网络是否允许同网设备互访；项目代码无法绕过校园网的客户端隔离。
+
+排查脚本：
+
+```powershell
+.\scripts\diagnose-phone-access.ps1
+```
+
+如果诊断显示服务监听正常、本机访问正常，但手机打不开，优先怀疑校园网客户端隔离。若你确认不是校园网隔离，而是 Windows 防火墙，可以用管理员 PowerShell 运行：
+
+```powershell
+.\scripts\allow-phone-firewall.ps1
+```
+
 安装依赖：不需要额外安装依赖，只需要本机有 Python 3。
 
 ### 设置或修改本地密码
