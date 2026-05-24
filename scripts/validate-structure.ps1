@@ -34,6 +34,7 @@ $requiredFiles = @(
     "templates\daily-report.md",
     "automation\nightly-codex-prompt.md",
     "scripts\new-today.ps1",
+    "scripts\start-web.ps1",
     "scripts\validate-structure.ps1"
 )
 

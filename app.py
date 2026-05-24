@@ -7,6 +7,7 @@ import json
 import mimetypes
 import os
 import secrets
+import socket
 import time
 import urllib.parse
 from datetime import datetime
@@ -249,6 +250,51 @@ def append_keywords(payload: dict) -> dict:
     return {"path": relative_path(inbox_path), "count": len(keywords)}
 
 
+def primary_lan_ip() -> str | None:
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as probe:
+            probe.connect(("8.8.8.8", 80))
+            ip = probe.getsockname()[0]
+            if ip and not ip.startswith("127."):
+                return ip
+    except OSError:
+        return None
+    return None
+
+
+def lan_ip_candidates() -> list[str]:
+    candidates: list[str] = []
+    primary = primary_lan_ip()
+    if primary:
+        candidates.append(primary)
+    try:
+        for info in socket.getaddrinfo(socket.gethostname(), None, socket.AF_INET):
+            ip = info[4][0]
+            if ip and not ip.startswith("127.") and ip not in candidates:
+                candidates.append(ip)
+    except OSError:
+        pass
+    return candidates
+
+
+def print_startup_urls(host: str, port: int) -> None:
+    print("点子发芽网页已启动")
+    print(f"电脑本机访问: http://127.0.0.1:{port}")
+    if host in {"0.0.0.0", ""}:
+        lan_ips = lan_ip_candidates()
+        if lan_ips:
+            print("手机访问链接（手机和电脑需在同一 Wi-Fi / 局域网）：")
+            for ip in lan_ips:
+                print(f"  http://{ip}:{port}")
+        else:
+            print("未能自动识别局域网 IP。可在 Windows 网络设置中查看本机 IPv4 地址。")
+        print("如果电脑正在使用 VPN，请确认 VPN 允许局域网 / LAN 访问。")
+    else:
+        print(f"当前仅监听: http://{host}:{port}")
+        print("如需手机访问，请使用 IDEA_SPROUT_HOST=0.0.0.0 启动。")
+    print(f"本地密码配置: {AUTH_CONFIG}")
+
+
 class IdeaSproutHandler(BaseHTTPRequestHandler):
     server_version = "IdeaSproutLocal/0.1"
 
@@ -397,11 +443,10 @@ class IdeaSproutHandler(BaseHTTPRequestHandler):
 
 def run() -> None:
     ensure_runtime_files()
-    host = os.environ.get("IDEA_SPROUT_HOST", "127.0.0.1")
+    host = os.environ.get("IDEA_SPROUT_HOST", "0.0.0.0")
     port = int(os.environ.get("IDEA_SPROUT_PORT", "3000"))
     server = ThreadingHTTPServer((host, port), IdeaSproutHandler)
-    print(f"点子发芽网页已启动: http://{host}:{port}")
-    print(f"本地密码配置: {AUTH_CONFIG}")
+    print_startup_urls(host, port)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
