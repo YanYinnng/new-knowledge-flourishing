@@ -192,7 +192,7 @@ keywordForm.addEventListener("submit", async (event) => {
   keywordMessage.classList.remove("error");
   const payload = {
     keywords: document.querySelector("#keywords").value,
-    context: document.querySelector("#context").value,
+    supplemental_info: document.querySelector("#supplemental-info").value,
     weight: document.querySelector("#weight").value,
   };
   try {
@@ -214,7 +214,7 @@ keywordForm.addEventListener("submit", async (event) => {
     }
     keywordMessage.textContent = `已追加 ${result.count} 条到 ${result.path}${syncText}`;
     document.querySelector("#keywords").value = "";
-    document.querySelector("#context").value = "";
+    document.querySelector("#supplemental-info").value = "";
     document.querySelector("#weight").value = "";
   } catch (error) {
     keywordMessage.textContent = error.message;

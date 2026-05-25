@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-25T20:05:45",
+  "generated_at": "2026-05-25T20:34:04",
   "config": {
     "enable_web_search": true,
     "latex_engine": "xelatex"
@@ -119,9 +119,9 @@
     },
     {
       "keyword": "深圳科创学院",
-      "title": "最新消息",
-      "url": "https://www.innoxsz.com/latest",
-      "snippet": "创业导师 发起人 / 科创导师 赋能体系 赋能体系 合作交流 合作高校 / 科技创业者俱乐部 项目申请 科创训练营 / 科技创业营 (长期报名) / K12训练营 学院动态 最新消息 / 招标采购 / 公示公告 联系我们 联系我们 / 在线留言 学院动态 最新消息 媒体报道 首页> 学院 ...",
+      "title": "K12训练营 - innoxsz.com",
+      "url": "https://innoxsz.com/k12-bootcamp",
+      "snippet": "关于我们 学院概况 / 学院文化 / 走进学院 在孵团队 创业导师 发起人 / 科创导师 赋能体系 赋能体系 合作交流 合作高校 / 科技创业者俱乐部 项目申请 科创训练营 / 科技创业营 (长期报名) / K12训练营 学院动态 最新消息 / 招标采购 / 公示公告 联系我们 联系我们 ...",
       "domain": "innoxsz.com",
       "quality_tier": "官方/机构资料",
       "source_role": "深圳科创学院官网，优先用于核实机构定位。",
@@ -133,9 +133,9 @@
     },
     {
       "keyword": "深圳科创学院",
-      "title": "科创训练营 - innoxsz.com",
-      "url": "https://innoxsz.com/innox-bootcamp",
-      "snippet": "关于我们 学院概况 / 学院文化 / 走进学院 在孵团队 创业导师 发起人 / 科创导师 赋能体系 赋能体系 合作交流 合作高校 / 科技创业者俱乐部 项目申请 科创训练营 / 科技创业营 (长期报名) / K12训练营 学院动态 最新消息 / 招标采购 / 公示公告 联系我们 联系我们 ...",
+      "title": "最新消息",
+      "url": "https://www.innoxsz.com/latest",
+      "snippet": "创业导师 发起人 / 科创导师 赋能体系 赋能体系 合作交流 合作高校 / 科技创业者俱乐部 项目申请 科创训练营 / 科技创业营 (长期报名) / K12训练营 学院动态 最新消息 / 招标采购 / 公示公告 联系我们 联系我们 / 在线留言 学院动态 最新消息 媒体报道 首页> 学院 ...",
       "domain": "innoxsz.com",
       "quality_tier": "官方/机构资料",
       "source_role": "深圳科创学院官网，优先用于核实机构定位。",
@@ -203,14 +203,14 @@
     },
     {
       "keyword": "上海创智学院",
-      "title": "破界选才 实战育人 上海创智学院探索ai顶尖人才培养新路径",
-      "url": "https://sh.cctv.com/2025/09/16/ARTIhCKOjriA0HGbwaPtxdyR250916.shtml",
-      "snippet": "近日,上海创智学院举办首届创智未来大会,展现其在人工智能技术创新和人才培养。学院成立于去年9月,旨在培养国家急需的人工智能顶尖人才。 在选才方面,学院打破传统框架,通过多次招生选拔营,遴选出800余位(含拟录取学生),重点关注学生的抱负、勇气、格局、潜能和风险认知。培养 ...",
-      "domain": "sh.cctv.com",
-      "quality_tier": "普通线索",
-      "source_role": "可作为线索，不能直接作为核心结论。",
-      "authority_score": 35,
-      "relevance_score": 40,
+      "title": "人工智能工程技术系(筹)-人工智能学院 - ai.sziit.edu.cn",
+      "url": "https://ai.sziit.edu.cn/rcpy1/rgzngcjsx_c_.htm",
+      "snippet": "3. 人才培养特色 精准对接湾区人工智能产业急需,专业聚力打造\"AI科创班\",锚定\"AI+\"应用场景,重点塑造学生\"AI场景感知→AI产品设计→AI工程开发→AI交付部署\"的全栈工程技术能力。",
+      "domain": "ai.sziit.edu.cn",
+      "quality_tier": "官方/机构资料",
+      "source_role": "优先用于核实机构定位、项目方向和公开事实。",
+      "authority_score": 90,
+      "relevance_score": 24,
       "id": "S15",
       "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"

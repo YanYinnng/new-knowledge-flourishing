@@ -1,6 +1,6 @@
 {
   "date": "2026-05-25",
-  "generated_at": "2026-05-25T20:07:57",
+  "generated_at": "2026-05-25T20:34:03",
   "mode": "review",
   "report_structure": [
     "今日总结",
@@ -15,11 +15,14 @@
     "keyword_card_shape": [
       "简介",
       "最近有什么相关新闻",
+      "与我相关",
       "最小下一步"
     ],
     "hard_limits": [
-      "每个关键词只能有一个简介、一个最近有什么相关新闻、一个最小下一步。",
-      "简介至少 2 句，最近新闻最多 1 段或 2 条，最小下一步只能 1 个动作。",
+      "每个关键词只能有一个简介、一个最近有什么相关新闻、一个与我相关、一个最小下一步。",
+      "简介约 200-300 字，只解释关键词本身，不要联系补充信息。",
+      "与我相关单独分析关键词和补充信息的联系。",
+      "最近新闻最多 1 段或 2 条，最小下一步只能 1 个动作。",
       "禁止使用旧标签：它是什么、今天查到了什么、和我有什么关系、今日判断。"
     ]
   },
@@ -74,16 +77,16 @@
     {
       "id": "S1",
       "keyword": "新知孵化工作流",
-      "title": "Ai 时代的个人知识管理最佳实践:从笔记仓库到认知操作系统",
+      "title": "AI in Knowledge Management: Improving Access, Context, and Consistency",
       "quality_tier": "普通线索",
-      "url": "https://hugozhu.site/post/2026/231-ai-era-personal-knowledge-management/"
+      "url": "https://peoplemanagingpeople.com/workforce-management/ai-in-knowledge-management/"
     },
     {
       "id": "S2",
       "keyword": "新知孵化工作流",
-      "title": "Personal Knowledge Management (2026): The Honest Guide",
+      "title": "6 种人工智能工具让你瞬间建立个人知识管理系统 | Dagle@数字体验平台",
       "quality_tier": "普通线索",
-      "url": "https://www.atlasworkspace.ai/blog/personal-knowledge-management"
+      "url": "https://www.dagle.cn/news/6-ai-tools-personal-knowledge-management"
     },
     {
       "id": "S3",
@@ -95,16 +98,16 @@
     {
       "id": "S4",
       "keyword": "新知孵化工作流",
-      "title": "用ai助手搭建个人知识管理与任务管理一体化工作流-腾讯云开发者社区-腾讯云",
+      "title": "2025年最佳 Ai 个人知识管理(Pkm)工具 - 搜狐",
       "quality_tier": "普通线索",
-      "url": "https://developer.cloud.tencent.com/article/2669136"
+      "url": "https://www.sohu.com/a/930993101_120125540"
     },
     {
       "id": "S5",
       "keyword": "新知孵化工作流",
-      "title": "6 种人工智能工具让你瞬间建立个人知识管理系统 | Dagle@数字体验平台",
+      "title": "个人知识管理软件包含AI知识库软件系统产品清单(2026年最新,持续更新中) - 知识管理中心KMCenter",
       "quality_tier": "普通线索",
-      "url": "https://www.dagle.cn/news/6-ai-tools-personal-knowledge-management"
+      "url": "https://www.kmcenter.org/gerenzhishiguanliruanjian-gerenzhishikupkm/"
     },
     {
       "id": "S6",
@@ -172,9 +175,9 @@
     {
       "id": "S15",
       "keyword": "每日晚间复盘",
-      "title": "个人每日深度复盘:精进自我,成就卓越_进行_反思_调整",
+      "title": "个人如何每日深度复盘? - 简书",
       "quality_tier": "普通线索",
-      "url": "https://www.sohu.com/a/762481031_121839272"
+      "url": "https://www.jianshu.com/p/b56111e14b0a"
     }
   ]
 }

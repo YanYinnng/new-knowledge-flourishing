@@ -1,6 +1,6 @@
 {
   "date": "2026-05-24",
-  "generated_at": "2026-05-25T20:05:45",
+  "generated_at": "2026-05-25T20:34:04",
   "mode": "input",
   "report_structure": [
     "今日总结",
@@ -15,45 +15,48 @@
     "keyword_card_shape": [
       "简介",
       "最近有什么相关新闻",
+      "与我相关",
       "最小下一步"
     ],
     "hard_limits": [
-      "每个关键词只能有一个简介、一个最近有什么相关新闻、一个最小下一步。",
-      "简介至少 2 句，最近新闻最多 1 段或 2 条，最小下一步只能 1 个动作。",
+      "每个关键词只能有一个简介、一个最近有什么相关新闻、一个与我相关、一个最小下一步。",
+      "简介约 200-300 字，只解释关键词本身，不要联系补充信息。",
+      "与我相关单独分析关键词和补充信息的联系。",
+      "最近新闻最多 1 段或 2 条，最小下一步只能 1 个动作。",
       "禁止使用旧标签：它是什么、今天查到了什么、和我有什么关系、今日判断。"
     ]
   },
   "inputs": [
     {
       "keyword": "codex新增/goal功能",
-      "context": "公众号推送，后来又上B站学习了一下相关知识",
-      "weight": "未填写"
+      "supplemental_info": "公众号推送，后来又上B站学习了一下相关知识",
+      "weight": "3"
     },
     {
       "keyword": "深圳科创学院",
-      "context": "学长分享未来升学路径，AI相关",
-      "weight": "未填写"
+      "supplemental_info": "学长分享未来升学路径，AI相关",
+      "weight": "3"
     },
     {
       "keyword": "上海创智学院",
-      "context": "学长分享未来升学路径，AI相关",
-      "weight": "未填写"
+      "supplemental_info": "学长分享未来升学路径，AI相关",
+      "weight": "3"
     },
     {
       "keyword": "私域",
-      "context": "听0.2%创业交流群里一个开雪茄吧的人说的",
-      "weight": "未填写"
+      "supplemental_info": "听0.2%创业交流群里一个开雪茄吧的人说的",
+      "weight": "3"
     }
   ],
   "keyword_contexts": [
     {
       "keyword": "codex新增/goal功能",
-      "context": "公众号推送，后来又上B站学习了一下相关知识",
-      "weight": "未填写",
+      "supplemental_info": "公众号推送，后来又上B站学习了一下相关知识",
+      "weight": "3",
       "questions_for_model": [
-        "codex新增/goal功能 是什么？请用 2-4 句解释清楚。",
+        "codex新增/goal功能 是什么？请用 200-300 字解释清楚，只专注关键词本身。",
         "codex新增/goal功能 最近有什么新闻或新进展？没有可靠新进展就直接说明。",
-        "结合用户语境“公众号推送，后来又上B站学习了一下相关知识”，有什么补充判断？"
+        "结合补充信息“公众号推送，后来又上B站学习了一下相关知识”，这个关键词与我的记录有什么具体联系？"
       ],
       "search_note": "",
       "search_results": [
@@ -107,12 +110,12 @@
     },
     {
       "keyword": "深圳科创学院",
-      "context": "学长分享未来升学路径，AI相关",
-      "weight": "未填写",
+      "supplemental_info": "学长分享未来升学路径，AI相关",
+      "weight": "3",
       "questions_for_model": [
-        "深圳科创学院 是什么？请用 2-4 句解释清楚。",
+        "深圳科创学院 是什么？请用 200-300 字解释清楚，只专注关键词本身。",
         "深圳科创学院 最近有什么新闻或新进展？没有可靠新进展就直接说明。",
-        "结合用户语境“学长分享未来升学路径，AI相关”，有什么补充判断？"
+        "结合补充信息“学长分享未来升学路径，AI相关”，这个关键词与我的记录有什么具体联系？"
       ],
       "search_note": "",
       "search_results": [
@@ -145,8 +148,8 @@
         },
         {
           "id": "S9",
-          "title": "最新消息",
-          "url": "https://www.innoxsz.com/latest",
+          "title": "K12训练营 - innoxsz.com",
+          "url": "https://innoxsz.com/k12-bootcamp",
           "domain": "innoxsz.com",
           "quality_tier": "官方/机构资料",
           "source_role": "深圳科创学院官网，优先用于核实机构定位。",
@@ -154,8 +157,8 @@
         },
         {
           "id": "S10",
-          "title": "科创训练营 - innoxsz.com",
-          "url": "https://innoxsz.com/innox-bootcamp",
+          "title": "最新消息",
+          "url": "https://www.innoxsz.com/latest",
           "domain": "innoxsz.com",
           "quality_tier": "官方/机构资料",
           "source_role": "深圳科创学院官网，优先用于核实机构定位。",
@@ -166,12 +169,12 @@
     },
     {
       "keyword": "上海创智学院",
-      "context": "学长分享未来升学路径，AI相关",
-      "weight": "未填写",
+      "supplemental_info": "学长分享未来升学路径，AI相关",
+      "weight": "3",
       "questions_for_model": [
-        "上海创智学院 是什么？请用 2-4 句解释清楚。",
+        "上海创智学院 是什么？请用 200-300 字解释清楚，只专注关键词本身。",
         "上海创智学院 最近有什么新闻或新进展？没有可靠新进展就直接说明。",
-        "结合用户语境“学长分享未来升学路径，AI相关”，有什么补充判断？"
+        "结合补充信息“学长分享未来升学路径，AI相关”，这个关键词与我的记录有什么具体联系？"
       ],
       "search_note": "",
       "search_results": [
@@ -213,24 +216,24 @@
         },
         {
           "id": "S15",
-          "title": "破界选才 实战育人 上海创智学院探索ai顶尖人才培养新路径",
-          "url": "https://sh.cctv.com/2025/09/16/ARTIhCKOjriA0HGbwaPtxdyR250916.shtml",
-          "domain": "sh.cctv.com",
-          "quality_tier": "普通线索",
-          "source_role": "可作为线索，不能直接作为核心结论。",
-          "relevance_score": 40
+          "title": "人工智能工程技术系(筹)-人工智能学院 - ai.sziit.edu.cn",
+          "url": "https://ai.sziit.edu.cn/rcpy1/rgzngcjsx_c_.htm",
+          "domain": "ai.sziit.edu.cn",
+          "quality_tier": "官方/机构资料",
+          "source_role": "优先用于核实机构定位、项目方向和公开事实。",
+          "relevance_score": 24
         }
       ],
       "local_matches": []
     },
     {
       "keyword": "私域",
-      "context": "听0.2%创业交流群里一个开雪茄吧的人说的",
-      "weight": "未填写",
+      "supplemental_info": "听0.2%创业交流群里一个开雪茄吧的人说的",
+      "weight": "3",
       "questions_for_model": [
-        "私域 是什么？请用 2-4 句解释清楚。",
+        "私域 是什么？请用 200-300 字解释清楚，只专注关键词本身。",
         "私域 最近有什么新闻或新进展？没有可靠新进展就直接说明。",
-        "结合用户语境“听0.2%创业交流群里一个开雪茄吧的人说的”，有什么补充判断？"
+        "结合补充信息“听0.2%创业交流群里一个开雪茄吧的人说的”，这个关键词与我的记录有什么具体联系？"
       ],
       "search_note": "",
       "search_results": [
@@ -323,9 +326,9 @@
       "低优先级线索"
     ],
     "tier_counts": {
-      "官方/机构资料": 14,
-      "普通线索": 5,
-      "项目主页/机构主页": 1
+      "官方/机构资料": 15,
+      "项目主页/机构主页": 1,
+      "普通线索": 4
     },
     "low_quality_rule": "低质量来源只能作为入口线索，不能作为核心结论。"
   },
@@ -389,16 +392,16 @@
     {
       "id": "S9",
       "keyword": "深圳科创学院",
-      "title": "最新消息",
+      "title": "K12训练营 - innoxsz.com",
       "quality_tier": "官方/机构资料",
-      "url": "https://www.innoxsz.com/latest"
+      "url": "https://innoxsz.com/k12-bootcamp"
     },
     {
       "id": "S10",
       "keyword": "深圳科创学院",
-      "title": "科创训练营 - innoxsz.com",
+      "title": "最新消息",
       "quality_tier": "官方/机构资料",
-      "url": "https://innoxsz.com/innox-bootcamp"
+      "url": "https://www.innoxsz.com/latest"
     },
     {
       "id": "S11",
@@ -431,9 +434,9 @@
     {
       "id": "S15",
       "keyword": "上海创智学院",
-      "title": "破界选才 实战育人 上海创智学院探索ai顶尖人才培养新路径",
-      "quality_tier": "普通线索",
-      "url": "https://sh.cctv.com/2025/09/16/ARTIhCKOjriA0HGbwaPtxdyR250916.shtml"
+      "title": "人工智能工程技术系(筹)-人工智能学院 - ai.sziit.edu.cn",
+      "quality_tier": "官方/机构资料",
+      "url": "https://ai.sziit.edu.cn/rcpy1/rgzngcjsx_c_.htm"
     },
     {
       "id": "S16",

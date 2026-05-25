@@ -29,11 +29,12 @@ PDF 只允许这些主章节：
 5. 今日发芽点子
 6. 参考搜索内容
 
-每个关键词在“今日新知”下只允许三个小节：
+每个关键词在“今日新知”下只允许四个小节：
 
 1. 简介
 2. 最近有什么相关新闻
-3. 最小下一步
+3. 与我相关
+4. 最小下一步
 
 不要使用旧标签：`它是什么`、`今天查到了什么`、`和我有什么关系`、`今日判断`。
 
@@ -50,9 +51,9 @@ python scripts/generate-radar-report.py --date YYYY-MM-DD --collect-only
 4. 读取 `synthesis/daily_reports/YYYY-MM-DD/report_context.json` 和 `sources.json`。
 5. 你作为大模型写作者，生成 `synthesis/daily_reports/YYYY-MM-DD/report_brief.json`。必须符合 `templates/report-brief.json`。
 6. 对每个关键词，用下面三个问题思考后再写入 brief：
-   - `A 是什么？`
+   - `A 是什么？请用 200-300 字解释清楚，只专注关键词本身。`
    - `A 最近有什么新闻/新进展？`
-   - `结合用户输入语境 B，有什么补充判断？`
+   - `结合补充信息 B，A 与我的记录有什么具体联系？`
 7. 运行：
 
 ```powershell
@@ -66,8 +67,10 @@ python scripts/generate-radar-report.py --date YYYY-MM-DD --render-only
 ## 写作要求
 
 - `summary`：1-2 段，说明今天输入共同指向什么。
-- `intro`：每个关键词 2-4 句；既解释概念，也结合用户上下文。
+- `inputs`：保留为三栏信息，字段为 `keyword`、`supplemental_info`、`weight`；未填写权重时用默认值 `3`。
+- `intro`：每个关键词约 200-300 字；只解释关键词本身，不联系补充信息。
 - `recent_news`：1 段或最多 2 条；没有可靠新进展就明确说“未查到可靠近期新进展”。
+- `relevance`：单独分析关键词和补充信息的联系，可以写它为什么触发注意、连接到什么学习/项目/机会/人脉/商业观察。
 - `next_step`：只给 1 个具体动作。
 - `old_knowledge_links`：最多 3 条，只写真相关。
 - `idea_seeds`：最多 2 条，宁缺毋滥。

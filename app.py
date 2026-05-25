@@ -302,7 +302,7 @@ def create_inbox_if_needed(path: Path) -> None:
     else:
         content = (
             f"# 每日输入 {today}\n\n"
-            "> 本文件由网页端自动维护。日常输入只通过网页提交：关键词、上下文、权重。\n\n"
+            "> 本文件由网页端自动维护。日常输入只通过网页提交：关键词、补充信息、权重。\n\n"
             "## 网页输入记录\n"
         )
     path.write_text(content.rstrip() + "\n", encoding="utf-8")
@@ -437,10 +437,10 @@ def append_keywords(payload: dict) -> dict:
         cleaned = line.strip().lstrip("-").strip()
         if cleaned:
             keywords.append(cleaned)
-    context = str(payload.get("context", "")).strip()
-    weight = str(payload.get("weight", "")).strip()
+    supplemental_info = str(payload.get("supplemental_info", payload.get("context", ""))).strip()
+    weight = str(payload.get("weight", "")).strip() or "3"
     if weight and weight not in {"1", "2", "3", "4", "5"}:
-        raise ValueError("权重只能为空或 1-5。")
+        raise ValueError("权重只能是 1-5。")
     if not keywords:
         raise ValueError("请至少输入一个关键词。")
 
@@ -452,8 +452,8 @@ def append_keywords(payload: dict) -> dict:
     lines = ["", f"### 网页输入 {now}", ""]
     for keyword in keywords:
         lines.append(f"- 关键词：{keyword}")
-        lines.append(f"  - 上下文：{context or '未填写'}")
-        lines.append(f"  - 权重：{weight or '未填写'}")
+        lines.append(f"  - 补充信息：{supplemental_info or '未填写'}")
+        lines.append(f"  - 权重：{weight}")
     lines.append("")
 
     with inbox_path.open("a", encoding="utf-8") as file:

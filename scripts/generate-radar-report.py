@@ -33,6 +33,7 @@ DEFAULT_CONFIG = {
     "enable_images": True,
     "enable_ai_generated_images": False,
     "default_report_mode": "auto",
+    "default_input_weight": 3,
     "max_idea_seeds_per_report": 3,
     "latex_engine": "xelatex",
     "max_sources_per_keyword": 5,
@@ -134,6 +135,14 @@ def read_config() -> dict[str, Any]:
     return config
 
 
+def normalize_weight(value: str, config: dict[str, Any] | None = None) -> str:
+    cleaned = str(value or "").strip()
+    if cleaned in {"1", "2", "3", "4", "5"}:
+        return cleaned
+    default = str((config or DEFAULT_CONFIG).get("default_input_weight", 3))
+    return default if default in {"1", "2", "3", "4", "5"} else "3"
+
+
 def parse_inbox(date_text: str) -> list[InputRecord]:
     path = INBOX_DIR / f"{date_text}.md"
     if not path.exists():
@@ -144,16 +153,16 @@ def parse_inbox(date_text: str) -> list[InputRecord]:
         line = raw.strip()
         keyword_match = re.match(r"^-+\s*关键词[：:]\s*(.+)$", line)
         if keyword_match:
-            current = InputRecord(keyword=keyword_match.group(1).strip(), context="未填写", weight="未填写")
+            current = InputRecord(keyword=keyword_match.group(1).strip(), context="未填写", weight=normalize_weight(""))
             records.append(current)
             continue
         if current:
-            context_match = re.match(r"^-+\s*上下文[：:]\s*(.+)$", line)
+            context_match = re.match(r"^-+\s*(?:补充信息|上下文)[：:]\s*(.+)$", line)
             weight_match = re.match(r"^-+\s*(?:权重|可选权重)[：:]\s*(.+)$", line)
             if context_match:
                 current.context = context_match.group(1).strip()
             elif weight_match:
-                current.weight = weight_match.group(1).strip()
+                current.weight = normalize_weight(weight_match.group(1).strip())
     return records
 
 
@@ -1395,7 +1404,7 @@ def quality_check(
 
 
 def input_record_row(record: InputRecord) -> dict[str, str]:
-    return {"keyword": record.keyword, "context": record.context, "weight": record.weight}
+    return {"keyword": record.keyword, "supplemental_info": record.context, "weight": record.weight}
 
 
 def local_doc_card(doc: LocalDoc, max_chars: int = 420) -> dict[str, str]:
@@ -1458,12 +1467,12 @@ def build_report_context(
         keyword_contexts.append(
             {
                 "keyword": record.keyword,
-                "context": record.context,
+                "supplemental_info": record.context,
                 "weight": record.weight,
                 "questions_for_model": [
-                    f"{record.keyword} 是什么？请用 2-4 句解释清楚。",
+                    f"{record.keyword} 是什么？请用 200-300 字解释清楚，只专注关键词本身。",
                     f"{record.keyword} 最近有什么新闻或新进展？没有可靠新进展就直接说明。",
-                    f"结合用户语境“{record.context}”，有什么补充判断？",
+                    f"结合补充信息“{record.context}”，这个关键词与我的记录有什么具体联系？",
                 ],
                 "search_note": note,
                 "search_results": source_cards(results),
@@ -1485,10 +1494,12 @@ def build_report_context(
         ],
         "writing_contract": {
             "model_role": "你是报告作者。请综合材料写 report_brief.json，不要把搜索结果直接拼进正文。",
-            "keyword_card_shape": ["简介", "最近有什么相关新闻", "最小下一步"],
+            "keyword_card_shape": ["简介", "最近有什么相关新闻", "与我相关", "最小下一步"],
             "hard_limits": [
-                "每个关键词只能有一个简介、一个最近有什么相关新闻、一个最小下一步。",
-                "简介至少 2 句，最近新闻最多 1 段或 2 条，最小下一步只能 1 个动作。",
+                "每个关键词只能有一个简介、一个最近有什么相关新闻、一个与我相关、一个最小下一步。",
+                "简介约 200-300 字，只解释关键词本身，不要联系补充信息。",
+                "与我相关单独分析关键词和补充信息的联系。",
+                "最近新闻最多 1 段或 2 条，最小下一步只能 1 个动作。",
                 "禁止使用旧标签：它是什么、今天查到了什么、和我有什么关系、今日判断。",
             ],
         },
@@ -1527,12 +1538,16 @@ def fallback_brief_from_context(context: dict[str, Any]) -> dict[str, Any]:
     for item in context.get("keyword_contexts", []):
         record = InputRecord(
             keyword=str(item.get("keyword", "")),
-            context=str(item.get("context", "未填写")),
+            context=str(item.get("supplemental_info", item.get("context", "未填写"))),
             weight=str(item.get("weight", "未填写")),
         )
         intro = concept_sentence(record)
-        if sentence_count(intro) < 2:
-            intro = f"{intro} 结合你的语境，它更像一个需要判断是否值得投入注意力的线索，而不是单纯名词解释。"
+        if len(intro) < 180:
+            intro = (
+                f"{intro} 更完整地说，它需要被看作一个可被定义、追踪和验证的信息对象：先弄清它的基本含义、所属领域、"
+                "常见使用场景和可靠来源，再判断它是否值得进入个人知识库。脚本 fallback 只能给出粗略解释，正式日报应由 Codex "
+                "automation 基于 report_context.json 写成 200-300 字左右的简介。"
+            )
         refs = " ".join(f"[{source.get('id')}]" for source in item.get("search_results", [])[:3] if source.get("id"))
         recent_news = (
             f"已检索到相关公开资料 {refs}，但默认脚本只做低置信整理。真正的自动化报告应由 Codex 读取 report_context.json 后综合改写。"
@@ -1544,6 +1559,7 @@ def fallback_brief_from_context(context: dict[str, Any]) -> dict[str, Any]:
                 "keyword": record.keyword,
                 "intro": intro,
                 "recent_news": recent_news,
+                "relevance": f"补充信息是：{record.context or '未填写'}。这部分应由 Codex automation 单独分析它为什么触发了你的注意，以及它可能连接到学习、项目、机会、人脉或商业观察中的哪一类。",
                 "next_step": next_step_for(record),
             }
         )
@@ -1556,6 +1572,7 @@ def fallback_brief_from_context(context: dict[str, Any]) -> dict[str, Any]:
                     "keyword": title,
                     "intro": f"{title} 是当前本地知识库里的高权重节点。今天没有新输入，所以它只适合作为复盘对象，而不是扩展成新主题。",
                     "recent_news": "无新输入日只做轻量外部检查；如果没有明确新证据，不自动扩写为新闻摘要。",
+                    "relevance": "今天没有新的补充信息，因此只检查它是否仍然服务当前工作流，不强行建立新关联。",
                     "next_step": "明天通过网页提交 3 个真实关键词，再检查日报是否能给出清晰总结。",
                 }
             )
@@ -1591,6 +1608,25 @@ def tex_labeled_paragraph(label: str, text: str) -> str:
     return "\\paragraph{" + tex_escape(label) + "} " + tex_escape(text or "未填写。")
 
 
+def tex_input_table(inputs: list[dict[str, Any]]) -> str:
+    if not inputs:
+        return tex_escape("今日没有新的网页输入。")
+    lines = [
+        r"\begin{longtable}{|p{0.22\linewidth}|p{0.58\linewidth}|p{0.10\linewidth}|}",
+        r"\hline",
+        r"\textbf{关键词} & \textbf{补充信息} & \textbf{权重} \\",
+        r"\hline",
+    ]
+    for item in inputs:
+        keyword = tex_escape(str(item.get("keyword", "")))
+        supplemental_info = tex_escape(str(item.get("supplemental_info", item.get("context", "未填写")) or "未填写"))
+        weight = tex_escape(str(item.get("weight", "3") or "3"))
+        lines.append(f"{keyword} & {supplemental_info} & {weight} \\\\")
+        lines.append(r"\hline")
+    lines.append(r"\end{longtable}")
+    return "\n".join(lines)
+
+
 def render_report_from_brief(date_text: str, brief: dict[str, Any], sources_json: dict[str, Any]) -> str:
     title = f"点子发芽日报 {date_text}"
     inputs = brief.get("inputs") or []
@@ -1604,6 +1640,8 @@ def render_report_from_brief(date_text: str, brief: dict[str, Any], sources_json
         r"\usepackage{xcolor}",
         r"\usepackage{hyperref}",
         r"\usepackage{enumitem}",
+        r"\usepackage{longtable}",
+        r"\usepackage{array}",
         r"\hypersetup{colorlinks=true,linkcolor=teal,urlcolor=teal}",
         r"\setlist{itemsep=0.25em,topsep=0.35em}",
         r"\title{\bfseries " + tex_escape(title) + "}",
@@ -1615,17 +1653,7 @@ def render_report_from_brief(date_text: str, brief: dict[str, Any], sources_json
         tex_escape(str(brief.get("summary") or "今天没有可用总结。")),
         r"\section*{今日输入}",
     ]
-    if inputs:
-        lines.append(
-            tex_items(
-                [
-                    f"{item.get('keyword', '')}；上下文：{item.get('context', '未填写')}；权重：{item.get('weight', '未填写')}"
-                    for item in inputs
-                ]
-            )
-        )
-    else:
-        lines.append(tex_escape("今日没有新的网页输入。"))
+    lines.append(tex_input_table(inputs))
 
     lines.append(r"\section*{今日新知}")
     if cards:
@@ -1633,6 +1661,7 @@ def render_report_from_brief(date_text: str, brief: dict[str, Any], sources_json
             lines.append(r"\subsection*{" + tex_escape(str(card.get("keyword") or "未命名关键词")) + "}")
             lines.append(tex_labeled_paragraph("简介", str(card.get("intro") or "")))
             lines.append(tex_labeled_paragraph("最近有什么相关新闻", str(card.get("recent_news") or "")))
+            lines.append(tex_labeled_paragraph("与我相关", str(card.get("relevance") or "")))
             lines.append(tex_labeled_paragraph("最小下一步", str(card.get("next_step") or "")))
     else:
         lines.append(tex_escape("今日没有可写入的新知卡片。"))
@@ -1712,11 +1741,14 @@ def quality_check_simple(tex: str, records: list[InputRecord], sources_json: dic
         keyword = str(card.get("keyword") or "未知关键词")
         intro = str(card.get("intro") or "")
         recent_news = str(card.get("recent_news") or "")
+        relevance = str(card.get("relevance") or "")
         next_step = str(card.get("next_step") or "")
-        if sentence_count(intro) < 2:
-            issues.append(f"{keyword} 的简介少于 2 句。")
+        if len(re.sub(r"\s+", "", intro)) < 180:
+            issues.append(f"{keyword} 的简介过短，应接近 200-300 字。")
         if not recent_news:
             issues.append(f"{keyword} 缺少“最近有什么相关新闻”。")
+        if not relevance:
+            issues.append(f"{keyword} 缺少“与我相关”。")
         if not next_step:
             issues.append(f"{keyword} 缺少“最小下一步”。")
     expected = len(cards)
@@ -1724,6 +1756,8 @@ def quality_check_simple(tex: str, records: list[InputRecord], sources_json: dic
         issues.append("每个关键词必须恰好有一个“简介”。")
     if tex.count(r"\paragraph{最近有什么相关新闻}") != expected:
         issues.append("每个关键词必须恰好有一个“最近有什么相关新闻”。")
+    if tex.count(r"\paragraph{与我相关}") != expected:
+        issues.append("每个关键词必须恰好有一个“与我相关”。")
     if tex.count(r"\paragraph{最小下一步}") != expected:
         issues.append("每个关键词必须恰好有一个“最小下一步”。")
     if not str(brief.get("summary") or "").strip():
