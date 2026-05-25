@@ -1,0 +1,78 @@
+{
+  "date": "2026-05-24",
+  "generated_at": "2026-05-25T14:45:32",
+  "config": {
+    "enable_web_search": true,
+    "enable_images": true,
+    "enable_ai_generated_images": false,
+    "latex_engine": "xelatex"
+  },
+  "text_sources": [
+    {
+      "keyword": "codex新增/goal功能",
+      "title": "codex-goal-usage_codex 如何开启goal-CSDN博客",
+      "url": "https://blog.csdn.net/qq_44965100/article/details/160895295",
+      "snippet": "1 安装和启用 /goal 不是一个单独安装的插件，而是 Codex 新版本内置的目标管理功能。 要使用 /goal，需要满足两个条件： 本机已经安装 Codex CLI 或 Codex App。 Codex 配置里已经开启 goals 功能。 第一步：安装或更新 Codex 如果本机还没有安装 Codex CLI，可以先安装 Codex。 常见安装方式：",
+      "accessed_at": "2026-05-25"
+    },
+    {
+      "keyword": "codex新增/goal功能",
+      "title": "Codex Goals 使用指南：为什么 `/goal` 比\"继续做\"更强 | 𝐘𝐀𝐈",
+      "url": "https://xaicontrol.com/blog/codex-goals-guide/",
+      "snippet": "基于 OpenAI 官方《Using Goals in Codex》与 Codex CLI 文档整理：什么是 Goal、什么时候该用 `/goal`、如何写出可验证的长期目标，以及它和普通 prompt 的根本区别。",
+      "accessed_at": "2026-05-25"
+    },
+    {
+      "keyword": "深圳科创学院",
+      "title": "深圳科创学院",
+      "url": "https://www.innoxsz.com/",
+      "snippet": "深圳科创学院 自1999年创办中国首家运动控制公司固高科技起，李泽湘教授先后与学生创办大疆创新、云鲸智能、正浩创新、希迪智驾、逸动科技、海柔创新等众多知名科技公司。他在香港科技大学的实验室、哈尔滨工业大学（深圳）的教改班及XbotPark机器人基地已孵化出265家硬科技企业，其中包括 ...",
+      "accessed_at": "2026-05-25"
+    },
+    {
+      "keyword": "深圳科创学院",
+      "title": "深圳科创学院 - 维基百科，自由的百科全书",
+      "url": "https://zh.wikipedia.org/wiki/%E6%B7%B1%E5%9C%B3%E7%A7%91%E5%88%9B%E5%AD%A6%E9%99%A2",
+      "snippet": "深圳科创学院 （Shenzhen Innox Academy，InnoxSZ）是由深圳市科技创新战略研究中心与深圳市人才研修院共同举办的一所創業教育機構 [1][2]，由 香港科技大学 李泽湘教授于 2021 年创立 [3][4]。学院以创业人才培养为导向，从事科技领域的跨学科教育，探索工科人才培养模式 [5][6]，是深圳市 \"十四五 ...",
+      "accessed_at": "2026-05-25"
+    },
+    {
+      "keyword": "上海创智学院",
+      "title": "上海创智学院",
+      "url": "https://www.sii.edu.cn/",
+      "snippet": "破解复杂疾病治疗困局!上海创智学院等团队提出通用多靶点药物3D生成大模型",
+      "accessed_at": "2026-05-25"
+    },
+    {
+      "keyword": "上海创智学院",
+      "title": "上海创智学院_百度百科",
+      "url": "https://baike.baidu.com/item/%E4%B8%8A%E6%B5%B7%E5%88%9B%E6%99%BA%E5%AD%A6%E9%99%A2/65657419",
+      "snippet": "上海创智学院是2024年7月成立的高等教育科研机构，位于上海市北杨人工智能小镇，具备国际一流办学条件与充足的算力资源、创投资源。学院聚焦人工智能领域，以培养\"一顶一、掰手腕\"的AI领军人才为目标，联合31所头部高校、科研机构及20余家头部企业构建\"产学研创\"创新生态，配备81位 ...",
+      "accessed_at": "2026-05-25"
+    },
+    {
+      "keyword": "私域",
+      "title": "人人都在说的私域，到底是个啥？ - 知乎",
+      "url": "https://www.zhihu.com/question/492480595",
+      "snippet": "什么是私域流量： 在回答这个问题之前，咱们先要知道和它相对的一个概念--公域流量。所谓，公域流量，就是人人都可以用的流量，但要付出一定成本，而且不一定可持续。 给你举个例子，线下流量以及BAT 等几个互联网流量大户，尤其是后者。 比如微信、QQ、天猫、淘宝、百度、抖音、快手 ...",
+      "accessed_at": "2026-05-25"
+    },
+    {
+      "keyword": "私域",
+      "title": "私域_百度百科",
+      "url": "https://baike.baidu.com/item/%E7%A7%81%E5%9F%9F/55270290",
+      "snippet": "私域（Private Field），是从互联网行业延展而来的，其原意是指互联网私有数据（资产）积蓄的载体，载体的数据权益为私人所有，且具备用户规则制定权，受社会法律的约束与保护。在移动互联网时代，是指品牌拥有可重复、低成本甚至免费触达用户的场域。核心特征涵盖数据所有权、外链能力和 ...",
+      "accessed_at": "2026-05-25"
+    }
+  ],
+  "image_sources": [
+    {
+      "path": "synthesis/daily_reports/2026-05-24/assets/cognitive-radar.png",
+      "tex_path": "assets/cognitive-radar.png",
+      "caption": "今日认知雷达图：根据当天输入或复盘节点生成，用于辅助理解信息之间的注意力分布。",
+      "source": "本地脚本根据当日报告数据生成；不是外部截图或真实实验结果。",
+      "type": "generated_diagram"
+    }
+  ],
+  "search_notes": []
+}

@@ -6,6 +6,14 @@ system/*.err
 system/email_sent/*.sent
 system/locks/*.lock
 system/catchup-installed-date.txt
+system/preview/
+synthesis/daily_reports/**/compile*.log
+synthesis/daily_reports/**/report.aux
+synthesis/daily_reports/**/report.fdb_latexmk
+synthesis/daily_reports/**/report.fls
+synthesis/daily_reports/**/report.log
+synthesis/daily_reports/**/report.out
+synthesis/daily_reports/**/report.xdv
 __pycache__/
 *.pyc
 .pytest_cache/

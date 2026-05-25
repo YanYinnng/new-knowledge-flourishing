@@ -1,96 +1,100 @@
 # 点子发芽 nightly Codex automation 提示词
 
-你正在维护一个个人自用的新知孵化 MVP。请只使用本地 Markdown 文件、PowerShell 脚本和 Codex 自带能力，不使用 OpenAI API，不引入数据库、向量库、知识图谱引擎、Web UI 或复杂依赖。
+你正在维护一个个人自用的新知孵化 MVP。请只使用本地 Markdown/JSON/LaTeX 文件、PowerShell/Python 脚本和 Codex 自带能力，不使用 OpenAI API，不引入数据库、向量库、知识图谱引擎或复杂依赖。
 
 ## 目标
 
-每天晚上生成一份短而有判断的日报，帮助用户决定今天通过网页输入的关键词是否值得保留、合并、升权、降权或继续追踪。用户以后只通过网页输入关键词、一点上下文和可选权重；不要假设用户会直接编辑 `inbox` 文件。
+每天 22:50 左右生成一份“个人认知雷达报告”，主输出为 LaTeX PDF：
 
-automation 应提前于 23:00 运行。目标不是“23:00 开始整理”，而是让用户尽量在 23:00 收到邮件报告。
+```text
+synthesis/daily_reports/YYYY-MM-DD/
+  report.tex
+  report.pdf
+  assets/
+  sources.json
+```
+
+邮件发送由 Windows 本地任务在 23:00 处理。不要在 Codex automation 里发送邮件、等待 23:00、调用 `Start-Process`、调用 `schtasks` 或启动后台 PowerShell。
+
+## 配置
+
+读取 `system/report_config.json`：
+
+- `enable_web_search`：是否尽量联网搜索。
+- `enable_images`：是否允许加入有助理解的图片。
+- `enable_ai_generated_images`：是否允许 AI 生成示意图；如果使用，必须标注“AI 生成示意图”。
+- `default_report_mode`：默认 `auto`。
+- `max_idea_seeds_per_report`：日报最多提炼几个点子。
+- `latex_engine`：默认 `xelatex`。
 
 ## 今日日期
 
 使用当前本地日期，格式为 `YYYY-MM-DD`。
 
+## 推荐执行流程
+
+1. 运行 `python scripts/generate-radar-report.py --date YYYY-MM-DD` 生成初稿、联网来源、图片和 PDF。
+2. 检查 `synthesis/daily_reports/YYYY-MM-DD/report.tex`，必要时手动改写为更有判断的报告。
+3. 如果改了 `report.tex`，运行 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/compile-radar-report.ps1 -Date YYYY-MM-DD` 重新编译 PDF。
+4. 确认 `report.pdf` 和 `sources.json` 存在。编译失败时保留 `report.tex`，并在任务结果里明确说明错误。
+
 ## 读取顺序
 
-1. 读取 `inbox/YYYY-MM-DD.md`。
-2. 读取 `tracking/topics.md`。
-3. 按需读取 `knowledge/`、`synthesis/idea_seeds/`、`library/nodes/`、`library/sources/`、`library/seeds/` 中相关文件。
-4. 如果需要外部资料，可以使用可用的浏览能力搜索或打开用户提供的链接。
+1. `inbox/YYYY-MM-DD.md`
+2. `system/report_config.json`
+3. `tracking/topics.md`
+4. 按需读取 `knowledge/`、`synthesis/idea_seeds/`、`library/nodes/`、`library/sources/`、`library/seeds/`
+5. 旧版 Markdown 日报可作为历史参考，但不要把旧格式当成最终输出。
+
+## 联网搜索要求
+
+凡涉及“今天查到了什么”“外部新进展”“近期趋势”“相关论文/产品/技术动态/新闻变化”，必须尽量联网搜索核实，不能只依赖本地知识库、旧记录或模型记忆。
+
+- 如果 `enable_web_search` 为 true，优先使用可用的联网搜索能力或本地生成脚本的轻量搜索结果。
+- 搜索来源必须写入 `sources.json`。
+- 如果无法联网，在 `report.tex` 中明确写“当前环境无法联网，未能核实外部新进展”，不要编造。
+
+## 图片要求
+
+图片必须服务理解，不要装饰。
+
+- 可使用联网资料中的官方图、论文图、产品图、流程图，或本地脚本生成的认知雷达示意图。
+- 图片保存到 `assets/`，并在 PDF 中有图注。
+- `sources.json` 必须记录图片来源或本地路径。
+- AI 生成图必须标注“AI 生成示意图”；不要把 AI 图说成真实照片、实验结果或产品截图。
+- 没有来源、没有帮助、纯装饰图片不要加入。
 
 ## 有新输入时
 
-当 `inbox/YYYY-MM-DD.md` 存在，且“网页输入记录”里有有效内容时：
+当 `inbox/YYYY-MM-DD.md` 存在，且“网页输入记录”里有有效内容时，只把每条网页记录中的三个字段作为用户输入依据：`关键词`、`上下文`、`权重`。
 
-1. 只把每条网页记录中的三个字段作为用户输入依据：`关键词`、`上下文`、`权重`。
-2. 不要要求或假设存在“补充备注”“特别想追踪的问题”等手工编辑字段。
-3. 对每个关键词写 3-6 行基础理解：它是什么、为什么值得注意、和用户上下文有什么关系。
-4. 如果权重为“未填写”，按普通轻量输入处理；如果权重为 4 或 5，只作为用户关注度信号，不自动升为核心主题。
-5. 在 `knowledge/` 和 `library/nodes/` 中查找同名、别名或语义相近节点。
-6. 已有节点只提出更新建议，不要无提示覆盖旧内容。
-7. 没有节点时，可以建议创建一个 `candidate` 节点，但不要因为一个关键词创建大量文件。
-8. 发现可靠来源时，在日报中建议是否写入 `library/sources/`。没有可靠来源时不要伪造来源。
-9. 发现个人想法潜力时，在日报中建议是否写入 `synthesis/idea_seeds/` 或 `library/seeds/`。
-10. 权重变化只写入建议。权重 4 或 5 必须等待用户明确确认。
+PDF 报告结构必须包含：
+
+1. 今日主线：1-3 句话总结今天信息的共同方向，要有判断。
+2. 今日输入：列出关键词、上下文、权重。
+3. 今日新知：每个重点关键词包含“它是什么 / 今天查到了什么 / 和我有什么关系 / 今日判断 / 下一步”。其中“和我有什么关系”必须保留。
+4. 与旧知识的连接：连接 `knowledge/`、`idea_seeds/`、watchlist、weights 等内容；说明新节点、旧节点、为什么相关、连接价值；不要强行连接。
+5. 今日发芽点子：提炼 1-3 个可能发芽的点子，包括名称、来源组合、为什么值得关注、成熟度 0-100、最小下一步；没有就说明没有。
+6. 权重变化：展示升温/降温节点，并解释原因。
+7. 外部新进展：只写和当天关键词、高权重节点或 watchlist 强相关的新进展。
+8. 明日一问：最后只给一个具体、有启发的问题。
+9. 来源说明：列出重要资料来源。
 
 ## 无新输入时
 
-当当天没有输入文件，或没有有效关键词时：
+如果当天没有新关键词，不要生成空报告。生成“无新输入复盘模式”，包括：
 
-1. 进入旧内容复盘模式。
-2. 读取 `tracking/topics.md`。
-3. 优先复盘权重 4-5 的节点，以及最近 14 天未更新但状态为 `active` 或 `watch` 的节点。
-4. 选择 3-5 个节点做轻量复盘。
-5. 如可联网，可检查重要主题是否有新进展；如不可联网，只基于本地库复盘。
-6. 不自动创建大量新节点。
+- 今日状态
+- 高权重节点复盘
+- 沉睡点子回顾
+- watchlist 新进展检查；必须尽量联网搜索，无法联网则说明
+- 明日一问
 
-## 日报输出
+## 风格要求
 
-把日报写入 `synthesis/daily_reports/YYYY-MM-DD.md`，使用以下结构：
+- 不写成搜索摘要、百科词条、新闻汇总或公司日报。
+- 优先回答：今天这些信息共同指向什么？它们和用户过去的知识、项目、兴趣、机会有什么关系？哪些值得继续追踪/深入/行动，哪些可以先放下？
+- 保持短、有判断、可手动检查。
+- 权重 4 或 5 必须等待用户明确确认，不自动升为核心主题。
 
-```text
-# 点子发芽日报 YYYY-MM-DD
-
-## 今日输入关键词
-
-## 今日新增理解
-
-## 新建或更新的知识节点
-
-## 与历史内容的关联
-
-## 权重调整建议
-
-## 值得保留的来源
-
-## 点子种子候选
-
-## 明日一个小推进
-
-## 待用户确认
-```
-
-日报要求：
-
-- 短。
-- 有判断。
-- 不写成百科长文。
-- 不写成普通资讯简报。
-- 每个关键词最多保留 1-3 个高价值来源。
-- 必须体现用户给出的上下文和权重；不要补写用户没有提供的个人意图。
-- 不确定信息标注“待确认”。
-- 必须包含“明日一个小推进”。
-- 必须包含“待用户确认”。
-
-## 邮件发送
-
-不要在 Codex automation 里发送邮件、等待 23:00、调用 `Start-Process`、调用 `schtasks` 或启动后台 PowerShell。这样会拖长 Codex 运行时间并消耗不必要的用量。
-
-邮件由本地 Windows 计划任务处理：
-
-- `scripts/send-today-report.ps1`：每天 23:00 发送当天已经生成的日报。
-- `scripts/catch-up-daily-report.ps1`：如果电脑在 22:50-23:00 关机或未登录，则下次 Windows 登录后补生成缺失日报并立即发送。
-- `scripts/send-daily-report.py`：底层 SMTP 发送脚本，会用 `system/email_sent/YYYY-MM-DD.sent` 防止重复发送。
-
-生成日报并确认 `synthesis/daily_reports/YYYY-MM-DD.md` 存在后停止。不要尝试替代本地计划任务，不要扩展成正式产品，不要创建额外系统结构。
+生成 `report.tex`、`report.pdf`、`sources.json` 后停止。

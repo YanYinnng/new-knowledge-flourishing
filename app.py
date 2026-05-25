@@ -182,16 +182,102 @@ def list_markdown_files(paths: list[Path], limit: int | None = None) -> list[dic
     return items
 
 
+def list_report_files(limit: int | None = None) -> list[dict]:
+    items: list[dict] = []
+    primary = PRIMARY_DIRS["daily_reports"]
+    if primary.exists():
+        for path in primary.iterdir():
+            if path.is_dir():
+                pdf = path / "report.pdf"
+                tex = path / "report.tex"
+                sources = path / "sources.json"
+                if pdf.exists():
+                    stat = pdf.stat()
+                    items.append(
+                        {
+                            "title": f"个人认知雷达报告 {path.name}",
+                            "path": relative_path(pdf),
+                            "directory": relative_path(path),
+                            "modified": datetime.fromtimestamp(stat.st_mtime).strftime(
+                                "%Y-%m-%d %H:%M"
+                            ),
+                            "format": "pdf",
+                            "status": "PDF",
+                            "sources": relative_path(sources) if sources.exists() else "",
+                        }
+                    )
+                elif tex.exists():
+                    stat = tex.stat()
+                    items.append(
+                        {
+                            "title": f"个人认知雷达报告 {path.name}",
+                            "path": relative_path(tex),
+                            "directory": relative_path(path),
+                            "modified": datetime.fromtimestamp(stat.st_mtime).strftime(
+                                "%Y-%m-%d %H:%M"
+                            ),
+                            "format": "tex",
+                            "status": "PDF 尚未生成或编译失败",
+                            "sources": relative_path(sources) if sources.exists() else "",
+                        }
+                    )
+        for path in primary.glob("*.md"):
+            if not path.is_file():
+                continue
+            stat = path.stat()
+            items.append(
+                {
+                    "title": first_heading(path),
+                    "path": relative_path(path),
+                    "directory": relative_path(primary),
+                    "modified": datetime.fromtimestamp(stat.st_mtime).strftime(
+                        "%Y-%m-%d %H:%M"
+                    ),
+                    "format": "markdown",
+                    "status": "旧 Markdown",
+                    "sources": "",
+                }
+            )
+    legacy = LEGACY_DIRS["daily_reports"]
+    if legacy.exists():
+        for path in legacy.rglob("*.md"):
+            if not path.is_file():
+                continue
+            stat = path.stat()
+            items.append(
+                {
+                    "title": first_heading(path),
+                    "path": relative_path(path),
+                    "directory": relative_path(legacy),
+                    "modified": datetime.fromtimestamp(stat.st_mtime).strftime(
+                        "%Y-%m-%d %H:%M"
+                    ),
+                    "format": "markdown",
+                    "status": "旧 Markdown",
+                    "sources": "",
+                }
+            )
+    items.sort(key=lambda item: item["modified"], reverse=True)
+    if limit is not None:
+        return items[:limit]
+    return items
+
+
 def allowed_file(path_text: str, kind: str) -> Path | None:
     allowed_dirs = {
         "report": [PRIMARY_DIRS["daily_reports"], LEGACY_DIRS["daily_reports"]],
         "knowledge": [PRIMARY_DIRS["knowledge"], LEGACY_DIRS["knowledge"]],
         "seed": [PRIMARY_DIRS["idea_seeds"], LEGACY_DIRS["idea_seeds"]],
     }
+    suffixes = {
+        "report": {".md", ".tex", ".pdf", ".json"},
+        "knowledge": {".md"},
+        "seed": {".md"},
+    }
     if kind not in allowed_dirs:
         return None
     candidate = (ROOT / path_text).resolve()
-    if candidate.suffix.lower() != ".md" or not candidate.is_file():
+    if candidate.suffix.lower() not in suffixes[kind] or not candidate.is_file():
         return None
     for base in allowed_dirs[kind]:
         try:
@@ -447,10 +533,7 @@ class IdeaSproutHandler(BaseHTTPRequestHandler):
                 return
             self.send_json(
                 {
-                    "reports": list_markdown_files(
-                        [PRIMARY_DIRS["daily_reports"], LEGACY_DIRS["daily_reports"]],
-                        limit=8,
-                    ),
+                    "reports": list_report_files(limit=8),
                     "knowledge": list_markdown_files(
                         [PRIMARY_DIRS["knowledge"], LEGACY_DIRS["knowledge"]]
                     ),
@@ -470,13 +553,36 @@ class IdeaSproutHandler(BaseHTTPRequestHandler):
             if not target:
                 self.send_json({"error": "文件不存在或路径不允许。"}, HTTPStatus.NOT_FOUND)
                 return
+            if target.suffix.lower() == ".pdf":
+                self.send_json(
+                    {
+                        "title": target.stem,
+                        "path": relative_path(target),
+                        "format": "pdf",
+                        "url": f"/api/raw?kind={urllib.parse.quote(kind)}&path={urllib.parse.quote(relative_path(target))}",
+                    }
+                )
+                return
             self.send_json(
                 {
                     "title": first_heading(target),
                     "path": relative_path(target),
+                    "format": target.suffix.lower().lstrip("."),
                     "content": target.read_text(encoding="utf-8"),
                 }
             )
+            return
+        if path == "/api/raw":
+            if not self.require_auth():
+                return
+            query = urllib.parse.parse_qs(parsed.query)
+            kind = query.get("kind", [""])[0]
+            file_path = query.get("path", [""])[0]
+            target = allowed_file(file_path, kind)
+            if not target:
+                self.send_error(HTTPStatus.NOT_FOUND)
+                return
+            self.send_static_file(target)
             return
         self.send_error(HTTPStatus.NOT_FOUND)
 

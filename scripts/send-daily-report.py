@@ -49,8 +49,18 @@ def wait_until_today(clock_text: str) -> None:
         time.sleep(min(max(remaining, 0), 30))
 
 
-def report_path_for(date_text: str) -> Path:
-    return REPORT_DIR / f"{date_text}.md"
+def report_artifact_for(date_text: str) -> tuple[Path, str]:
+    report_dir = REPORT_DIR / date_text
+    pdf_path = report_dir / "report.pdf"
+    tex_path = report_dir / "report.tex"
+    legacy_md_path = REPORT_DIR / f"{date_text}.md"
+    if pdf_path.exists():
+        return pdf_path, "pdf"
+    if tex_path.exists():
+        return tex_path, "tex"
+    if legacy_md_path.exists():
+        return legacy_md_path, "markdown"
+    return pdf_path, "missing"
 
 
 def sent_marker_for(date_text: str) -> Path:
@@ -99,19 +109,33 @@ def release_send_lock(lock_path: Path | None) -> None:
         lock_path.unlink()
 
 
-def build_message(config: dict, report_path: Path, date_text: str) -> EmailMessage:
-    content = report_path.read_text(encoding="utf-8")
+def build_message(config: dict, report_path: Path, report_kind: str, date_text: str) -> EmailMessage:
     message = EmailMessage()
-    message["Subject"] = f"点子发芽日报 {date_text}"
+    message["Subject"] = f"点子发芽个人认知雷达报告 {date_text}"
     message["From"] = config["from_email"]
     message["To"] = ", ".join(config["to_emails"])
-    message.set_content(content, subtype="plain", charset="utf-8")
-    message.add_attachment(
-        content.encode("utf-8"),
-        maintype="text",
-        subtype="markdown",
-        filename=report_path.name,
-    )
+    if report_kind == "pdf":
+        message.set_content(
+            f"点子发芽个人认知雷达报告 {date_text} 已生成，PDF 见附件。\n",
+            subtype="plain",
+            charset="utf-8",
+        )
+        message.add_attachment(
+            report_path.read_bytes(),
+            maintype="application",
+            subtype="pdf",
+            filename=f"idea-sprout-radar-{date_text}.pdf",
+        )
+    else:
+        content = report_path.read_text(encoding="utf-8")
+        message.set_content(content, subtype="plain", charset="utf-8")
+        subtype = "x-tex" if report_kind == "tex" else "markdown"
+        message.add_attachment(
+            content.encode("utf-8"),
+            maintype="text",
+            subtype=subtype,
+            filename=report_path.name,
+        )
     return message
 
 
@@ -141,16 +165,19 @@ def main() -> int:
 
     lock_path = None
     try:
-        report_path = report_path_for(args.date)
+        report_path, report_kind = report_artifact_for(args.date)
         marker = sent_marker_for(args.date)
-        if not report_path.exists():
-            raise FileNotFoundError(f"Report not found: {report_path}")
+        if report_kind == "missing":
+            raise FileNotFoundError(
+                f"Report not found. Expected {REPORT_DIR / args.date / 'report.pdf'} "
+                f"or legacy {REPORT_DIR / (args.date + '.md')}"
+            )
         if marker.exists() and not args.force:
             print(f"Already sent {report_path}; marker exists at {marker}.")
             return 0
         config = load_config()
         wait_until_today(args.wait_until)
-        message = build_message(config, report_path, args.date)
+        message = build_message(config, report_path, report_kind, args.date)
         if args.dry_run:
             print(f"Dry run OK. Would send {report_path} to {', '.join(config['to_emails'])}.")
             return 0

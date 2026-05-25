@@ -74,70 +74,35 @@ function Find-Python {
     throw "python was not found in PATH."
 }
 
-function Test-CodexCli {
-    param([string]$Path)
-    try {
-        & $Path --version *> $null
-        return ($LASTEXITCODE -eq 0)
-    } catch {
-        return $false
-    }
-}
-
-function Find-CodexCli {
-    $candidates = New-Object System.Collections.Generic.List[string]
-    $localBin = Join-Path $env:LOCALAPPDATA "OpenAI\Codex\bin"
-
-    if (Test-Path -LiteralPath $localBin -PathType Container) {
-        Get-ChildItem -Path $localBin -Recurse -Filter codex.exe -ErrorAction SilentlyContinue |
-            Sort-Object LastWriteTime -Descending |
-            ForEach-Object { $candidates.Add($_.FullName) }
-    }
-
-    $command = Get-Command codex.exe -ErrorAction SilentlyContinue
-    if ($command) {
-        $candidates.Add($command.Source)
-    }
-
-    foreach ($candidate in ($candidates | Select-Object -Unique)) {
-        if (Test-CodexCli -Path $candidate) {
-            return $candidate
-        }
-    }
-
-    throw "A usable codex.exe was not found."
-}
-
-function Invoke-CodexGenerate {
+function Invoke-ReportGenerate {
     param(
         [string]$DateText,
-        [string]$CodexPath
+        [string]$PythonPath
     )
 
-    $promptTemplatePath = Join-Path $root "automation\catch-up-codex-prompt.md"
-    $reportPath = Join-Path $root "synthesis\daily_reports\$DateText.md"
-    $codexLogPath = Join-Path $systemDir "catchup-codex-$DateText.log"
-
-    if (-not (Test-Path -LiteralPath $promptTemplatePath -PathType Leaf)) {
-        throw "Missing prompt template: $promptTemplatePath"
-    }
-
-    $prompt = (Get-Content -Path $promptTemplatePath -Encoding UTF8 -Raw).Replace("{{DATE}}", $DateText)
-    Write-Log "Generating missing report for $DateText with Codex CLI."
+    $generator = Join-Path $root "scripts\generate-radar-report.py"
+    $reportPath = Join-Path $root "synthesis\daily_reports\$DateText\report.pdf"
+    Write-Log "Generating radar PDF for $DateText."
 
     if ($DryRun) {
-        Write-Log "Dry run: would run Codex and write $reportPath."
+        Write-Log "Dry run: would run $generator --date $DateText."
         return $true
     }
 
-    $prompt | & $CodexPath exec --cd $root --sandbox danger-full-access --ask-for-approval never - *> $codexLogPath
+    $output = & $PythonPath $generator --date $DateText 2>&1
     if ($LASTEXITCODE -ne 0) {
-        Write-Log "Codex generation failed for $DateText. See $codexLogPath."
+        foreach ($line in $output) {
+            Write-Log "generate-radar-report: $line"
+        }
+        Write-Log "Radar report generation failed for $DateText."
         return $false
+    }
+    foreach ($line in $output) {
+        Write-Log "generate-radar-report: $line"
     }
 
     if (-not (Test-Path -LiteralPath $reportPath -PathType Leaf)) {
-        Write-Log "Codex finished but did not create $reportPath."
+        Write-Log "Generator finished but did not create $reportPath."
         return $false
     }
 
@@ -179,10 +144,9 @@ try {
     }
 
     $pythonPath = Find-Python
-    $codexPath = $null
 
     foreach ($dateText in $dates) {
-        $reportPath = Join-Path $root "synthesis\daily_reports\$dateText.md"
+        $reportPath = Join-Path $root "synthesis\daily_reports\$dateText\report.pdf"
         $sentMarker = Join-Path $root "system\email_sent\$dateText.sent"
 
         if (Test-Path -LiteralPath $sentMarker -PathType Leaf) {
@@ -191,11 +155,7 @@ try {
         }
 
         if ((-not (Test-Path -LiteralPath $reportPath -PathType Leaf)) -or $ForceGenerate) {
-            if (-not $codexPath) {
-                $codexPath = Find-CodexCli
-                Write-Log "Using Codex CLI: $codexPath"
-            }
-            if (-not (Invoke-CodexGenerate -DateText $dateText -CodexPath $codexPath)) {
+            if (-not (Invoke-ReportGenerate -DateText $dateText -PythonPath $pythonPath)) {
                 $hadFailure = $true
                 continue
             }

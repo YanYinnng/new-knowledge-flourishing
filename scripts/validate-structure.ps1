@@ -22,7 +22,8 @@ $requiredDirs = @(
     "automation",
     "scripts",
     "system\email_sent",
-    "system\locks"
+    "system\locks",
+    "system"
 )
 
 $requiredFiles = @(
@@ -39,7 +40,9 @@ $requiredFiles = @(
     "config\email_auth.example.json",
     "scripts\allow-phone-firewall.ps1",
     "scripts\catch-up-daily-report.ps1",
+    "scripts\compile-radar-report.ps1",
     "scripts\diagnose-phone-access.ps1",
+    "scripts\generate-radar-report.py",
     "scripts\install-startup-catchup.ps1",
     "scripts\install-nightly-mailer.ps1",
     "scripts\new-today.ps1",
@@ -48,7 +51,8 @@ $requiredFiles = @(
     "scripts\start-web.ps1",
     "scripts\uninstall-nightly-mailer.ps1",
     "scripts\uninstall-startup-catchup.ps1",
-    "scripts\validate-structure.ps1"
+    "scripts\validate-structure.ps1",
+    "system\report_config.json"
 )
 
 foreach ($dir in $requiredDirs) {

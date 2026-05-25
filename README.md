@@ -2,7 +2,7 @@
 
 这是一个个人自用的新知孵化工作流。日常输入只通过网页完成，系统用本地 Markdown 文件、少量 PowerShell 脚本和 Codex automation 提示词支撑每天的轻量输入、晚间整理和旧内容复盘。
 
-第一版的原则很简单：白天在网页里写关键词、一点上下文和可选权重；晚上看一份短日报；最后由你决定什么保留、什么合并、什么升权或降权。
+第一版的原则很简单：白天在网页里写关键词、一点上下文和可选权重；晚上看一份 PDF 版“个人认知雷达报告”；最后由你决定什么保留、什么合并、什么升权或降权。
 
 ## 每天怎么用
 
@@ -120,7 +120,7 @@ Copy-Item .\config\local_auth.example.json .\config\local_auth.json
 - 可选填写权重 1-5。
 - 提交后内容会按“网页输入记录”格式追加到当天 `inbox/YYYY-MM-DD.md`，不会覆盖旧内容。
 - 提交后会自动把当天 `inbox/YYYY-MM-DD.md` 做一次 Git commit，并推送到 `origin` 当前分支。
-- 在“最近日报”里查看 `synthesis/daily_reports/` 中的日报；页面也会兼容读取旧目录 `reports/daily/`。
+- 在“最近日报”里优先打开 `synthesis/daily_reports/YYYY-MM-DD/report.pdf`；如果只有 `report.tex`，页面会提示 PDF 尚未生成或编译失败；旧 Markdown 日报仍可兼容查看。
 - 在“知识节点”里查看 `knowledge/` 中的知识卡片；页面也会兼容读取旧目录 `library/nodes/`。
 - 在“点子种子”里查看 `synthesis/idea_seeds/` 中的点子；页面也会兼容读取旧目录 `library/seeds/`。
 
@@ -156,22 +156,23 @@ $env:IDEA_SPROUT_AUTO_GIT_SYNC="0"; python app.py
 1. 白天打开网页，在“网页输入”里写 3-5 个触发词、链接、人物、问题或粗糙想法。
 2. 为这批关键词补一点上下文，例如从哪里看到、为什么注意、和你有什么关系。
 3. 可选填写权重 1-5；不确定就留空。
-4. 晚上查看 `synthesis/daily_reports/YYYY-MM-DD.md`。日报应该帮助你判断哪些内容值得留下、哪些只是噪音、哪些和旧内容有关。
+4. 晚上查看 `synthesis/daily_reports/YYYY-MM-DD/report.pdf`。报告应该帮助你判断哪些内容值得留下、哪些只是噪音、哪些和旧内容有关。
 
 ## 晚上会发生什么
 
-Codex automation 应提前于 23:00 Asia/Shanghai 运行。它不是 23:00 才开始整理，而是预留时间先生成日报。
+Codex automation 应提前于 23:00 Asia/Shanghai 运行。它不是 23:00 才开始整理，而是预留时间先生成 PDF 报告。
 
-当前目标：每天 22:50 开始整理，只负责生成 `synthesis/daily_reports/YYYY-MM-DD.md`。邮件发送不再放在 Codex automation 里等待或调度，而是交给 Windows 本地计划任务在 23:00 执行，避免 Codex 因等待发信而运行十几分钟甚至更久。
+当前目标：每天 22:50 开始整理，只负责生成 `synthesis/daily_reports/YYYY-MM-DD/report.tex`、`report.pdf`、`assets/` 和 `sources.json`。邮件发送不再放在 Codex automation 里等待或调度，而是交给 Windows 本地计划任务在 23:00 执行，避免 Codex 因等待发信而运行十几分钟甚至更久。
 
-如果电脑在 22:50-23:00 之间关机或没有登录，Windows 登录补跑任务会在下一次开机登录后检查漏掉的日报。它会先补生成缺失的 `synthesis/daily_reports/YYYY-MM-DD.md`，再立刻发送邮件，不会等到当天晚上 23:00。它只处理安装补跑任务之后的日期，避免把旧日报突然重复补发。
+如果电脑在 22:50-23:00 之间关机或没有登录，Windows 登录补跑任务会在下一次开机登录后检查漏掉的报告。它会先补生成缺失的 `synthesis/daily_reports/YYYY-MM-DD/report.pdf`，再立刻发送邮件，不会等到当天晚上 23:00。它只处理安装补跑任务之后的日期，避免把旧报告突然重复补发。
 
 automation 只把网页写入的 `关键词`、`上下文`、`权重` 三类信息当作当天输入依据。
 
 如果当天有输入，它会：
 
 - 读取“网页输入记录”中的关键词、上下文和权重。
-- 对每个关键词做 3-6 行的基础理解。
+- 尽量联网搜索，资料来源写入 `sources.json`。
+- 对每个重点关键词写清“它是什么 / 今天查到了什么 / 和我有什么关系 / 今日判断 / 下一步”。
 - 检查 `library/nodes/` 中是否已有相近节点。
 - 在日报中提出新建、合并、更新、升权、降权或继续追踪建议。
 - 只在必要时建议保留来源或点子种子。
@@ -180,13 +181,73 @@ automation 只把网页写入的 `关键词`、`上下文`、`权重` 三类信�
 
 - 读取 `tracking/topics.md`。
 - 复盘高权重或久未更新的节点。
-- 生成一份“无新输入日报”，给出明天一个小动作。
+- 尽量联网检查 watchlist 新进展，无法联网则在报告中说明。
+- 生成一份“无新输入复盘模式”报告，最后只给一个“明日一问”。
 
 automation 的完整提示词在 `automation/nightly-codex-prompt.md`。如果需要手动创建 automation，就把该文件内容作为任务提示词，工作目录设为本仓库根目录，时间设为每天 22:50 Asia/Shanghai。这个 automation 不负责发邮件，不等待 23:00。
 
-## 邮件日报
+## PDF 认知雷达报告
 
-日报邮件通过本地 SMTP 发送到：
+每日报告的主输出目录为：
+
+```text
+synthesis/daily_reports/YYYY-MM-DD/
+├─ report.tex
+├─ report.pdf
+├─ assets/
+└─ sources.json
+```
+
+手动生成某天报告：
+
+```powershell
+python .\scripts\generate-radar-report.py --date 2026-05-24
+```
+
+只生成 `report.tex` 和 `sources.json`，不编译 PDF：
+
+```powershell
+python .\scripts\generate-radar-report.py --date 2026-05-24 --no-compile
+```
+
+重新编译某天的 `report.tex`：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\compile-radar-report.ps1 -Date 2026-05-24
+```
+
+LaTeX 工具要求：优先使用 TeX Live 或 MiKTeX，并确保 `xelatex` 和最好还有 `latexmk` 在 PATH 中。本机当前已检测到 TeX Live 2024 的 `xelatex` 和 `latexmk`。如果编译失败，`report.tex` 会保留，脚本会输出清楚的错误信息，详细日志在当天报告目录。
+
+报告配置在 `system/report_config.json`：
+
+```json
+{
+  "enable_web_search": true,
+  "enable_images": true,
+  "enable_ai_generated_images": false,
+  "default_report_mode": "auto",
+  "max_idea_seeds_per_report": 3,
+  "latex_engine": "xelatex"
+}
+```
+
+临时关闭联网搜索：
+
+```powershell
+python .\scripts\generate-radar-report.py --date 2026-05-24 --no-web
+```
+
+临时关闭图片：
+
+```powershell
+python .\scripts\generate-radar-report.py --date 2026-05-24 --no-images
+```
+
+联网搜索结果会写入 `sources.json`。如果当前环境无法联网，报告会明确写“当前环境无法联网，未能核实外部新进展”。图片只在有助理解时加入 `assets/`，并在 `sources.json` 记录来源；本地脚本生成的认知雷达图会标注为本地生成示意图，不会伪装成真实截图或实验结果。
+
+## 邮件报告
+
+PDF 报告邮件通过本地 SMTP 发送到：
 
 ```text
 13583286559@163.com
@@ -220,13 +281,13 @@ Copy-Item .\config\email_auth.example.json .\config\email_auth.json
 python .\scripts\send-daily-report.py --date 2026-05-24 --dry-run
 ```
 
-去掉 `--dry-run` 会真正发送邮件：
+去掉 `--dry-run` 会真正发送邮件；如果当天 PDF 存在，会优先把 PDF 作为附件发送：
 
 ```powershell
 python .\scripts\send-daily-report.py --date 2026-05-24
 ```
 
-发送成功后，脚本会写入 `system/email_sent/YYYY-MM-DD.sent` 作为本地标记。后续 automation 或补跑任务看到这个标记，会跳过同一天的重复发送；如果你确实要手动重发，可以加 `--force`。
+发送成功后，脚本会写入 `system/email_sent/YYYY-MM-DD.sent` 作为本地标记。后续本地发信或补跑任务看到这个标记，会跳过同一天的重复发送；如果你确实要手动重发，可以加 `--force`。
 
 安装 23:00 本地发信任务：
 
@@ -234,7 +295,7 @@ python .\scripts\send-daily-report.py --date 2026-05-24
 .\scripts\install-nightly-mailer.ps1
 ```
 
-这个任务会在每天 23:00 运行 `scripts/send-today-report.ps1`。如果日报文件还没生成，它会最多等 30 分钟，但这个等待发生在本地 PowerShell 里，不消耗 Codex 用量。
+这个任务会在每天 23:00 运行 `scripts/send-today-report.ps1`。如果当天 `report.pdf` 还没生成，它会最多等 30 分钟，但这个等待发生在本地 PowerShell 里，不消耗 Codex 用量。
 
 安装开机登录补跑任务：
 
@@ -297,6 +358,13 @@ python .\scripts\send-daily-report.py --date 2026-05-24
 .\scripts\validate-structure.ps1
 ```
 
+生成/编译 PDF 报告：
+
+```powershell
+python .\scripts\generate-radar-report.py --date 2026-05-24
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\compile-radar-report.ps1 -Date 2026-05-24
+```
+
 脚本只辅助，不是主要使用入口。检查失败时，按输出的缺失项修复。
 
 ## 第一版不做
@@ -312,7 +380,7 @@ python .\scripts\send-daily-report.py --date 2026-05-24
 
 - `inbox/`：每日原始输入。
 - `knowledge/`：网页入口优先读取的知识节点。
-- `synthesis/daily_reports/`：网页入口优先读取的每日复盘日报。
+- `synthesis/daily_reports/`：网页入口优先读取的每日 PDF 认知雷达报告。
 - `synthesis/idea_seeds/`：网页入口优先读取的点子种子。
 - `system/`：预留给本地系统说明和后续轻量配置。
 - `library/nodes/`：长期知识节点。

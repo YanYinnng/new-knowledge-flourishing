@@ -1,0 +1,64 @@
+{
+  "date": "2026-05-25",
+  "generated_at": "2026-05-25T16:48:52",
+  "config": {
+    "enable_web_search": true,
+    "enable_images": true,
+    "enable_ai_generated_images": false,
+    "latex_engine": "xelatex"
+  },
+  "text_sources": [
+    {
+      "keyword": "新知孵化工作流",
+      "title": "聊一聊，对于新的产品业务孵化，是如何操作的，确保企业投入产出最优？ - 知乎",
+      "url": "https://www.zhihu.com/question/633098104",
+      "snippet": "知乎，中文互联网高质量的问答社区和创作者聚集的原创内容平台，于 2011 年 1 月正式上线，以「让人们更好的分享知识、经验和见解，找到自己的解答」为品牌使命。",
+      "accessed_at": "2026-05-25"
+    },
+    {
+      "keyword": "新知孵化工作流",
+      "title": "内容孵化 - 为内容创作者提供一整套完整的内容与知识孵化服务解决方案",
+      "url": "https://www.xinzhiyun.net/Portal/Index/content_incubation",
+      "snippet": "# 搜索 内容产品孵化一站式解决方案 助力内容创作者快速生产精品内容 专注内容创作 立即咨询 微信扫码咨询 数据分析服务 新知榜通过大数据分析全网知识产品数据，为打造头部IP助力 新知云通过全渠道分销数据，挖掘分析精品内容特点 新知云根据渠道特征和内容做精准匹配 新知云根据内容特征 ...",
+      "accessed_at": "2026-05-25"
+    },
+    {
+      "keyword": "本地 Markdown 知识库",
+      "title": "本地Markdown开源知识库选型指南 - 详解 - yxysuanfa - 博客园",
+      "url": "https://www.cnblogs.com/yxysuanfa/p/19127245",
+      "snippet": "本地Markdown开源知识库选型指南以下是几款优秀的本地Markdown开源知识库解决方案，适合不同需求场景：1. Obsidian (非完全开源但免费)特点：基于Markdown的本地优先知识管理，丰富的插件生态优势：双向链接、图形视图、快速搜索、社区插件支持存储：纯Markdown材料存储，可",
+      "accessed_at": "2026-05-25"
+    },
+    {
+      "keyword": "本地 Markdown 知识库",
+      "title": "零门槛搭建!Docker+Markdown打造个人知识库神器",
+      "url": "https://zhuanlan.zhihu.com/p/1897416297215657749",
+      "snippet": "零门槛搭建!Docker+ Markdown 打造个人知识库神器 兄弟们是不是经常遇到这种情况：技术文档散落在十几个文件夹里，想找个半年前的部署教程要翻半小时硬盘？今天二冰给大家安利一款神器—— wikmd，让你用最熟悉的Markdown语法，三分钟搭建专属知识库! 一、项目简介 wikmd （项目地址： github.com ...",
+      "accessed_at": "2026-05-25"
+    },
+    {
+      "keyword": "每日晚间复盘",
+      "title": "个人每日如何深度复盘？ - 知乎",
+      "url": "https://www.zhihu.com/question/391483413",
+      "snippet": "I（Insight）总结规律：通过以上的分析找到实物更有效、更符合本质规律的做法。 4、年月周日复盘法 年月周日复盘法，顾名思义就是每年、每月、每周、每日都定期复盘，很适合用于个人复盘，总结自己的问题和成长。",
+      "accessed_at": "2026-05-25"
+    },
+    {
+      "keyword": "每日晚间复盘",
+      "title": "每日复盘 - 股票市场复盘分析 - 52打板网",
+      "url": "https://www.52daban.com/daily_reviews",
+      "snippet": "52打板网提供每日股票市场复盘分析,深度解读市场热点板块、资金流向、强势股票,为投资者提供专业的投资参考。",
+      "accessed_at": "2026-05-25"
+    }
+  ],
+  "image_sources": [
+    {
+      "path": "synthesis/daily_reports/2026-05-25/assets/cognitive-radar.png",
+      "tex_path": "assets/cognitive-radar.png",
+      "caption": "今日认知雷达图：根据当天输入或复盘节点生成，用于辅助理解信息之间的注意力分布。",
+      "source": "本地脚本根据当日报告数据生成；不是外部截图或真实实验结果。",
+      "type": "generated_diagram"
+    }
+  ],
+  "search_notes": []
+}

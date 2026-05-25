@@ -115,11 +115,18 @@ function renderList(container, items, kind, emptyText) {
     button.type = "button";
     button.dataset.path = item.path;
     button.dataset.kind = kind;
+    button.dataset.format = item.format || "markdown";
     button.innerHTML = `
       <span class="item-title">${escapeHtml(item.title)}</span>
-      <span class="item-meta">${escapeHtml(item.path)} · ${escapeHtml(item.modified)}</span>
+      <span class="item-meta">${escapeHtml(item.path)} · ${escapeHtml(item.status || item.format || "Markdown")} · ${escapeHtml(item.modified)}</span>
     `;
-    button.addEventListener("click", () => loadFile(kind, item.path));
+    button.addEventListener("click", () => {
+      if (kind === "report" && item.format === "pdf") {
+        window.open(`/api/raw?kind=report&path=${encodeURIComponent(item.path)}`, "_blank", "noopener");
+        return;
+      }
+      loadFile(kind, item.path, item.status || "");
+    });
     container.append(button);
   }
 }
@@ -131,10 +138,20 @@ async function loadOverview() {
   renderList(seedsList, overview.seeds, "seed", "还没有点子种子。");
 }
 
-async function loadFile(kind, path) {
+async function loadFile(kind, path, status = "") {
   const file = await api(`/api/file?kind=${encodeURIComponent(kind)}&path=${encodeURIComponent(path)}`);
   reader.classList.remove("empty");
+  if (file.format === "pdf") {
+    reader.innerHTML = `<p><a href="${escapeHtml(file.url)}" target="_blank" rel="noopener">打开 PDF 报告</a></p>`;
+    return;
+  }
+  const notice = status === "PDF 尚未生成或编译失败"
+    ? "<p class=\"message error\">PDF 尚未生成或编译失败。下面显示 report.tex 供检查。</p>"
+    : "";
   reader.innerHTML = renderMarkdown(file.content);
+  if (notice) {
+    reader.innerHTML = notice + reader.innerHTML;
+  }
 }
 
 async function boot() {

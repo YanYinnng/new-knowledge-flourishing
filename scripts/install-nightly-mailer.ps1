@@ -31,8 +31,8 @@ Register-ScheduledTask `
     -Trigger $trigger `
     -Settings $settings `
     -Principal $principal `
-    -Description "Send the Idea Sprout daily report by email at 23:00 local time." `
+    -Description "Send the Idea Sprout daily PDF radar report by email at 23:00 local time." `
     -Force | Out-Null
 
 Write-Host "Installed scheduled task: $TaskName"
-Write-Host "It sends today's existing report at $At and waits up to $WaitForReportMinutes minutes for the file."
+Write-Host "It sends today's existing report.pdf at $At and waits up to $WaitForReportMinutes minutes for the file."

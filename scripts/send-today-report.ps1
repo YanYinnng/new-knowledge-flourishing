@@ -33,7 +33,7 @@ function Find-Python {
 }
 
 $dateText = Get-Date -Format "yyyy-MM-dd"
-$reportPath = Join-Path $root "synthesis\daily_reports\$dateText.md"
+$reportPath = Join-Path $root "synthesis\daily_reports\$dateText\report.pdf"
 $sendScript = Join-Path $root "scripts\send-daily-report.py"
 $deadline = (Get-Date).AddMinutes([Math]::Max(0, $WaitForReportMinutes))
 

@@ -1,0 +1,10 @@
+{
+  "enable_web_search": true,
+  "enable_images": true,
+  "enable_ai_generated_images": false,
+  "default_report_mode": "auto",
+  "max_idea_seeds_per_report": 3,
+  "latex_engine": "xelatex",
+  "max_sources_per_keyword": 2,
+  "web_search_provider": "duckduckgo_html"
+}
