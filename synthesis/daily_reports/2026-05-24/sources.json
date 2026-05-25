@@ -1,10 +1,7 @@
 {
-  "date": "2026-05-24",
-  "generated_at": "2026-05-25T18:03:54",
+  "generated_at": "2026-05-25T20:05:45",
   "config": {
     "enable_web_search": true,
-    "enable_images": true,
-    "enable_ai_generated_images": false,
     "latex_engine": "xelatex"
   },
   "text_sources": [
@@ -19,7 +16,7 @@
       "authority_score": 95,
       "relevance_score": 40,
       "id": "S1",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -33,7 +30,7 @@
       "authority_score": 95,
       "relevance_score": 40,
       "id": "S2",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -47,7 +44,7 @@
       "authority_score": 95,
       "relevance_score": 40,
       "id": "S3",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -61,7 +58,7 @@
       "authority_score": 95,
       "relevance_score": 40,
       "id": "S4",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -75,7 +72,7 @@
       "authority_score": 95,
       "relevance_score": 32,
       "id": "S5",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -89,7 +86,7 @@
       "authority_score": 95,
       "relevance_score": 32,
       "id": "S6",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -103,7 +100,7 @@
       "authority_score": 90,
       "relevance_score": 36,
       "id": "S7",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -117,21 +114,7 @@
       "authority_score": 95,
       "relevance_score": 28,
       "id": "S8",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
-      "accessed_at": "2026-05-25"
-    },
-    {
-      "keyword": "深圳科创学院",
-      "title": "K12训练营 - innoxsz.com",
-      "url": "https://innoxsz.com/k12-bootcamp",
-      "snippet": "关于我们 学院概况 / 学院文化 / 走进学院 在孵团队 创业导师 发起人 / 科创导师 赋能体系 赋能体系 合作交流 合作高校 / 科技创业者俱乐部 项目申请 科创训练营 / 科技创业营 (长期报名) / K12训练营 学院动态 最新消息 / 招标采购 / 公示公告 联系我们 联系我们 ...",
-      "domain": "innoxsz.com",
-      "quality_tier": "官方/机构资料",
-      "source_role": "深圳科创学院官网，优先用于核实机构定位。",
-      "authority_score": 95,
-      "relevance_score": 24,
-      "id": "S9",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -144,8 +127,22 @@
       "source_role": "深圳科创学院官网，优先用于核实机构定位。",
       "authority_score": 95,
       "relevance_score": 24,
+      "id": "S9",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
+      "accessed_at": "2026-05-25"
+    },
+    {
+      "keyword": "深圳科创学院",
+      "title": "科创训练营 - innoxsz.com",
+      "url": "https://innoxsz.com/innox-bootcamp",
+      "snippet": "关于我们 学院概况 / 学院文化 / 走进学院 在孵团队 创业导师 发起人 / 科创导师 赋能体系 赋能体系 合作交流 合作高校 / 科技创业者俱乐部 项目申请 科创训练营 / 科技创业营 (长期报名) / K12训练营 学院动态 最新消息 / 招标采购 / 公示公告 联系我们 联系我们 ...",
+      "domain": "innoxsz.com",
+      "quality_tier": "官方/机构资料",
+      "source_role": "深圳科创学院官网，优先用于核实机构定位。",
+      "authority_score": 95,
+      "relevance_score": 24,
       "id": "S10",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -159,7 +156,7 @@
       "authority_score": 90,
       "relevance_score": 40,
       "id": "S11",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -173,7 +170,7 @@
       "authority_score": 90,
       "relevance_score": 28,
       "id": "S12",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -187,7 +184,7 @@
       "authority_score": 95,
       "relevance_score": 20,
       "id": "S13",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -201,7 +198,7 @@
       "authority_score": 90,
       "relevance_score": 24,
       "id": "S14",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -215,7 +212,7 @@
       "authority_score": 35,
       "relevance_score": 40,
       "id": "S15",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -229,7 +226,7 @@
       "authority_score": 45,
       "relevance_score": 16,
       "id": "S16",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -243,7 +240,7 @@
       "authority_score": 35,
       "relevance_score": 24,
       "id": "S17",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -257,7 +254,7 @@
       "authority_score": 35,
       "relevance_score": 16,
       "id": "S18",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -271,7 +268,7 @@
       "authority_score": 35,
       "relevance_score": 16,
       "id": "S19",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -285,18 +282,10 @@
       "authority_score": 35,
       "relevance_score": 16,
       "id": "S20",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     }
   ],
-  "image_sources": [
-    {
-      "path": "synthesis/daily_reports/2026-05-24/assets/cognitive-radar.png",
-      "tex_path": "assets/cognitive-radar.png",
-      "caption": "今日认知雷达图：根据当天输入或复盘节点生成，用于辅助理解信息之间的注意力分布。",
-      "source": "本地脚本根据当日报告数据生成；不是外部截图或真实实验结果。",
-      "type": "generated_diagram"
-    }
-  ],
-  "search_notes": []
+  "search_notes": [],
+  "date": "2026-05-24"
 }

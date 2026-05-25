@@ -1,102 +1,41 @@
 {
   "date": "2026-05-25",
-  "generated_at": "2026-05-25T18:03:53",
   "mode": "review",
-  "reader_promise": "先给个人判断，再给证据；来源只做支撑，不把搜索结果堆成正文。",
-  "mainline": "今天没有新的网页输入，主线转为复盘已有高权重主题：哪些仍值得追踪，哪些只是系统搭建期留下的惯性。",
-  "source_policy": {
-    "priority": [
-      "官方/机构资料",
-      "论文/报告",
-      "权威媒体",
-      "项目主页/机构主页",
-      "普通线索",
-      "低优先级线索"
-    ],
-    "tier_counts": {
-      "普通线索": 14,
-      "项目主页/机构主页": 1
-    },
-    "low_quality_rule": "低质量来源只能作为入口线索，不能作为核心结论。"
-  },
-  "local_knowledge_scan": {
-    "scanned_paths": [
-      "knowledge/personal-knowledge-incubation.md",
-      "synthesis/idea_seeds/daily-review-spark.md",
-      "tracking/topics.md"
-    ],
-    "tracking_topics": [
-      "新知孵化工作流",
-      "本地 Markdown 知识库",
-      "每日晚间复盘"
-    ]
-  },
-  "quality_risks": [],
-  "review_cards": [
+  "summary": "今天没有新的网页输入，所以日报不应该硬写成新闻汇总。更有价值的动作是检查“新知孵化工作流”这个主线是否仍然成立：如果以后只通过网页输入关键词、上下文和权重，报告就必须足够短、足够清楚、足够像人写的。",
+  "inputs": [],
+  "knowledge_cards": [
     {
-      "title": "新知孵化工作流",
-      "path": "knowledge/personal-knowledge-incubation.md",
-      "weight": "3",
-      "status": "active",
-      "review_judgment": "它仍是当前唯一真正的主线：网页输入、PDF 日报、邮件发送和 Git 同步都在围绕它减摩擦。今天不需要扩功能，重点是让报告质量稳定到你愿意每天读。",
-      "personal_relevance": "这直接关系到你以后是否只通过网页输入关键词、上下文和权重，就能获得一份有判断的晚间报告。如果报告仍像搜索拼贴，这个系统就没有省心；如果报告能指出主线和下一步，它才值得继续用。",
-      "external_check": "外部资料只能提供 AI/个人知识管理趋势背景 [S1] [S2] [S3]；今天真正要看的不是行业热闹，而是这个系统能否把网页输入、晚间报告和明日小推进稳定串起来。",
-      "next_step": "明天只做一次真实输入测试：从网页提交 3 个关键词，然后检查日报是否能给出主线、旧知识连接和一个可执行小动作。",
-      "sources": [
-        {
-          "id": "S1",
-          "title": "AI in Knowledge Management: Improving Access, Context, and Consistency",
-          "url": "https://peoplemanagingpeople.com/workforce-management/ai-in-knowledge-management/",
-          "domain": "peoplemanagingpeople.com",
-          "quality_tier": "普通线索",
-          "source_role": "可作为线索，不能直接作为核心结论。",
-          "relevance_score": 40
-        },
-        {
-          "id": "S2",
-          "title": "Knowledge Management System in the AI Era - Medium",
-          "url": "https://medium.com/@zhangyu12375/knowledge-management-system-in-the-ai-era-68b6077138ab",
-          "domain": "medium.com",
-          "quality_tier": "普通线索",
-          "source_role": "可作为线索，不能直接作为核心结论。",
-          "relevance_score": 32
-        },
-        {
-          "id": "S3",
-          "title": "How to build your Personal Knowledge Management System [Full Guide 2025]",
-          "url": "https://www.saner.ai/blogs/personal-knowledge-management-system",
-          "domain": "saner.ai",
-          "quality_tier": "普通线索",
-          "source_role": "可作为线索，不能直接作为核心结论。",
-          "relevance_score": 32
-        },
-        {
-          "id": "S4",
-          "title": "搭建ai驱动的个人知识管理系统:工具与流程 - 少数派",
-          "url": "https://sspai.com/post/104200",
-          "domain": "sspai.com",
-          "quality_tier": "普通线索",
-          "source_role": "可作为线索，不能直接作为核心结论。",
-          "relevance_score": 28
-        },
-        {
-          "id": "S5",
-          "title": "6 种人工智能工具让你瞬间建立个人知识管理系统 | Dagle@数字体验平台",
-          "url": "https://www.dagle.cn/news/6-ai-tools-personal-knowledge-management",
-          "domain": "dagle.cn",
-          "quality_tier": "普通线索",
-          "source_role": "可作为线索，不能直接作为核心结论。",
-          "relevance_score": 28
-        }
-      ]
+      "keyword": "新知孵化工作流",
+      "intro": "新知孵化工作流是这个项目的核心节点：它要把白天遇到的新信息变成晚上能读、明天能做的小判断。今天没有新输入，反而暴露出一个重要边界：系统不能为了显得勤奋而编一堆复盘内容，没材料时就应该短一点。",
+      "recent_news": "这次外部搜索主要找到个人知识管理、Markdown 笔记和每日复盘类普通资料，适合作为背景，不适合作为新的事实结论 [S1] [S6] [S11]。因此今天不写所谓新进展，只保留一个判断：报告结构越短，越可能被你长期读下去。",
+      "next_step": "明天从网页提交 3 个真实关键词，然后只检查一件事：报告里的每个关键词是否都能用“简介、相关新闻、下一步”讲清楚。"
     }
   ],
-  "watchlist_checks": [
-    "新知孵化工作流：外部背景 [S1] [S2] [S3] 说明 AI 工具正在降低个人知识整理成本；今天不把它写成行业新闻，只用于校准本地工作流是否省心。",
-    "本地 Markdown 知识库：外部线索 [S6] 支持“本地、可读、可迁移”的方向；当前判断是继续保持轻量文件结构。",
-    "每日晚间复盘：外部线索 [S11] [S12] [S13] 只提供复盘方法背景；本项目的重点是每天产出可执行的小判断，而不是追逐泛资讯。"
+  "old_knowledge_links": [
+    "这个节点直接连接 README、automation 提示词和日报生成器，是当前项目最重要的长期主题。",
+    "它也连接“每日小推进”点子：日报最后应该推动一个很小的动作，而不是生产一堆看起来完整的废话。"
   ],
   "idea_seeds": [
-    "点子种子：每日小推进：继续保留；为什么值得看：它能防止日报停在整理和总结，逼迫系统给出一个 10-20 分钟可完成的动作；成熟度 45/100；最小下一步：明天只执行日报里最小的一条动作，并记录是否真的做完。"
+    "报告瘦身实验：连续三天只保留简版结构，观察你是否更愿意读完。"
+  ],
+  "reference_sources": [
+    {
+      "id": "S1",
+      "title": "AI时代的个人知识管理最佳实践：从笔记仓库到认知操作系统",
+      "quality_tier": "普通线索",
+      "url": "https://www.zhihu.com/tardis/zm/art/1955849427556824396"
+    },
+    {
+      "id": "S6",
+      "title": "GitHub - flyhunterl/flymd: 高性能Markdown笔记工具",
+      "quality_tier": "项目主页/机构主页",
+      "url": "https://github.com/flyhunterl/flymd"
+    },
+    {
+      "id": "S11",
+      "title": "提升个人知识整理与复盘能力的实用方法",
+      "quality_tier": "普通线索",
+      "url": "https://juejin.cn/post/7571113889277194252"
+    }
   ]
 }

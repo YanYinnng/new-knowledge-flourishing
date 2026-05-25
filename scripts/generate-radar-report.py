@@ -1394,6 +1394,349 @@ def quality_check(
     }
 
 
+def input_record_row(record: InputRecord) -> dict[str, str]:
+    return {"keyword": record.keyword, "context": record.context, "weight": record.weight}
+
+
+def local_doc_card(doc: LocalDoc, max_chars: int = 420) -> dict[str, str]:
+    text = normalize_space(re.sub(r"^# .+$", "", doc.text, flags=re.MULTILINE))
+    return {
+        "title": doc.title,
+        "path": relative_path(doc.path),
+        "weight": doc.weight,
+        "status": doc.status,
+        "excerpt": text[:max_chars],
+    }
+
+
+def enrich_searches_for_report(
+    searches: dict[str, tuple[list[dict[str, str]], str]],
+    config: dict[str, Any],
+) -> tuple[dict[str, tuple[list[dict[str, str]], str]], dict[str, Any]]:
+    sources_json: dict[str, Any] = {
+        "generated_at": datetime.now().isoformat(timespec="seconds"),
+        "config": {
+            "enable_web_search": bool(config.get("enable_web_search")),
+            "latex_engine": config.get("latex_engine", "xelatex"),
+        },
+        "text_sources": [],
+        "search_notes": [],
+    }
+    enriched_searches: dict[str, tuple[list[dict[str, str]], str]] = {}
+    source_counter = 1
+    for keyword, (results, note) in searches.items():
+        enriched_results: list[dict[str, str]] = []
+        if note:
+            sources_json["search_notes"].append({"keyword": keyword, "note": note})
+        for result in results:
+            enriched = {**result, "id": f"S{source_counter}"}
+            source_counter += 1
+            enriched_results.append(enriched)
+            sources_json["text_sources"].append(
+                {
+                    "keyword": keyword,
+                    **enriched,
+                    "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
+                    "accessed_at": datetime.now().date().isoformat(),
+                }
+            )
+        enriched_searches[keyword] = (enriched_results, note)
+    return enriched_searches, sources_json
+
+
+def build_report_context(
+    date_text: str,
+    records: list[InputRecord],
+    docs: list[LocalDoc],
+    searches: dict[str, tuple[list[dict[str, str]], str]],
+    sources_json: dict[str, Any],
+    config: dict[str, Any],
+) -> dict[str, Any]:
+    keyword_contexts: list[dict[str, Any]] = []
+    for record in records:
+        results, note = searches.get(record.keyword, ([], ""))
+        keyword_contexts.append(
+            {
+                "keyword": record.keyword,
+                "context": record.context,
+                "weight": record.weight,
+                "questions_for_model": [
+                    f"{record.keyword} 是什么？请用 2-4 句解释清楚。",
+                    f"{record.keyword} 最近有什么新闻或新进展？没有可靠新进展就直接说明。",
+                    f"结合用户语境“{record.context}”，有什么补充判断？",
+                ],
+                "search_note": note,
+                "search_results": source_cards(results),
+                "local_matches": [local_doc_card(doc) for doc in related_docs(record, docs)],
+            }
+        )
+
+    return {
+        "date": date_text,
+        "generated_at": datetime.now().isoformat(timespec="seconds"),
+        "mode": "input" if records else "review",
+        "report_structure": [
+            "今日总结",
+            "今日输入",
+            "今日新知",
+            "与旧知识的链接",
+            "今日发芽点子",
+            "参考搜索内容",
+        ],
+        "writing_contract": {
+            "model_role": "你是报告作者。请综合材料写 report_brief.json，不要把搜索结果直接拼进正文。",
+            "keyword_card_shape": ["简介", "最近有什么相关新闻", "最小下一步"],
+            "hard_limits": [
+                "每个关键词只能有一个简介、一个最近有什么相关新闻、一个最小下一步。",
+                "简介至少 2 句，最近新闻最多 1 段或 2 条，最小下一步只能 1 个动作。",
+                "禁止使用旧标签：它是什么、今天查到了什么、和我有什么关系、今日判断。",
+            ],
+        },
+        "inputs": [input_record_row(record) for record in records],
+        "keyword_contexts": keyword_contexts,
+        "local_knowledge": {
+            "tracking_topics": read_tracking_topics(),
+            "scanned_paths": sorted(relative_path(doc.path) for doc in docs),
+            "high_weight_nodes": [local_doc_card(doc) for doc in high_weight_docs(docs)[:4]],
+            "idea_seeds": [local_doc_card(seed) for seed in dormant_seeds(docs, int(config.get("max_idea_seeds_per_report", 3)))],
+        },
+        "source_policy": {
+            "priority": ["官方/机构资料", "论文/报告", "权威媒体", "项目主页/机构主页", "普通线索", "低优先级线索"],
+            "tier_counts": source_tier_counts(sources_json),
+            "low_quality_rule": "低质量来源只能作为入口线索，不能作为核心结论。",
+        },
+        "reference_sources": [
+            {
+                "id": source.get("id", ""),
+                "keyword": source.get("keyword", ""),
+                "title": source.get("title", ""),
+                "quality_tier": source.get("quality_tier", ""),
+                "url": source.get("url", ""),
+            }
+            for source in sources_json.get("text_sources", [])
+        ],
+    }
+
+
+def sentence_count(text: str) -> int:
+    return len([part for part in re.split(r"[。！？!?；;]\s*", text) if part.strip()])
+
+
+def fallback_brief_from_context(context: dict[str, Any]) -> dict[str, Any]:
+    cards: list[dict[str, str]] = []
+    for item in context.get("keyword_contexts", []):
+        record = InputRecord(
+            keyword=str(item.get("keyword", "")),
+            context=str(item.get("context", "未填写")),
+            weight=str(item.get("weight", "未填写")),
+        )
+        intro = concept_sentence(record)
+        if sentence_count(intro) < 2:
+            intro = f"{intro} 结合你的语境，它更像一个需要判断是否值得投入注意力的线索，而不是单纯名词解释。"
+        refs = " ".join(f"[{source.get('id')}]" for source in item.get("search_results", [])[:3] if source.get("id"))
+        recent_news = (
+            f"已检索到相关公开资料 {refs}，但默认脚本只做低置信整理。真正的自动化报告应由 Codex 读取 report_context.json 后综合改写。"
+            if refs
+            else "未查到可靠近期新进展；本条先按用户语境做低置信观察。"
+        )
+        cards.append(
+            {
+                "keyword": record.keyword,
+                "intro": intro,
+                "recent_news": recent_news,
+                "next_step": next_step_for(record),
+            }
+        )
+
+    if not cards:
+        for node in context.get("local_knowledge", {}).get("high_weight_nodes", [])[:3]:
+            title = str(node.get("title", "未命名节点"))
+            cards.append(
+                {
+                    "keyword": title,
+                    "intro": f"{title} 是当前本地知识库里的高权重节点。今天没有新输入，所以它只适合作为复盘对象，而不是扩展成新主题。",
+                    "recent_news": "无新输入日只做轻量外部检查；如果没有明确新证据，不自动扩写为新闻摘要。",
+                    "next_step": "明天通过网页提交 3 个真实关键词，再检查日报是否能给出清晰总结。",
+                }
+            )
+
+    return {
+        "date": context.get("date", ""),
+        "mode": context.get("mode", "input"),
+        "summary": "今天的报告由脚本 fallback 生成，质量低于 Codex 自动化写作版本。后续应由 automation 读取 report_context.json 后重写 report_brief.json。",
+        "inputs": context.get("inputs", []),
+        "knowledge_cards": cards,
+        "old_knowledge_links": [],
+        "idea_seeds": [],
+        "reference_sources": context.get("reference_sources", []),
+    }
+
+
+def brief_reference_sources(brief: dict[str, Any], sources_json: dict[str, Any]) -> list[dict[str, str]]:
+    references = brief.get("reference_sources")
+    if isinstance(references, list) and references:
+        return [source for source in references if isinstance(source, dict)]
+    return [
+        {
+            "id": source.get("id", ""),
+            "title": source.get("title", ""),
+            "quality_tier": source.get("quality_tier", ""),
+            "url": source.get("url", ""),
+        }
+        for source in sources_json.get("text_sources", [])
+    ]
+
+
+def tex_labeled_paragraph(label: str, text: str) -> str:
+    return "\\paragraph{" + tex_escape(label) + "} " + tex_escape(text or "未填写。")
+
+
+def render_report_from_brief(date_text: str, brief: dict[str, Any], sources_json: dict[str, Any]) -> str:
+    title = f"点子发芽日报 {date_text}"
+    inputs = brief.get("inputs") or []
+    cards = brief.get("knowledge_cards") or []
+    old_links = brief.get("old_knowledge_links") or []
+    idea_seeds = brief.get("idea_seeds") or []
+    references = brief_reference_sources(brief, sources_json)
+    lines: list[str] = [
+        r"\documentclass[UTF8,zihao=-4]{ctexart}",
+        r"\usepackage[a4paper,margin=2.2cm]{geometry}",
+        r"\usepackage{xcolor}",
+        r"\usepackage{hyperref}",
+        r"\usepackage{enumitem}",
+        r"\hypersetup{colorlinks=true,linkcolor=teal,urlcolor=teal}",
+        r"\setlist{itemsep=0.25em,topsep=0.35em}",
+        r"\title{\bfseries " + tex_escape(title) + "}",
+        r"\author{点子发芽}",
+        r"\date{" + tex_escape(date_text) + "}",
+        r"\begin{document}",
+        r"\maketitle",
+        r"\section*{今日总结}",
+        tex_escape(str(brief.get("summary") or "今天没有可用总结。")),
+        r"\section*{今日输入}",
+    ]
+    if inputs:
+        lines.append(
+            tex_items(
+                [
+                    f"{item.get('keyword', '')}；上下文：{item.get('context', '未填写')}；权重：{item.get('weight', '未填写')}"
+                    for item in inputs
+                ]
+            )
+        )
+    else:
+        lines.append(tex_escape("今日没有新的网页输入。"))
+
+    lines.append(r"\section*{今日新知}")
+    if cards:
+        for card in cards:
+            lines.append(r"\subsection*{" + tex_escape(str(card.get("keyword") or "未命名关键词")) + "}")
+            lines.append(tex_labeled_paragraph("简介", str(card.get("intro") or "")))
+            lines.append(tex_labeled_paragraph("最近有什么相关新闻", str(card.get("recent_news") or "")))
+            lines.append(tex_labeled_paragraph("最小下一步", str(card.get("next_step") or "")))
+    else:
+        lines.append(tex_escape("今日没有可写入的新知卡片。"))
+
+    lines.append(r"\section*{与旧知识的链接}")
+    lines.append(tex_items([str(item) for item in old_links][:3] or ["今日没有足够强的旧知识链接。"]))
+    lines.append(r"\section*{今日发芽点子}")
+    lines.append(tex_items([str(item) for item in idea_seeds][:2] or ["今日暂无值得保留的新点子。"]))
+    lines.append(r"\section*{参考搜索内容}")
+    if references:
+        lines.append(r"\begin{itemize}[leftmargin=2em]")
+        for source in references:
+            source_id = source.get("id", "")
+            tier = source.get("quality_tier", "未分层")
+            title_text = source.get("title", "未命名来源")
+            url = source.get("url", "")
+            label = tex_escape(f"[{source_id}] {tier}：{title_text}")
+            lines.append(rf"\item \href{{{url}}}{{{label}}}" if url else r"\item " + label)
+        lines.append(r"\end{itemize}")
+    else:
+        lines.append(tex_items(["当前没有可列出的参考搜索内容。"]))
+    lines.append(r"\end{document}")
+    return "\n".join(lines) + "\n"
+
+
+NEW_BANNED_REPORT_PHRASES = [
+    "它是什么",
+    "今天查到了什么",
+    "和我有什么关系",
+    "今日判断",
+    "今日主线",
+    "权重变化",
+    "外部新进展",
+    "明日一问",
+    "来源说明",
+    "暂未发现强相关旧节点",
+    "继续关注",
+    "深入研究",
+    "据资料显示",
+]
+
+
+def report_body_before_reference(tex: str) -> str:
+    return tex.split(r"\section*{参考搜索内容}", 1)[0]
+
+
+def source_text_reused_in_new_body(tex: str, sources_json: dict[str, Any]) -> list[str]:
+    body = report_body_before_reference(tex)
+    reused: list[str] = []
+    for source in sources_json.get("text_sources", []):
+        keyword = clean_source_text(str(source.get("keyword", "")))
+        title = clean_source_text(str(source.get("title", "")))
+        snippet = clean_source_text(str(source.get("snippet", "")))
+        if title and len(title) >= 14 and title != keyword and title in body:
+            reused.append(f"标题被直接放入正文：{title[:40]}")
+        if snippet and len(snippet) >= 40 and snippet[:42] in body:
+            reused.append(f"摘要片段被直接放入正文：{snippet[:40]}")
+    return reused[:5]
+
+
+def quality_check_simple(tex: str, records: list[InputRecord], sources_json: dict[str, Any], brief: dict[str, Any]) -> dict[str, Any]:
+    issues: list[str] = []
+    for section in ["今日总结", "今日输入", "今日新知", "与旧知识的链接", "今日发芽点子", "参考搜索内容"]:
+        if section not in tex:
+            issues.append(f"缺少章节：{section}")
+    for phrase in NEW_BANNED_REPORT_PHRASES:
+        if phrase in tex:
+            issues.append(f"出现旧结构或空泛表达：{phrase}")
+    issues.extend(source_text_reused_in_new_body(tex, sources_json))
+
+    cards = brief.get("knowledge_cards", [])
+    if records and len(cards) != len(records):
+        issues.append("knowledge_cards 数量必须与今日输入关键词数量一致。")
+    if not cards:
+        issues.append("report_brief 缺少 knowledge_cards。")
+    for card in cards:
+        keyword = str(card.get("keyword") or "未知关键词")
+        intro = str(card.get("intro") or "")
+        recent_news = str(card.get("recent_news") or "")
+        next_step = str(card.get("next_step") or "")
+        if sentence_count(intro) < 2:
+            issues.append(f"{keyword} 的简介少于 2 句。")
+        if not recent_news:
+            issues.append(f"{keyword} 缺少“最近有什么相关新闻”。")
+        if not next_step:
+            issues.append(f"{keyword} 缺少“最小下一步”。")
+    expected = len(cards)
+    if tex.count(r"\paragraph{简介}") != expected:
+        issues.append("每个关键词必须恰好有一个“简介”。")
+    if tex.count(r"\paragraph{最近有什么相关新闻}") != expected:
+        issues.append("每个关键词必须恰好有一个“最近有什么相关新闻”。")
+    if tex.count(r"\paragraph{最小下一步}") != expected:
+        issues.append("每个关键词必须恰好有一个“最小下一步”。")
+    if not str(brief.get("summary") or "").strip():
+        issues.append("report_brief 缺少今日总结。")
+    if sources_json["config"].get("enable_web_search") and not sources_json["text_sources"] and not sources_json["search_notes"]:
+        issues.append("启用联网搜索时，sources.json 没有文字来源或失败说明。")
+    for source in sources_json["text_sources"]:
+        if not source.get("quality_tier") or not source.get("id"):
+            issues.append("sources.json 中有来源缺少分层或 id。")
+            break
+    return {"passed": not issues, "issues": issues, "checked_at": datetime.now().isoformat(timespec="seconds")}
+
+
 def compile_pdf(report_dir: Path, config: dict[str, Any]) -> tuple[bool, str]:
     engine = str(config.get("latex_engine", "xelatex"))
     latexmk = shutil.which("latexmk")
@@ -1437,6 +1780,8 @@ def main() -> int:
     parser.add_argument("--no-web", action="store_true")
     parser.add_argument("--no-images", action="store_true")
     parser.add_argument("--no-compile", action="store_true")
+    parser.add_argument("--collect-only", action="store_true", help="Only write report_context.json and sources.json.")
+    parser.add_argument("--render-only", action="store_true", help="Render report.tex/PDF from an existing report_brief.json.")
     args = parser.parse_args()
 
     config = read_config()
@@ -1482,21 +1827,65 @@ def main() -> int:
     assets_dir = report_dir / "assets"
     assets_dir.mkdir(parents=True, exist_ok=True)
 
-    image = None
-    if bool(config.get("enable_images", True)):
-        image = generate_radar_image(report_dir, records, docs)
+    if args.render_only:
+        sources_path = report_dir / "sources.json"
+        brief_path = report_dir / "report_brief.json"
+        if not sources_path.exists():
+            print(f"Missing {sources_path}. Run --collect-only first.", file=sys.stderr)
+            return 1
+        if not brief_path.exists():
+            print(f"Missing {brief_path}. Automation must write report_brief.json before --render-only.", file=sys.stderr)
+            return 1
+        sources_json = json.loads(sources_path.read_text(encoding="utf-8"))
+        report_brief = json.loads(brief_path.read_text(encoding="utf-8"))
+        tex = render_report_from_brief(args.date, report_brief, sources_json)
+        (report_dir / "report.tex").write_text(tex, encoding="utf-8")
+        quality = quality_check_simple(tex, records, sources_json, report_brief)
+        (report_dir / "quality_check.json").write_text(
+            json.dumps(quality, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        if not quality["passed"]:
+            print("Report quality check failed. report.tex was kept. Issues:")
+            for issue in quality["issues"]:
+                print(f"- {issue}")
+            return 1
+        if args.no_compile:
+            print(f"Wrote {report_dir / 'report.tex'}")
+            return 0
+        ok, message = compile_pdf(report_dir, config)
+        print(message)
+        return 0 if ok else 1
 
-    tex, sources_json, report_brief = build_report(args.date, records, docs, searches, image, config)
-    (report_dir / "report.tex").write_text(tex, encoding="utf-8")
+    searches, sources_json = enrich_searches_for_report(searches, config)
+    sources_json["date"] = args.date
+    report_context = build_report_context(args.date, records, docs, searches, sources_json, config)
     (report_dir / "sources.json").write_text(
         json.dumps(sources_json, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    (report_dir / "report_brief.json").write_text(
-        json.dumps(report_brief, ensure_ascii=False, indent=2) + "\n",
+    (report_dir / "report_context.json").write_text(
+        json.dumps(report_context, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )
-    quality = quality_check(tex, records, sources_json, report_brief)
+
+    if args.collect_only:
+        print(f"Wrote {report_dir / 'report_context.json'}")
+        return 0
+
+    brief_path = report_dir / "report_brief.json"
+    if brief_path.exists():
+        report_brief = json.loads(brief_path.read_text(encoding="utf-8"))
+        if not isinstance(report_brief.get("knowledge_cards"), list):
+            report_brief = fallback_brief_from_context(report_context)
+            brief_path.write_text(json.dumps(report_brief, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    else:
+        report_brief = fallback_brief_from_context(report_context)
+        brief_path.write_text(json.dumps(report_brief, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    tex = render_report_from_brief(args.date, report_brief, sources_json)
+    (report_dir / "report.tex").write_text(tex, encoding="utf-8")
+    quality = quality_check_simple(tex, records, sources_json, report_brief)
     (report_dir / "quality_check.json").write_text(
         json.dumps(quality, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",

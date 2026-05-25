@@ -1,53 +1,36 @@
 {
-  "date": "2026-05-25",
-  "generated_at": "2026-05-25T18:03:53",
+  "generated_at": "2026-05-25T20:07:57",
   "config": {
     "enable_web_search": true,
-    "enable_images": true,
-    "enable_ai_generated_images": false,
     "latex_engine": "xelatex"
   },
   "text_sources": [
     {
       "keyword": "新知孵化工作流",
-      "title": "AI in Knowledge Management: Improving Access, Context, and Consistency",
-      "url": "https://peoplemanagingpeople.com/workforce-management/ai-in-knowledge-management/",
-      "snippet": "In this article, you'll see how AI can help simplify your daily workflow , reduce wasted searching, and keep team knowledge fresh and reliable. You'll get practical tips for bringing order to company knowledge and information. What Is AI in Knowledge Management ?",
-      "domain": "peoplemanagingpeople.com",
+      "title": "Ai 时代的个人知识管理最佳实践:从笔记仓库到认知操作系统",
+      "url": "https://hugozhu.site/post/2026/231-ai-era-personal-knowledge-management/",
+      "snippet": "Best Practices for Personal Knowledge Management in the AI Era: From Note Repositories to Cognitive Operating Systems",
+      "domain": "hugozhu.site",
       "quality_tier": "普通线索",
       "source_role": "可作为线索，不能直接作为核心结论。",
       "authority_score": 35,
-      "relevance_score": 40,
+      "relevance_score": 44,
       "id": "S1",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
       "keyword": "新知孵化工作流",
-      "title": "Knowledge Management System in the AI Era - Medium",
-      "url": "https://medium.com/@zhangyu12375/knowledge-management-system-in-the-ai-era-68b6077138ab",
-      "snippet": "Finally, I'll present the complete workflow and tools of the entire knowledge management system. The article is quite lengthy and worth bookmarking for leisurely reading.",
-      "domain": "medium.com",
+      "title": "Personal Knowledge Management (2026): The Honest Guide",
+      "url": "https://www.atlasworkspace.ai/blog/personal-knowledge-management",
+      "snippet": "Atlas. Do you live in a daily -journal outliner workflow ? Logseq. For specific comparisons, see Notion vs Obsidian, Notion vs OneNote, and knowledge graph tools. Final verdict In 2026, personal knowledge management is less about choosing the perfect method and more about running any consistent system long enough to compound.",
+      "domain": "atlasworkspace.ai",
       "quality_tier": "普通线索",
       "source_role": "可作为线索，不能直接作为核心结论。",
       "authority_score": 35,
       "relevance_score": 32,
       "id": "S2",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
-      "accessed_at": "2026-05-25"
-    },
-    {
-      "keyword": "新知孵化工作流",
-      "title": "How to build your Personal Knowledge Management System [Full Guide 2025]",
-      "url": "https://www.saner.ai/blogs/personal-knowledge-management-system",
-      "snippet": "Head to Capacities, create a free account, and explore daily notes and object templates to kick off your Personal Knowledge Management journey. Capacities Review (source)",
-      "domain": "saner.ai",
-      "quality_tier": "普通线索",
-      "source_role": "可作为线索，不能直接作为核心结论。",
-      "authority_score": 35,
-      "relevance_score": 32,
-      "id": "S3",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -60,8 +43,22 @@
       "source_role": "可作为线索，不能直接作为核心结论。",
       "authority_score": 35,
       "relevance_score": 28,
+      "id": "S3",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
+      "accessed_at": "2026-05-25"
+    },
+    {
+      "keyword": "新知孵化工作流",
+      "title": "用ai助手搭建个人知识管理与任务管理一体化工作流-腾讯云开发者社区-腾讯云",
+      "url": "https://developer.cloud.tencent.com/article/2669136",
+      "snippet": "作者分享基于AI助手的个人知识管理与任务一体化工作流,解决多工具切换导致的信息碎片化和效率低下问题。通过AI实现信息自动分类、关联和任务追踪,打造All-in-One的第二大脑操作系统,提升工作效率。",
+      "domain": "developer.cloud.tencent.com",
+      "quality_tier": "普通线索",
+      "source_role": "可作为线索，不能直接作为核心结论。",
+      "authority_score": 35,
+      "relevance_score": 28,
       "id": "S4",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -75,7 +72,7 @@
       "authority_score": 35,
       "relevance_score": 28,
       "id": "S5",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -89,63 +86,63 @@
       "authority_score": 60,
       "relevance_score": 28,
       "id": "S6",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
       "keyword": "本地 Markdown 知识库",
       "title": "15款本地优先markdown app推荐 - 少数派",
       "url": "https://sspai.com/post/99157",
-      "snippet": "在日常写作和知识管理中,选择哪一款 Markdown 编辑器往往是\"个人偏好\"的问题,但也可能是\"效率\"的问题。 当你拥有一套支持多平台、支持本地优先、支持自由切换的工作流,就不再依赖某一个软件,而是可以根据场景灵活选择最适合当下的工具。 这篇文章将分享我基于 iCloud 的 Markdown 管理 ...",
+      "snippet": "在日常写作和知识管理中,选择哪一款 Markdown 编辑器往往是\"个人偏好\"的问题,但也可能是\"效率\"的问题。当你拥有一套支持多平台、支持本地优先、支持自由切换的工作流,就不再依赖某一个软件,而是可以根据场景灵活选择最适合当下的工具。 这篇文章将分享我基于 iCloud 的 Markdown 管理 ...",
       "domain": "sspai.com",
       "quality_tier": "普通线索",
       "source_role": "可作为线索，不能直接作为核心结论。",
       "authority_score": 35,
       "relevance_score": 32,
       "id": "S7",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
       "keyword": "本地 Markdown 知识库",
       "title": "2025 年必备支持markdown的本地知识库软件工具盘点:6 款热门推荐",
       "url": "https://ones.cn/blog/articles/markdown-local-knowledge-base-software-2025",
-      "snippet": "本文盘点了2025年6款必备的支持markdown的本地知识库软件,包括ONES知识库管理、Obsidian、Notion、Typora、Joplin和VNote。 这些工具各具特色,适合不同需求的用户。 文章详细介绍了每款软件的功能特点和适用场景,为读者选择合适的知识管理工具提供了全面的参考。",
+      "snippet": "本文盘点了2025年6款必备的支持markdown的本地知识库软件,包括ONES知识库管理、Obsidian、Notion、Typora、Joplin和VNote。这些工具各具特色,适合不同需求的用户。文章详细介绍了每款软件的功能特点和适用场景,为读者选择合适的知识管理工具提供了全面的参考。",
       "domain": "ones.cn",
       "quality_tier": "普通线索",
       "source_role": "可作为线索，不能直接作为核心结论。",
       "authority_score": 35,
       "relevance_score": 32,
       "id": "S8",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
       "keyword": "本地 Markdown 知识库",
       "title": "Yank Note - 免费开源的MarkDown笔记软件记事本编辑器",
       "url": "https://yanknote.com/",
-      "snippet": "Yank Note 免费开源,可作为 Markdown 笔记应用,也可作为个人知识库工具,还可作为你的程序编程软件编辑器。 该软件可以实现编辑器的所有功能,也可以替代Windows默认的记事本。",
+      "snippet": "Yank Note 免费开源,可作为Markdown笔记应用,也可作为个人知识库工具,还可作为你的程序编程软件编辑器。该软件可以实现编辑器的所有功能,也可以替代Windows默认的记事本。",
       "domain": "yanknote.com",
       "quality_tier": "普通线索",
       "source_role": "可作为线索，不能直接作为核心结论。",
       "authority_score": 35,
       "relevance_score": 32,
       "id": "S9",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
       "keyword": "本地 Markdown 知识库",
       "title": "本地Markdown开源知识库选型指南 - lryc.cn",
       "url": "http://www.lryc.cn/article/2393885.html",
-      "snippet": "本地 Markdown 开源知识库选型指南 以下是几款优秀的本地 Markdown 开源知识库解决方案,适合不同需求场景: 1. Obsidian (非完全开源但免费) 特点:基于 Markdown 的本地优先知识管理,丰富的插件生态优势:双向链接、图形视...",
+      "snippet": "本地 Markdown 开源知识库选型指南 以下是几款优秀的本地 Markdown 开源知识库解决方案,适合不同需求场景: 1. Obsidian (非完全开源但免费) 特点:基于 Markdown 的本地优先知识管理,丰富的插件生态 优势:双向链接、图形视图、快速搜索、社区插件支持 存储:纯Markdown文件存储,可配合Git版本控制 许可证 ...",
       "domain": "lryc.cn",
       "quality_tier": "普通线索",
       "source_role": "可作为线索，不能直接作为核心结论。",
       "authority_score": 35,
       "relevance_score": 28,
       "id": "S10",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -159,7 +156,7 @@
       "authority_score": 35,
       "relevance_score": 20,
       "id": "S11",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -173,7 +170,7 @@
       "authority_score": 35,
       "relevance_score": 20,
       "id": "S12",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -187,7 +184,7 @@
       "authority_score": 35,
       "relevance_score": 20,
       "id": "S13",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -201,7 +198,7 @@
       "authority_score": 35,
       "relevance_score": 16,
       "id": "S14",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     },
     {
@@ -215,10 +212,10 @@
       "authority_score": 35,
       "relevance_score": 16,
       "id": "S15",
-      "used_for": "外部核实、趋势判断或背景线索；报告正文只使用综合判断，不直接粘贴搜索片段。",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
       "accessed_at": "2026-05-25"
     }
   ],
-  "image_sources": [],
-  "search_notes": []
+  "search_notes": [],
+  "date": "2026-05-25"
 }

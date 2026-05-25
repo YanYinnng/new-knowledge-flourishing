@@ -1,0 +1,180 @@
+{
+  "date": "2026-05-25",
+  "generated_at": "2026-05-25T20:07:57",
+  "mode": "review",
+  "report_structure": [
+    "今日总结",
+    "今日输入",
+    "今日新知",
+    "与旧知识的链接",
+    "今日发芽点子",
+    "参考搜索内容"
+  ],
+  "writing_contract": {
+    "model_role": "你是报告作者。请综合材料写 report_brief.json，不要把搜索结果直接拼进正文。",
+    "keyword_card_shape": [
+      "简介",
+      "最近有什么相关新闻",
+      "最小下一步"
+    ],
+    "hard_limits": [
+      "每个关键词只能有一个简介、一个最近有什么相关新闻、一个最小下一步。",
+      "简介至少 2 句，最近新闻最多 1 段或 2 条，最小下一步只能 1 个动作。",
+      "禁止使用旧标签：它是什么、今天查到了什么、和我有什么关系、今日判断。"
+    ]
+  },
+  "inputs": [],
+  "keyword_contexts": [],
+  "local_knowledge": {
+    "tracking_topics": [
+      "新知孵化工作流",
+      "本地 Markdown 知识库",
+      "每日晚间复盘"
+    ],
+    "scanned_paths": [
+      "knowledge/personal-knowledge-incubation.md",
+      "synthesis/idea_seeds/daily-review-spark.md",
+      "tracking/topics.md"
+    ],
+    "high_weight_nodes": [
+      {
+        "title": "新知孵化工作流",
+        "path": "knowledge/personal-knowledge-incubation.md",
+        "weight": "3",
+        "status": "active",
+        "excerpt": "ID: personal-knowledge-incubation Type: concept Weight: 3 Status: active Last seen: 2026-05-24 Aliases: 点子发芽, 个人新知孵化, 晚间知识复盘 Related: 本地 Markdown 知识库, 每日输入, 点子种子 Sources: PLAN.md ## 一句话定义 一种把每天遇到的新信息、问题和想法轻量沉淀为知识节点与点子种子的个人工作流。 ## 为什么对我重要 它能降低记录成本，让零散的新知在晚上被整理、判断和延续，而不是停留在临时灵感里。 ## 当前理解 网页入口只承担日常使用的最小交互：输入关键词、查看日报、看到知识节点和点子种子。 ## 近期动态 2026-05-24 新增本地网页入口。 ## 下一步 用网页连续输入 3 天，观察它是否比直接打开文件夹更顺手。 ## 更新记录 - 2026-05-24：创建网页入"
+      }
+    ],
+    "idea_seeds": [
+      {
+        "title": "点子种子：每日小推进",
+        "path": "synthesis/idea_seeds/daily-review-spark.md",
+        "weight": "",
+        "status": "raw",
+        "excerpt": "ID: daily-review-spark Status: raw Created: 2026-05-24 Related nodes: personal-knowledge-incubation Sources: inbox/2026-05-24.md, PLAN.md ## 触发 点子发芽 MVP 需要在日报里固定产出“明日一个小推进”，避免复盘只停留在整理。 ## 点子描述 每天晚上的日报只给出一个很小、可在 10-20 分钟内完成的下一步。 ## 为什么有意思 它把知识整理从“收集更多”拉回到“明天做一点”，更适合个人长期使用。 ## 可能的最小下一步 明天用网页提交关键词，然后在日报里确认一个最小动作。 ## 风险或疑问 如果小推进写得太大，系统会重新变成负担。"
+      }
+    ]
+  },
+  "source_policy": {
+    "priority": [
+      "官方/机构资料",
+      "论文/报告",
+      "权威媒体",
+      "项目主页/机构主页",
+      "普通线索",
+      "低优先级线索"
+    ],
+    "tier_counts": {
+      "普通线索": 14,
+      "项目主页/机构主页": 1
+    },
+    "low_quality_rule": "低质量来源只能作为入口线索，不能作为核心结论。"
+  },
+  "reference_sources": [
+    {
+      "id": "S1",
+      "keyword": "新知孵化工作流",
+      "title": "Ai 时代的个人知识管理最佳实践:从笔记仓库到认知操作系统",
+      "quality_tier": "普通线索",
+      "url": "https://hugozhu.site/post/2026/231-ai-era-personal-knowledge-management/"
+    },
+    {
+      "id": "S2",
+      "keyword": "新知孵化工作流",
+      "title": "Personal Knowledge Management (2026): The Honest Guide",
+      "quality_tier": "普通线索",
+      "url": "https://www.atlasworkspace.ai/blog/personal-knowledge-management"
+    },
+    {
+      "id": "S3",
+      "keyword": "新知孵化工作流",
+      "title": "搭建ai驱动的个人知识管理系统:工具与流程 - 少数派",
+      "quality_tier": "普通线索",
+      "url": "https://sspai.com/post/104200"
+    },
+    {
+      "id": "S4",
+      "keyword": "新知孵化工作流",
+      "title": "用ai助手搭建个人知识管理与任务管理一体化工作流-腾讯云开发者社区-腾讯云",
+      "quality_tier": "普通线索",
+      "url": "https://developer.cloud.tencent.com/article/2669136"
+    },
+    {
+      "id": "S5",
+      "keyword": "新知孵化工作流",
+      "title": "6 种人工智能工具让你瞬间建立个人知识管理系统 | Dagle@数字体验平台",
+      "quality_tier": "普通线索",
+      "url": "https://www.dagle.cn/news/6-ai-tools-personal-knowledge-management"
+    },
+    {
+      "id": "S6",
+      "keyword": "本地 Markdown 知识库",
+      "title": "GitHub - flyhunterl/flymd: 高性能Markdown笔记工具!免费AI,智能便签、TODO推送、本地知识库、AI ...",
+      "quality_tier": "项目主页/机构主页",
+      "url": "https://github.com/flyhunterl/flymd"
+    },
+    {
+      "id": "S7",
+      "keyword": "本地 Markdown 知识库",
+      "title": "15款本地优先markdown app推荐 - 少数派",
+      "quality_tier": "普通线索",
+      "url": "https://sspai.com/post/99157"
+    },
+    {
+      "id": "S8",
+      "keyword": "本地 Markdown 知识库",
+      "title": "2025 年必备支持markdown的本地知识库软件工具盘点:6 款热门推荐",
+      "quality_tier": "普通线索",
+      "url": "https://ones.cn/blog/articles/markdown-local-knowledge-base-software-2025"
+    },
+    {
+      "id": "S9",
+      "keyword": "本地 Markdown 知识库",
+      "title": "Yank Note - 免费开源的MarkDown笔记软件记事本编辑器",
+      "quality_tier": "普通线索",
+      "url": "https://yanknote.com/"
+    },
+    {
+      "id": "S10",
+      "keyword": "本地 Markdown 知识库",
+      "title": "本地Markdown开源知识库选型指南 - lryc.cn",
+      "quality_tier": "普通线索",
+      "url": "http://www.lryc.cn/article/2393885.html"
+    },
+    {
+      "id": "S11",
+      "keyword": "每日晚间复盘",
+      "title": "提升个人知识整理与复盘能力的实用方法--172号卡在碎片化信息爆炸的今天,很多人每天接收大量资讯,却很难真正记住、整理和 - 掘金",
+      "quality_tier": "普通线索",
+      "url": "https://juejin.cn/post/7549032025673941042"
+    },
+    {
+      "id": "S12",
+      "keyword": "每日晚间复盘",
+      "title": "个人每日如何深度复盘 - 百度文库",
+      "quality_tier": "普通线索",
+      "url": "https://wenku.baidu.com/view/3751a93aa717866fb84ae45c3b3567ec102ddc9d.html"
+    },
+    {
+      "id": "S13",
+      "keyword": "每日晚间复盘",
+      "title": "人民日报每日文摘|日常复盘,让成长有迹可循:解锁自我迭代密码",
+      "quality_tier": "普通线索",
+      "url": "https://www.toutiao.com/article/7488108446261264931/"
+    },
+    {
+      "id": "S14",
+      "keyword": "每日晚间复盘",
+      "title": "每日笔记、日程管理、工作复盘——这是我钻研出的 Obsidian 八般武艺 - 少数派",
+      "quality_tier": "普通线索",
+      "url": "https://sspai.com/post/72385"
+    },
+    {
+      "id": "S15",
+      "keyword": "每日晚间复盘",
+      "title": "个人每日深度复盘:精进自我,成就卓越_进行_反思_调整",
+      "quality_tier": "普通线索",
+      "url": "https://www.sohu.com/a/762481031_121839272"
+    }
+  ]
+}

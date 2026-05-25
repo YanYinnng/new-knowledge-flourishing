@@ -1,43 +1,34 @@
 {
   "date": "YYYY-MM-DD",
   "mode": "input|review",
-  "reader_promise": "先给个人判断，再给证据；来源只做支撑，不把搜索结果堆成正文。",
-  "mainline": "1-3 句话说明今天的信息共同指向什么。",
-  "source_policy": {
-    "priority": [
-      "官方/机构资料",
-      "论文/报告",
-      "权威媒体",
-      "项目主页/机构主页",
-      "普通线索",
-      "低优先级线索"
-    ],
-    "tier_counts": {},
-    "low_quality_rule": "低质量来源只能作为入口线索，不能作为核心结论。"
-  },
-  "local_knowledge_scan": {
-    "scanned_paths": [],
-    "tracking_topics": []
-  },
-  "keyword_cards": [
+  "summary": "今日总结。1-2 段，说明今天这些输入共同指向什么，以及最值得用户明天做什么。",
+  "inputs": [
     {
       "keyword": "关键词",
       "context": "网页输入上下文",
-      "weight": "未填写|1-5",
-      "what_it_is": "它是什么。",
-      "findings": [
-        "综合改写后的发现，不粘贴搜索摘要。"
-      ],
-      "personal_relevance": [
-        "它和用户的学习、项目、机会、人脉、表达或系统有什么关系。"
-      ],
-      "local_matches": [],
-      "judgment": "今日判断。",
-      "next_step": "一个具体小动作。",
-      "sources": []
+      "weight": "未填写|1-5"
     }
   ],
-  "old_knowledge_connections": [],
-  "idea_seeds": [],
-  "quality_risks": []
+  "knowledge_cards": [
+    {
+      "keyword": "关键词",
+      "intro": "简介。2-4 句，解释清楚这个关键词是什么，并结合用户语境补充判断。",
+      "recent_news": "最近有什么相关新闻。1 段或最多 2 条；没有可靠新进展就明确说明。",
+      "next_step": "最小下一步。只写 1 个具体、可执行的小动作。"
+    }
+  ],
+  "old_knowledge_links": [
+    "与旧知识的链接。最多 3 条，只写真正相关的连接。"
+  ],
+  "idea_seeds": [
+    "今日发芽点子。最多 2 条，宁缺毋滥。"
+  ],
+  "reference_sources": [
+    {
+      "id": "S1",
+      "title": "来源标题",
+      "quality_tier": "官方/机构资料|论文/报告|权威媒体|项目主页/机构主页|普通线索|低优先级线索",
+      "url": "https://example.com"
+    }
+  ]
 }
