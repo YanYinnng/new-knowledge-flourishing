@@ -20,7 +20,9 @@ $requiredDirs = @(
     "tracking",
     "templates",
     "automation",
-    "scripts"
+    "scripts",
+    "system\email_sent",
+    "system\locks"
 )
 
 $requiredFiles = @(
@@ -32,13 +34,20 @@ $requiredFiles = @(
     "templates\source.md",
     "templates\idea-seed.md",
     "templates\daily-report.md",
+    "automation\catch-up-codex-prompt.md",
     "automation\nightly-codex-prompt.md",
     "config\email_auth.example.json",
     "scripts\allow-phone-firewall.ps1",
+    "scripts\catch-up-daily-report.ps1",
     "scripts\diagnose-phone-access.ps1",
+    "scripts\install-startup-catchup.ps1",
+    "scripts\install-nightly-mailer.ps1",
     "scripts\new-today.ps1",
     "scripts\send-daily-report.py",
+    "scripts\send-today-report.ps1",
     "scripts\start-web.ps1",
+    "scripts\uninstall-nightly-mailer.ps1",
+    "scripts\uninstall-startup-catchup.ps1",
     "scripts\validate-structure.ps1"
 )
 

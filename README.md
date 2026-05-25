@@ -160,9 +160,11 @@ $env:IDEA_SPROUT_AUTO_GIT_SYNC="0"; python app.py
 
 ## 晚上会发生什么
 
-Codex automation 应提前于 23:00 Asia/Shanghai 运行。它不是 23:00 才开始整理，而是预留时间先生成日报，再尽量在 23:00 把报告发到邮箱。
+Codex automation 应提前于 23:00 Asia/Shanghai 运行。它不是 23:00 才开始整理，而是预留时间先生成日报。
 
-当前目标：每天 22:50 开始整理，生成 `synthesis/daily_reports/YYYY-MM-DD.md` 后，由邮件脚本等待到 23:00 发送。如果当天内容很多、联网查询很慢或机器休眠，邮件可能晚到；但不会再设计成 23:00 才开始生成。
+当前目标：每天 22:50 开始整理，只负责生成 `synthesis/daily_reports/YYYY-MM-DD.md`。邮件发送不再放在 Codex automation 里等待或调度，而是交给 Windows 本地计划任务在 23:00 执行，避免 Codex 因等待发信而运行十几分钟甚至更久。
+
+如果电脑在 22:50-23:00 之间关机或没有登录，Windows 登录补跑任务会在下一次开机登录后检查漏掉的日报。它会先补生成缺失的 `synthesis/daily_reports/YYYY-MM-DD.md`，再立刻发送邮件，不会等到当天晚上 23:00。它只处理安装补跑任务之后的日期，避免把旧日报突然重复补发。
 
 automation 只把网页写入的 `关键词`、`上下文`、`权重` 三类信息当作当天输入依据。
 
@@ -180,7 +182,7 @@ automation 只把网页写入的 `关键词`、`上下文`、`权重` 三类信�
 - 复盘高权重或久未更新的节点。
 - 生成一份“无新输入日报”，给出明天一个小动作。
 
-automation 的完整提示词在 `automation/nightly-codex-prompt.md`。如果需要手动创建 automation，就把该文件内容作为任务提示词，工作目录设为本仓库根目录，时间设为每天 22:50 Asia/Shanghai。
+automation 的完整提示词在 `automation/nightly-codex-prompt.md`。如果需要手动创建 automation，就把该文件内容作为任务提示词，工作目录设为本仓库根目录，时间设为每天 22:50 Asia/Shanghai。这个 automation 不负责发邮件，不等待 23:00。
 
 ## 邮件日报
 
@@ -222,6 +224,40 @@ python .\scripts\send-daily-report.py --date 2026-05-24 --dry-run
 
 ```powershell
 python .\scripts\send-daily-report.py --date 2026-05-24
+```
+
+发送成功后，脚本会写入 `system/email_sent/YYYY-MM-DD.sent` 作为本地标记。后续 automation 或补跑任务看到这个标记，会跳过同一天的重复发送；如果你确实要手动重发，可以加 `--force`。
+
+安装 23:00 本地发信任务：
+
+```powershell
+.\scripts\install-nightly-mailer.ps1
+```
+
+这个任务会在每天 23:00 运行 `scripts/send-today-report.ps1`。如果日报文件还没生成，它会最多等 30 分钟，但这个等待发生在本地 PowerShell 里，不消耗 Codex 用量。
+
+安装开机登录补跑任务：
+
+```powershell
+.\scripts\install-startup-catchup.ps1
+```
+
+这个任务会在 Windows 登录时运行 `scripts/catch-up-daily-report.ps1`。默认只回看最近 2 天，并且不会处理安装日期之前的日报。手动试运行但不真正生成或发送：
+
+```powershell
+.\scripts\catch-up-daily-report.ps1 -DryRun
+```
+
+如果以后想移除补跑任务：
+
+```powershell
+.\scripts\uninstall-startup-catchup.ps1
+```
+
+如果以后想移除 23:00 本地发信任务：
+
+```powershell
+.\scripts\uninstall-nightly-mailer.ps1
 ```
 
 ## 如何确认

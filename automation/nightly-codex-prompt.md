@@ -85,18 +85,12 @@ automation 应提前于 23:00 运行。目标不是“23:00 开始整理”，�
 
 ## 邮件发送
 
-日报生成并确认文件存在后，运行：
+不要在 Codex automation 里发送邮件、等待 23:00、调用 `Start-Process`、调用 `schtasks` 或启动后台 PowerShell。这样会拖长 Codex 运行时间并消耗不必要的用量。
 
-```powershell
-python scripts/send-daily-report.py --date YYYY-MM-DD --wait-until 23:00
-```
+邮件由本地 Windows 计划任务处理：
 
-要求：
+- `scripts/send-today-report.ps1`：每天 23:00 发送当天已经生成的日报。
+- `scripts/catch-up-daily-report.ps1`：如果电脑在 22:50-23:00 关机或未登录，则下次 Windows 登录后补生成缺失日报并立即发送。
+- `scripts/send-daily-report.py`：底层 SMTP 发送脚本，会用 `system/email_sent/YYYY-MM-DD.sent` 防止重复发送。
 
-- 如果当前时间早于 23:00，脚本会等待到 23:00 再发送。
-- 如果报告生成时间已经晚于 23:00，立即发送，不要为了补偿时间继续等待。
-- 邮件收件人由 `config/email_auth.json` 决定，当前目标是 `13583286559@163.com`。
-- 如果邮件配置缺失或发送失败，要在任务结果中明确说明；不要伪装成已发送。
-- 邮件发送失败不应删除日报文件。
-
-生成日报并尝试发送邮件后停止。不要扩展成正式产品，不要创建额外系统结构。
+生成日报并确认 `synthesis/daily_reports/YYYY-MM-DD.md` 存在后停止。不要尝试替代本地计划任务，不要扩展成正式产品，不要创建额外系统结构。

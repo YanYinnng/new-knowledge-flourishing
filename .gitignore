@@ -1,7 +1,11 @@
 config/local_auth.json
 config/email_auth.json
+reports/*.log
 system/*.log
 system/*.err
+system/email_sent/*.sent
+system/locks/*.lock
+system/catchup-installed-date.txt
 __pycache__/
 *.pyc
 .pytest_cache/
