@@ -143,11 +143,11 @@ def main() -> int:
     try:
         report_path = report_path_for(args.date)
         marker = sent_marker_for(args.date)
+        if not report_path.exists():
+            raise FileNotFoundError(f"Report not found: {report_path}")
         if marker.exists() and not args.force:
             print(f"Already sent {report_path}; marker exists at {marker}.")
             return 0
-        if not report_path.exists():
-            raise FileNotFoundError(f"Report not found: {report_path}")
         config = load_config()
         wait_until_today(args.wait_until)
         message = build_message(config, report_path, args.date)
