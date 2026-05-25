@@ -8,13 +8,17 @@
 
 ```text
 synthesis/daily_reports/YYYY-MM-DD/
+  report_brief.json
   report.tex
   report.pdf
   assets/
   sources.json
+  quality_check.json
 ```
 
 邮件发送由 Windows 本地任务在 23:00 处理。不要在 Codex automation 里发送邮件、等待 23:00、调用 `Start-Process`、调用 `schtasks` 或启动后台 PowerShell。
+
+22:50 视为当日报告的截稿和生成时间。23:00 的本地发信任务只发送当天已经生成的报告，不要加入“如果 inbox 修改时间晚于 report.pdf 就拒绝发送”的默认规则。22:50 之后追加的输入不阻塞当晚邮件；除非用户明确要求，否则不为这类晚追加输入重跑报告。
 
 ## 配置
 
@@ -33,18 +37,22 @@ synthesis/daily_reports/YYYY-MM-DD/
 
 ## 推荐执行流程
 
-1. 运行 `python scripts/generate-radar-report.py --date YYYY-MM-DD` 生成初稿、联网来源、图片和 PDF。
-2. 检查 `synthesis/daily_reports/YYYY-MM-DD/report.tex`，必要时手动改写为更有判断的报告。
-3. 如果改了 `report.tex`，运行 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/compile-radar-report.ps1 -Date YYYY-MM-DD` 重新编译 PDF。
-4. 确认 `report.pdf` 和 `sources.json` 存在。编译失败时保留 `report.tex`，并在任务结果里明确说明错误。
+0. 先读取 `system/report_quality_rules.md`。这份报告的目标是“个人认知雷达”，不是搜索汇总。
+1. 运行 `python scripts/generate-radar-report.py --date YYYY-MM-DD` 生成 `report_brief.json`、联网来源、LaTeX 和 PDF。
+2. 检查 `synthesis/daily_reports/YYYY-MM-DD/report_brief.json`：主线、关键词卡片、个人关联、旧知识连接、来源分层和质量风险必须清楚。
+3. 检查 `quality_check.json`，必须 `passed: true`。
+4. 用 `pdftotext synthesis/daily_reports/YYYY-MM-DD/report.pdf -` 抽查 PDF 文本；如果没有 `pdftotext`，直接读 `report.tex`。
+5. 如果读起来像搜索结果堆砌、百科词条、新闻摘要或公司日报，必须修改生成器或 `report.tex`，再运行 `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/compile-radar-report.ps1 -Date YYYY-MM-DD` 重新编译。
+6. 确认 `report.pdf`、`report_brief.json`、`quality_check.json` 和 `sources.json` 都存在。编译失败时保留 `report.tex`，并在任务结果里明确说明错误。
 
 ## 读取顺序
 
 1. `inbox/YYYY-MM-DD.md`
 2. `system/report_config.json`
-3. `tracking/topics.md`
-4. 按需读取 `knowledge/`、`synthesis/idea_seeds/`、`library/nodes/`、`library/sources/`、`library/seeds/`
-5. 旧版 Markdown 日报可作为历史参考，但不要把旧格式当成最终输出。
+3. `system/report_quality_rules.md`
+4. `tracking/topics.md`
+5. 按需读取 `knowledge/`、`synthesis/idea_seeds/`、`library/nodes/`、`library/sources/`、`library/seeds/`
+6. 旧版 Markdown 日报可作为历史参考，但不要把旧格式当成最终输出。
 
 ## 联网搜索要求
 
@@ -96,5 +104,18 @@ PDF 报告结构必须包含：
 - 优先回答：今天这些信息共同指向什么？它们和用户过去的知识、项目、兴趣、机会有什么关系？哪些值得继续追踪/深入/行动，哪些可以先放下？
 - 保持短、有判断、可手动检查。
 - 权重 4 或 5 必须等待用户明确确认，不自动升为核心主题。
+
+## 质量自检
+
+生成器会在编译前写入 `quality_check.json`。如果需要手动改写 `report.tex`，改完后也要按下面标准自检，再重新编译 PDF：
+
+- `report_brief.json` 必须先成立：它要能说明主线、个人关联、旧知识连接、来源分层和质量风险。
+- 今日主线必须是 1-3 句判断，不是关键词串。
+- 每个关键词卡片必须包含“它是什么 / 今天查到了什么 / 和我有什么关系 / 今日判断 / 最小下一步”。
+- “今天查到了什么”必须综合改写来源，不直接粘贴搜索结果标题、摘要或搜索列表。
+- 来源优先级是：官方/机构资料 > 论文/报告 > 权威媒体 > 项目主页/机构主页 > 普通博客/论坛线索。低质量来源只能当线索。
+- 与旧知识连接必须扫描 `knowledge/`、`synthesis/idea_seeds/`、`tracking/topics.md`、`library/nodes/`、`library/seeds/`，并写出为什么相关；弱连接也要解释理由。
+- 点子种子最多 1-3 个，必须有来源组合、为什么值得关注、成熟度和最小下一步。
+- 不要出现“暂未发现强相关旧节点”“继续关注”“深入研究”“据资料显示”等空泛表达。
 
 生成 `report.tex`、`report.pdf`、`sources.json` 后停止。

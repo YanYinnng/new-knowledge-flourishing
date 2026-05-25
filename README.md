@@ -164,6 +164,8 @@ Codex automation 应提前于 23:00 Asia/Shanghai 运行。它不是 23:00 才�
 
 当前目标：每天 22:50 开始整理，只负责生成 `synthesis/daily_reports/YYYY-MM-DD/report.tex`、`report.pdf`、`assets/` 和 `sources.json`。邮件发送不再放在 Codex automation 里等待或调度，而是交给 Windows 本地计划任务在 23:00 执行，避免 Codex 因等待发信而运行十几分钟甚至更久。
 
+22:50 视为当日报告的截稿和生成时间。23:00 的发信任务只负责发送当天已经生成的 `report.pdf`，不因为 `inbox/YYYY-MM-DD.md` 的修改时间晚于 `report.pdf` 就默认拒发。22:50 之后追加的输入不会阻塞当晚邮件；如果确实要纳入当晚报告，需要手动重新生成一次当天报告。
+
 如果电脑在 22:50-23:00 之间关机或没有登录，Windows 登录补跑任务会在下一次开机登录后检查漏掉的报告。它会先补生成缺失的 `synthesis/daily_reports/YYYY-MM-DD/report.pdf`，再立刻发送邮件，不会等到当天晚上 23:00。它只处理安装补跑任务之后的日期，避免把旧报告突然重复补发。
 
 automation 只把网页写入的 `关键词`、`上下文`、`权重` 三类信息当作当天输入依据。
@@ -194,6 +196,8 @@ automation 的完整提示词在 `automation/nightly-codex-prompt.md`。如果�
 synthesis/daily_reports/YYYY-MM-DD/
 ├─ report.tex
 ├─ report.pdf
+├─ report_brief.json
+├─ quality_check.json
 ├─ assets/
 └─ sources.json
 ```
@@ -244,6 +248,20 @@ python .\scripts\generate-radar-report.py --date 2026-05-24 --no-images
 ```
 
 联网搜索结果会写入 `sources.json`。如果当前环境无法联网，报告会明确写“当前环境无法联网，未能核实外部新进展”。图片只在有助理解时加入 `assets/`，并在 `sources.json` 记录来源；本地脚本生成的认知雷达图会标注为本地生成示意图，不会伪装成真实截图或实验结果。
+
+### 报告质量规则
+
+这份 PDF 不是搜索结果合集，而是个人认知雷达报告。生成器会在编译 PDF 前写入 `quality_check.json`，质量检查失败时保留 `report.tex` 并停止编译。
+
+- 根本原则写在 `system/report_quality_rules.md`：先形成判断，再引用来源；先说明和用户有什么关系，再说明外部资料。
+- `report_brief.json` 是中间判断层，记录今日主线、关键词卡片、个人关联、旧知识连接、来源分层和质量风险。它比 PDF 更适合检查“这份报告是不是有脑子”。
+- “今日主线”必须用 1-3 句话说明当天输入共同指向什么；即使是弱连接，也要解释弱在哪里、为什么还值得或不值得看。
+- 每个关键词卡片固定包含“它是什么 / 今天查到了什么 / 和我有什么关系 / 今日判断 / 最小下一步”。
+- “今天查到了什么”必须综合改写，不直接粘贴搜索结果标题或摘要。
+- 来源按优先级使用：官方/机构资料、论文/报告、权威媒体、项目主页/机构主页、普通博客/论坛线索。低质量来源只能当入口线索，不能当核心结论。
+- “与旧知识的连接”要主动扫描 `knowledge/`、`synthesis/idea_seeds/`、`tracking/topics.md`、`library/nodes/` 和 `library/seeds/`，并说明为什么相关；弱连接也要写出理由。
+- 点子种子最多 1-3 个，只保留能组合今日输入、旧知识和可执行下一步的候选。
+- 禁止把报告写成百科词条、公司日报、新闻摘要或搜索标题列表；禁止使用“暂未发现强相关旧节点”“继续关注”“深入研究”“据资料显示”等空泛表达。
 
 ## 邮件报告
 

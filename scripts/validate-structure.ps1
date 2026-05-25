@@ -35,6 +35,7 @@ $requiredFiles = @(
     "templates\source.md",
     "templates\idea-seed.md",
     "templates\daily-report.md",
+    "templates\report-brief.json",
     "automation\catch-up-codex-prompt.md",
     "automation\nightly-codex-prompt.md",
     "config\email_auth.example.json",
@@ -52,6 +53,7 @@ $requiredFiles = @(
     "scripts\uninstall-nightly-mailer.ps1",
     "scripts\uninstall-startup-catchup.ps1",
     "scripts\validate-structure.ps1",
+    "system\report_quality_rules.md",
     "system\report_config.json"
 )
 
