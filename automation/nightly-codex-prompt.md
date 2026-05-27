@@ -14,6 +14,7 @@ synthesis/daily_reports/YYYY-MM-DD/
   report.pdf
   sources.json
   quality_check.json
+  knowledge_sync.json
 ```
 
 邮件发送由 Windows 本地任务在 23:00 处理。不要在 Codex automation 里发送邮件、等待 23:00、调用 `Start-Process`、调用 `schtasks` 或启动后台 PowerShell。
@@ -61,8 +62,16 @@ python scripts/generate-radar-report.py --date YYYY-MM-DD --render-only
 ```
 
 8. 检查 `quality_check.json`，必须 `passed: true`。
-9. 用 `pdftotext synthesis/daily_reports/YYYY-MM-DD/report.pdf -` 抽查 PDF 文本；如果没有 `pdftotext`，直接读 `report.tex`。
-10. 如果 PDF 仍像搜索堆砌、百科词条、新闻摘要或公司日报，修改 `report_brief.json` 后重新运行 `--render-only`。
+9. 检查 `report_context.json.local_knowledge.scanned_paths`。除非 `knowledge/`、`synthesis/idea_seeds/`、`library/nodes/`、`library/seeds/` 确实都为空，否则这个列表不能为空。
+10. 用 `pdftotext synthesis/daily_reports/YYYY-MM-DD/report.pdf -` 抽查 PDF 文本；如果没有 `pdftotext`，直接读 `report.tex`。
+11. 如果 PDF 仍像搜索堆砌、百科词条、新闻摘要或公司日报，修改 `report_brief.json` 后重新运行 `--render-only`。
+12. 报告质量通过后，运行：
+
+```powershell
+python scripts/sync-knowledge-from-report.py --date YYYY-MM-DD
+```
+
+13. 检查 `synthesis/daily_reports/YYYY-MM-DD/knowledge_sync.json` 存在，并且 `created`、`updated`、`skipped` 中至少有一类结果。知识沉淀只允许写入 `knowledge/` 和 `synthesis/idea_seeds/`，不写入 `library/`，不自动把节点升权到 4/5。
 
 ## 写作要求
 
@@ -76,9 +85,10 @@ python scripts/generate-radar-report.py --date YYYY-MM-DD --render-only
 - `idea_seeds`：最多 2 条，宁缺毋滥。
 - `reference_sources`：只列来源编号、标题、等级和 URL，不放网页摘要。
 - 搜索来源必须写入 `sources.json`，正文引用来源编号即可，不要粘贴搜索结果标题或摘要。
+- 新写入内容只使用“补充信息”这个字段名；历史“上下文”只作为旧 inbox 兼容读取。
 
 ## 无新输入
 
 如果当天没有网页输入，不要写空报告。仍然先运行 `--collect-only`，然后根据 `report_context.json` 里的高权重节点和追踪主题写一份简短复盘。结构仍保持同一套 6 个主章节。
 
-生成 `report.pdf`、`report_brief.json`、`quality_check.json`、`sources.json` 后停止。
+生成 `report.pdf`、`report_brief.json`、`quality_check.json`、`sources.json`、`knowledge_sync.json` 后停止。

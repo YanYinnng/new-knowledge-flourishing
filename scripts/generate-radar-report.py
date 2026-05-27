@@ -528,7 +528,7 @@ def synthesize_findings(record: InputRecord, results: list[dict[str, str]], note
     findings: list[str] = []
 
     if not results:
-        return [note or "当前环境无法联网，未能核实外部进展；本条只能先基于本地上下文做低置信判断。"]
+        return [note or "当前环境无法联网，未能核实外部进展；本条只能先基于本地补充信息做低置信判断。"]
 
     if credible:
         top_tiers = "、".join(sorted({source["quality_tier"] for source in credible}))
@@ -583,7 +583,7 @@ def synthesize_findings(record: InputRecord, results: list[dict[str, str]], note
             findings.extend(
                 [
                     "搜索结果能确认它不是完全孤立的词，但当前证据还不足以支持高权重判断。",
-                    "更有价值的做法是把它放回你的上下文：它从哪里来、为什么被你注意、能不能带来下一步行动。",
+                    "更有价值的做法是把它放回你的补充信息：它从哪里来、为什么被你注意、能不能带来下一步行动。",
                     "今天先把它作为观察线索，等出现第二次触发或更高质量来源后再决定是否升级。",
                 ]
             )
@@ -693,7 +693,7 @@ def review_local_judgment(doc: LocalDoc) -> str:
 def review_personal_connection(doc: LocalDoc) -> str:
     if "新知孵化工作流" in doc.title:
         return (
-            "这直接关系到你以后是否只通过网页输入关键词、上下文和权重，就能获得一份有判断的晚间报告。"
+            "这直接关系到你以后是否只通过网页输入关键词、补充信息和权重，就能获得一份有判断的晚间报告。"
             "如果报告仍像搜索拼贴，这个系统就没有省心；如果报告能指出主线和下一步，它才值得继续用。"
         )
     return "它和你的关系暂时是弱连接：还没有新的触发词把它拉回行动场景，所以只适合低成本复盘。"
@@ -702,7 +702,7 @@ def review_personal_connection(doc: LocalDoc) -> str:
 def review_next_step(doc: LocalDoc) -> str:
     if "新知孵化工作流" in doc.title:
         return "明天只做一次真实输入测试：从网页提交 3 个关键词，然后检查日报是否能给出主线、旧知识连接和一个可执行小动作。"
-    return "明天如果它再次出现，再补一条具体上下文；否则不主动扩展。"
+    return "明天如果它再次出现，再补一条具体补充信息；否则不主动扩展。"
 
 
 def seed_review_item(seed: LocalDoc) -> str:
@@ -991,7 +991,7 @@ def build_report_brief(
             keyword_cards.append(
                 {
                     "keyword": record.keyword,
-                    "context": record.context,
+                    "supplemental_info": record.context,
                     "weight": record.weight,
                     "what_it_is": concept_sentence(record),
                     "findings": synthesize_findings(record, results, note),
@@ -1128,7 +1128,7 @@ def build_report(
     lines.append(r"\section*{今日输入}")
     if records:
         rows = [
-            f"{record.keyword}；上下文：{record.context or '未填写'}；权重：{record.weight or '未填写'}"
+            f"{record.keyword}；补充信息：{record.context or '未填写'}；权重：{record.weight or '未填写'}"
             for record in records
         ]
         lines.append(tex_items(rows))
@@ -1722,7 +1722,20 @@ def source_text_reused_in_new_body(tex: str, sources_json: dict[str, Any]) -> li
     return reused[:5]
 
 
-def quality_check_simple(tex: str, records: list[InputRecord], sources_json: dict[str, Any], brief: dict[str, Any]) -> dict[str, Any]:
+def local_knowledge_dirs_have_content() -> bool:
+    for base in [*KNOWLEDGE_DIRS, *SEED_DIRS]:
+        if base.exists() and any(path.is_file() for path in base.rglob("*.md")):
+            return True
+    return False
+
+
+def quality_check_simple(
+    tex: str,
+    records: list[InputRecord],
+    sources_json: dict[str, Any],
+    brief: dict[str, Any],
+    context_scanned_paths: list[str] | None = None,
+) -> dict[str, Any]:
     issues: list[str] = []
     for section in ["今日总结", "今日输入", "今日新知", "与旧知识的链接", "今日发芽点子", "参考搜索内容"]:
         if section not in tex:
@@ -1764,6 +1777,8 @@ def quality_check_simple(tex: str, records: list[InputRecord], sources_json: dic
         issues.append("report_brief 缺少今日总结。")
     if sources_json["config"].get("enable_web_search") and not sources_json["text_sources"] and not sources_json["search_notes"]:
         issues.append("启用联网搜索时，sources.json 没有文字来源或失败说明。")
+    if local_knowledge_dirs_have_content() and not context_scanned_paths:
+        issues.append("report_context.json.local_knowledge.scanned_paths 为空，但本地知识库目录已有内容。")
     for source in sources_json["text_sources"]:
         if not source.get("quality_tier") or not source.get("id"):
             issues.append("sources.json 中有来源缺少分层或 id。")
@@ -1872,9 +1887,12 @@ def main() -> int:
             return 1
         sources_json = json.loads(sources_path.read_text(encoding="utf-8"))
         report_brief = json.loads(brief_path.read_text(encoding="utf-8"))
+        context_path = report_dir / "report_context.json"
+        report_context = json.loads(context_path.read_text(encoding="utf-8")) if context_path.exists() else {}
+        scanned_paths = report_context.get("local_knowledge", {}).get("scanned_paths", [])
         tex = render_report_from_brief(args.date, report_brief, sources_json)
         (report_dir / "report.tex").write_text(tex, encoding="utf-8")
-        quality = quality_check_simple(tex, records, sources_json, report_brief)
+        quality = quality_check_simple(tex, records, sources_json, report_brief, scanned_paths)
         (report_dir / "quality_check.json").write_text(
             json.dumps(quality, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
@@ -1919,7 +1937,8 @@ def main() -> int:
 
     tex = render_report_from_brief(args.date, report_brief, sources_json)
     (report_dir / "report.tex").write_text(tex, encoding="utf-8")
-    quality = quality_check_simple(tex, records, sources_json, report_brief)
+    scanned_paths = report_context.get("local_knowledge", {}).get("scanned_paths", [])
+    quality = quality_check_simple(tex, records, sources_json, report_brief, scanned_paths)
     (report_dir / "quality_check.json").write_text(
         json.dumps(quality, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",

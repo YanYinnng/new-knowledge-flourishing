@@ -1,6 +1,6 @@
 {
-  "date": "2026-05-25",
-  "generated_at": "2026-05-26T11:39:58",
+  "date": "2026-05-26",
+  "generated_at": "2026-05-26T23:30:48",
   "mode": "input",
   "report_structure": [
     "今日总结",
@@ -28,85 +28,70 @@
   },
   "inputs": [
     {
-      "keyword": "量子计算与AI的结合",
-      "supplemental_info": "我以后是否要尝试这个方向？也许量子计算是下一个AI这么大的趋势？",
+      "keyword": "多智能体协作",
+      "supplemental_info": "待调研的方向，有没有什么好用的平台可以直接用？自己有办法手搓吗？",
       "weight": "3"
     }
   ],
   "keyword_contexts": [
     {
-      "keyword": "量子计算与AI的结合",
-      "supplemental_info": "我以后是否要尝试这个方向？也许量子计算是下一个AI这么大的趋势？",
+      "keyword": "多智能体协作",
+      "supplemental_info": "待调研的方向，有没有什么好用的平台可以直接用？自己有办法手搓吗？",
       "weight": "3",
       "questions_for_model": [
-        "量子计算与AI的结合 是什么？请用 200-300 字解释清楚，只专注关键词本身。",
-        "量子计算与AI的结合 最近有什么新闻或新进展？没有可靠新进展就直接说明。",
-        "结合补充信息“我以后是否要尝试这个方向？也许量子计算是下一个AI这么大的趋势？”，这个关键词与我的记录有什么具体联系？"
+        "多智能体协作 是什么？请用 200-300 字解释清楚，只专注关键词本身。",
+        "多智能体协作 最近有什么新闻或新进展？没有可靠新进展就直接说明。",
+        "结合补充信息“待调研的方向，有没有什么好用的平台可以直接用？自己有办法手搓吗？”，这个关键词与我的记录有什么具体联系？"
       ],
       "search_note": "",
       "search_results": [
         {
           "id": "S1",
-          "title": "人工智能与量子科技融合发展已成必然选择-清华大学",
-          "url": "https://www.tsinghua.edu.cn/info/1182/125563.htm",
-          "domain": "tsinghua.edu.cn",
-          "quality_tier": "官方/机构资料",
-          "source_role": "优先用于核实机构定位、项目方向和公开事实。",
-          "relevance_score": 20
+          "title": "GitHub - JAYzhang-666/agent-flow: 多智能体工作流编排平台 — AI Agent 协作可视化与监控",
+          "url": "https://github.com/JAYzhang-666/agent-flow",
+          "domain": "github.com",
+          "quality_tier": "项目主页/机构主页",
+          "source_role": "可用于核实项目事实，结论仍需结合文档或官方说明。",
+          "relevance_score": 70
         },
         {
           "id": "S2",
-          "title": "人工智能与量子科技的双向奔赴,量子智能有望开辟技术变革新路径_未来2%_澎湃新闻-The Paper",
-          "url": "https://www.thepaper.cn/newsDetail_forward_31650458",
-          "domain": "thepaper.cn",
-          "quality_tier": "权威媒体",
-          "source_role": "可用于判断近期动态，但仍需和官方资料互证。",
-          "relevance_score": 12
-        },
-        {
-          "id": "S3",
-          "title": "2026 年量子计算与 Ai 融合:突破之年 | 棱镜空间",
-          "url": "https://pengjiyuan.github.io/articles/quantum-ai-2026/",
-          "domain": "pengjiyuan.github.io",
-          "quality_tier": "普通线索",
-          "source_role": "可作为线索，不能直接作为核心结论。",
-          "relevance_score": 24
-        },
-        {
-          "id": "S4",
-          "title": "量子计算与ai的颠覆性融合:从玻尔兹曼机到量子神经网络的技术跃迁-腾讯云开发者社区-腾讯云",
-          "url": "https://cloud.tencent.com/developer/article/2511715",
+          "title": "Multi-Agent多智能体协作系统:架构原理、框架选型与实战指南",
+          "url": "https://cloud.tencent.com/developer/article/2649756",
           "domain": "cloud.tencent.com",
           "quality_tier": "普通线索",
           "source_role": "可作为线索，不能直接作为核心结论。",
-          "relevance_score": 24
+          "relevance_score": 70
+        },
+        {
+          "id": "S3",
+          "title": "多智能体协作实战:4 种架构模式选择指南 · 比邻",
+          "url": "https://eastondev.com/blog/zh/posts/ai/20260325-multi-agent-system/",
+          "domain": "eastondev.com",
+          "quality_tier": "普通线索",
+          "source_role": "可作为线索，不能直接作为核心结论。",
+          "relevance_score": 70
+        },
+        {
+          "id": "S4",
+          "title": "OpenClaw 多智能体协作配置完全指南:从单兵作战到 AI 团队(2026)",
+          "url": "https://ofox.ai/zh/blog/openclaw-multi-agent-collaboration-guide-2026/",
+          "domain": "ofox.ai",
+          "quality_tier": "普通线索",
+          "source_role": "可作为线索，不能直接作为核心结论。",
+          "relevance_score": 70
         },
         {
           "id": "S5",
-          "title": "量子计算触手可及!谷歌云将Quantum Engine深度融入Vertex AI,开发者可直接调用量子算法优化AI模型",
-          "url": "https://raybyte.cn/news/2026-05-26-quantum-engine-vertex-ai-ai",
-          "domain": "raybyte.cn",
+          "title": "多智能体协作机制:LLM 综述 - learngraph.online",
+          "url": "https://www.learngraph.online/ai-papers/module-5-compete-cooperation/5.7-Multi-Agent-Collaboration-Mechanisms.html",
+          "domain": "learngraph.online",
           "quality_tier": "普通线索",
           "source_role": "可作为线索，不能直接作为核心结论。",
-          "relevance_score": 24
+          "relevance_score": 70
         }
       ],
-      "local_matches": [
-        {
-          "title": "量子计算与AI的结合",
-          "path": "knowledge/node-0011b3bd.md",
-          "weight": "3",
-          "status": "candidate",
-          "excerpt": "ID: node-0011b3bd Type: concept Weight: 3 Status: candidate Last seen: 2026-05-25 Aliases: Related: Sources: inbox/2026-05-25.md, synthesis/daily_reports/2026-05-25/report.pdf ## 一句话定义 量子计算与 AI 的结合，通常指两条方向同时推进：一条是用量子计算去加速或改写某些机器学习任务，例如组合优化、采样、特征表示和部分训练过程；另一条是用 AI 去帮助量子系统设计、校准、误差缓解和实验控制。它不是简单把两个热门词放在一起，而是在问：当计算对象具有高维、概率性和复杂… ## 为什么对我重要 你的补充信息核心是在判断“要不要尽早下注一个可能很大的新方向”。这个关键词和你当前记录的关系，不在于立刻转向量子技术栈，而在于训练自己区分“长期值得跟踪的底层趋势”和"
-        },
-        {
-          "title": "点子种子：前沿趋势观察卡片",
-          "path": "synthesis/idea_seeds/seed-20845b10.md",
-          "weight": "",
-          "status": "raw",
-          "excerpt": "ID: seed-20845b10 Status: raw Created: 2026-05-25 Related nodes: node-0011b3bd Sources: inbox/2026-05-25.md, synthesis/daily_reports/2026-05-25/report.pdf ## 触发 2026-05-25 日报提出这个候选点子。 ## 点子描述 以后遇到“下一个 AI”式主题时，固定从技术成熟度、可落地场景、个人进入门槛三栏快速判断。 ## 为什么有意思 它把当天的新知从“看过”推进到一个可继续观察或验证的小方向。 ## 可能的最小下一步 下次遇到相关输入时，补充一个可验证案例或反例。 ## 风险或疑问 当前仍是 raw 候选，尚未经过人工确认、合并或升权。 ## 更新记录 - 2026-05-25：日报再次触发「前沿趋势观察卡片」；补充：以后遇到“下一个 AI”式主题时，固定从技术成熟度、可"
-        }
-      ]
+      "local_matches": []
     }
   ],
   "local_knowledge": {
@@ -173,47 +158,46 @@
       "低优先级线索"
     ],
     "tier_counts": {
-      "官方/机构资料": 1,
-      "权威媒体": 1,
-      "普通线索": 3
+      "项目主页/机构主页": 1,
+      "普通线索": 4
     },
     "low_quality_rule": "低质量来源只能作为入口线索，不能作为核心结论。"
   },
   "reference_sources": [
     {
       "id": "S1",
-      "keyword": "量子计算与AI的结合",
-      "title": "人工智能与量子科技融合发展已成必然选择-清华大学",
-      "quality_tier": "官方/机构资料",
-      "url": "https://www.tsinghua.edu.cn/info/1182/125563.htm"
+      "keyword": "多智能体协作",
+      "title": "GitHub - JAYzhang-666/agent-flow: 多智能体工作流编排平台 — AI Agent 协作可视化与监控",
+      "quality_tier": "项目主页/机构主页",
+      "url": "https://github.com/JAYzhang-666/agent-flow"
     },
     {
       "id": "S2",
-      "keyword": "量子计算与AI的结合",
-      "title": "人工智能与量子科技的双向奔赴,量子智能有望开辟技术变革新路径_未来2%_澎湃新闻-The Paper",
-      "quality_tier": "权威媒体",
-      "url": "https://www.thepaper.cn/newsDetail_forward_31650458"
+      "keyword": "多智能体协作",
+      "title": "Multi-Agent多智能体协作系统:架构原理、框架选型与实战指南",
+      "quality_tier": "普通线索",
+      "url": "https://cloud.tencent.com/developer/article/2649756"
     },
     {
       "id": "S3",
-      "keyword": "量子计算与AI的结合",
-      "title": "2026 年量子计算与 Ai 融合:突破之年 | 棱镜空间",
+      "keyword": "多智能体协作",
+      "title": "多智能体协作实战:4 种架构模式选择指南 · 比邻",
       "quality_tier": "普通线索",
-      "url": "https://pengjiyuan.github.io/articles/quantum-ai-2026/"
+      "url": "https://eastondev.com/blog/zh/posts/ai/20260325-multi-agent-system/"
     },
     {
       "id": "S4",
-      "keyword": "量子计算与AI的结合",
-      "title": "量子计算与ai的颠覆性融合:从玻尔兹曼机到量子神经网络的技术跃迁-腾讯云开发者社区-腾讯云",
+      "keyword": "多智能体协作",
+      "title": "OpenClaw 多智能体协作配置完全指南:从单兵作战到 AI 团队(2026)",
       "quality_tier": "普通线索",
-      "url": "https://cloud.tencent.com/developer/article/2511715"
+      "url": "https://ofox.ai/zh/blog/openclaw-multi-agent-collaboration-guide-2026/"
     },
     {
       "id": "S5",
-      "keyword": "量子计算与AI的结合",
-      "title": "量子计算触手可及!谷歌云将Quantum Engine深度融入Vertex AI,开发者可直接调用量子算法优化AI模型",
+      "keyword": "多智能体协作",
+      "title": "多智能体协作机制:LLM 综述 - learngraph.online",
       "quality_tier": "普通线索",
-      "url": "https://raybyte.cn/news/2026-05-26-quantum-engine-vertex-ai-ai"
+      "url": "https://www.learngraph.online/ai-papers/module-5-compete-cooperation/5.7-Multi-Agent-Collaboration-Mechanisms.html"
     }
   ]
 }

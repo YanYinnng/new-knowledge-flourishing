@@ -74,11 +74,11 @@ D:\新知发芽项目\
   tracking\
     topics.md
   templates\
+    README.md
     daily-input.md
     knowledge-node.md
-    source.md
     idea-seed.md
-    daily-report.md
+    report-brief.json
   automation\
     nightly-codex-prompt.md
   scripts\
@@ -424,27 +424,6 @@ README 不要写成商业介绍，不要使用产品营销语气。
 
 使用第 5 节中的知识节点格式。
 
-### `templates/source.md`
-
-包含：
-
-```text
-# 来源标题
-
-ID:
-Type: article | webpage | video | paper | podcast | book | other
-URL:
-Local path:
-Accessed:
-Related nodes:
-
-## 关键摘要
-
-## 为什么值得保留
-
-## 用户判断
-```
-
 ### `templates/idea-seed.md`
 
 包含：
@@ -469,16 +448,16 @@ Sources:
 ## 风险或疑问
 ```
 
-### `templates/daily-report.md`
+### `templates/report-brief.json`
 
-使用第 9 节中的日报结构。
+当前 PDF 日报流程使用的 brief 合约。旧的 Markdown 日报模板和来源 Markdown 模板已停用；来源记录改写入每日日报目录下的 `sources.json`。
 
 ## 14. 验收标准
 
 MVP 完成后应满足：
 
 - 仓库结构完整。
-- 所有模板文件存在。
+- 所有当前模板文件存在。
 - `README.md` 能指导用户开始每天使用。
 - 用户可以手动在 `inbox/YYYY-MM-DD.md` 输入 3-5 个关键词。
 - automation 提示词足够清晰，能让 Codex 按有输入 / 无输入两种情况工作。

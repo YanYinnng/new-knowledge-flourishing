@@ -13,6 +13,7 @@ synthesis/daily_reports/**/report.fdb_latexmk
 synthesis/daily_reports/**/report.fls
 synthesis/daily_reports/**/report.log
 synthesis/daily_reports/**/report.out
+synthesis/daily_reports/**/report.synctex.gz
 synthesis/daily_reports/**/report.xdv
 __pycache__/
 *.pyc

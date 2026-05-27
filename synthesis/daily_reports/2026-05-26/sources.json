@@ -1,0 +1,81 @@
+{
+  "generated_at": "2026-05-26T23:30:48",
+  "config": {
+    "enable_web_search": true,
+    "latex_engine": "xelatex"
+  },
+  "text_sources": [
+    {
+      "keyword": "多智能体协作",
+      "title": "GitHub - JAYzhang-666/agent-flow: 多智能体工作流编排平台 — AI Agent 协作可视化与监控",
+      "url": "https://github.com/JAYzhang-666/agent-flow",
+      "snippet": "AgentFlow — 多智能体工作流编排平台 🦉🦫🦅🐿️🦊 一个展示 AI Agent 多智能体协作的前端平台。 5 只小动物各司其职,共同完成代码审查、重构、文档生成等自动化工作流。",
+      "domain": "github.com",
+      "quality_tier": "项目主页/机构主页",
+      "source_role": "可用于核实项目事实，结论仍需结合文档或官方说明。",
+      "authority_score": 60,
+      "relevance_score": 70,
+      "id": "S1",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
+      "accessed_at": "2026-05-26"
+    },
+    {
+      "keyword": "多智能体协作",
+      "title": "Multi-Agent多智能体协作系统:架构原理、框架选型与实战指南",
+      "url": "https://cloud.tencent.com/developer/article/2649756",
+      "snippet": "Multi-Agent多智能体协作系统:架构原理、框架选型与实战指南当前AI应用开发正经历一次范式转变:从依赖单一模型的多轮对话,转向多个智能体协同工作的Multi-Agent架构。在实际业务场景中,一个典型的竞品分析任务往往涉及信息检索、数据提取、可视化生成和报告编排等多个环节。如果依赖单模型 ...",
+      "domain": "cloud.tencent.com",
+      "quality_tier": "普通线索",
+      "source_role": "可作为线索，不能直接作为核心结论。",
+      "authority_score": 35,
+      "relevance_score": 70,
+      "id": "S2",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
+      "accessed_at": "2026-05-26"
+    },
+    {
+      "keyword": "多智能体协作",
+      "title": "多智能体协作实战:4 种架构模式选择指南 · 比邻",
+      "url": "https://eastondev.com/blog/zh/posts/ai/20260325-multi-agent-system/",
+      "snippet": "掌握多智能体协作系统的 4 种核心架构模式,从 Subagents 到 Router,附带 LangGraph 代码实现和生产级性能优化建议。",
+      "domain": "eastondev.com",
+      "quality_tier": "普通线索",
+      "source_role": "可作为线索，不能直接作为核心结论。",
+      "authority_score": 35,
+      "relevance_score": 70,
+      "id": "S3",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
+      "accessed_at": "2026-05-26"
+    },
+    {
+      "keyword": "多智能体协作",
+      "title": "OpenClaw 多智能体协作配置完全指南:从单兵作战到 AI 团队(2026)",
+      "url": "https://ofox.ai/zh/blog/openclaw-multi-agent-collaboration-guide-2026/",
+      "snippet": "OpenClaw 多智能体协作配置完全指南:从单兵作战到 AI 团队(2026) 为什么需要多智能体协作 单个 AI Agent 虽然强大,但在实际场景中往往力不从心: 写代码的 Agent 需要同时处理前端、后端和测试,上下文频繁切换 客服 Agent 需要同时对接多个渠道,各渠道话术风格不同 研究 Agent 既要搜索信息,又要 ...",
+      "domain": "ofox.ai",
+      "quality_tier": "普通线索",
+      "source_role": "可作为线索，不能直接作为核心结论。",
+      "authority_score": 35,
+      "relevance_score": 70,
+      "id": "S4",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
+      "accessed_at": "2026-05-26"
+    },
+    {
+      "keyword": "多智能体协作",
+      "title": "多智能体协作机制:LLM 综述 - learngraph.online",
+      "url": "https://www.learngraph.online/ai-papers/module-5-compete-cooperation/5.7-Multi-Agent-Collaboration-Mechanisms.html",
+      "snippet": "一句话总结 这篇综述从协作类型、策略、通信拓扑和架构四个维度,系统性地分类了 LLM 多智能体系统的协作机制,揭示了从合作到竞争再到\"竞合\"的多元互动模式。",
+      "domain": "learngraph.online",
+      "quality_tier": "普通线索",
+      "source_role": "可作为线索，不能直接作为核心结论。",
+      "authority_score": 35,
+      "relevance_score": 70,
+      "id": "S5",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
+      "accessed_at": "2026-05-26"
+    }
+  ],
+  "search_notes": [],
+  "date": "2026-05-26"
+}

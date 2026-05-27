@@ -14,6 +14,7 @@ synthesis/daily_reports/{{DATE}}/
   report.pdf
   sources.json
   quality_check.json
+  knowledge_sync.json
 ```
 
 执行：
@@ -29,5 +30,13 @@ python scripts/generate-radar-report.py --date {{DATE}} --render-only
 ```
 
 检查 `quality_check.json` 和 PDF 文本。如果报告仍像搜索堆砌、百科词条或新闻摘要，修改 `report_brief.json` 后重新 render。
+
+报告通过后运行：
+
+```powershell
+python scripts/sync-knowledge-from-report.py --date {{DATE}}
+```
+
+检查 `synthesis/daily_reports/{{DATE}}/knowledge_sync.json` 存在，并且 `created`、`updated`、`skipped` 中至少有一类结果。知识沉淀只生成候选知识节点和 raw 点子种子，不自动升权到核心主题。`library/` 只读兼容，不写入。
 
 不要发送邮件，不要等待 23:00，不要创建或修改 automation，不要提交 Git。补跑脚本会在 PDF 存在后调用邮件脚本。

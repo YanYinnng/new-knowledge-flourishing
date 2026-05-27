@@ -123,6 +123,13 @@ Copy-Item .\config\local_auth.example.json .\config\local_auth.json
 - 在“最近日报”里优先打开 `synthesis/daily_reports/YYYY-MM-DD/report.pdf`；如果只有 `report.tex`，页面会提示 PDF 尚未生成或编译失败；旧 Markdown 日报仍可兼容查看。
 - 在“知识节点”里查看 `knowledge/` 中的知识卡片；页面也会兼容读取旧目录 `library/nodes/`。
 - 在“点子种子”里查看 `synthesis/idea_seeds/` 中的点子；页面也会兼容读取旧目录 `library/seeds/`。
+- 三栏各自有自己的阅读区：点击“最近日报”只更新日报栏下方的 PDF 预览；点击“知识节点”只更新知识栏下方的 Markdown；点击“点子种子”只更新种子栏下方的 Markdown。
+
+列表读取规则：
+
+- “最近日报”按日报日期排序，优先显示 `synthesis/daily_reports/YYYY-MM-DD/report.pdf`，其次是同目录 `report.tex`。如果同一天已经有结构化 PDF/TEX，旧的 `synthesis/daily_reports/YYYY-MM-DD.md` 不再重复显示在列表里。
+- “知识节点”优先显示 `knowledge/`；“点子种子”优先显示 `synthesis/idea_seeds/`。`library/nodes/` 和 `library/seeds/` 仍保留为旧目录兼容来源，但同名文件不会在网页列表中重复出现。
+- 点击列表条目时，后端只允许读取白名单目录中的报告、知识节点或点子种子文件；路径不存在或越界时，网页会显示友好的错误提示。
 
 ### 自动 Git 同步
 
@@ -177,6 +184,7 @@ automation 只把网页写入的 `关键词`、`补充信息`、`权重` 三类�
 - 由 Codex automation 综合材料写 `report_brief.json`，而不是让脚本硬编码正文。
 - 每个关键词只写“简介 / 最近有什么相关新闻 / 与我相关 / 最小下一步”。
 - 在“与旧知识的链接”和“今日发芽点子”中只保留真正相关的内容。
+- 报告质量通过后，把新知识和点子沉淀成 `knowledge/` 与 `synthesis/idea_seeds/` 里的候选条目。
 
 如果当天没有有效输入，它会：
 
@@ -196,6 +204,7 @@ synthesis/daily_reports/YYYY-MM-DD/
 ├─ report_context.json
 ├─ report_brief.json
 ├─ quality_check.json
+├─ knowledge_sync.json
 ├─ report.tex
 ├─ report.pdf
 └─ sources.json
@@ -266,6 +275,34 @@ python .\scripts\generate-radar-report.py --date 2026-05-24 --no-web
 - `与我相关` 单独分析关键词和补充信息之间的联系。
 - 禁止旧标签：`它是什么`、`今天查到了什么`、`和我有什么关系`、`今日判断`。
 - `quality_check.json` 会在编译前拦截旧标签、重复小节、过短简介和搜索结果直贴。
+
+### 日报如何沉淀为新知库
+
+当前主库是：
+
+- 知识节点：`knowledge/*.md`
+- 点子种子：`synthesis/idea_seeds/*.md`
+
+旧目录 `library/nodes/` 和 `library/seeds/` 只作为历史兼容读取，不再自动写入，也不做双向同步。
+
+每晚流程是：
+
+1. `generate-radar-report.py --collect-only` 读取当天 inbox，也读取已有 `knowledge/`、`synthesis/idea_seeds/` 和旧 `library/` 内容，写入 `report_context.json`。
+2. Codex automation 根据 `report_context.json` 写 `report_brief.json`。
+3. `generate-radar-report.py --render-only` 渲染 PDF，并生成 `quality_check.json`。
+4. 质量检查通过后，运行：
+
+```powershell
+python .\scripts\sync-knowledge-from-report.py --date 2026-05-25
+```
+
+同步脚本会把 `knowledge_cards[]` 写成或更新 `knowledge/` 中的候选知识节点，把 `idea_seeds[]` 写成或更新 `synthesis/idea_seeds/` 中的 raw 点子种子，并生成：
+
+```text
+synthesis/daily_reports/YYYY-MM-DD/knowledge_sync.json
+```
+
+它不会自动把节点升到 4/5，也不会替你做最终判断。你之后可以人工确认、升权、合并或归档。
 
 ## 邮件报告
 
@@ -349,9 +386,11 @@ python .\scripts\send-daily-report.py --date 2026-05-24
 
 本地文件仍然会保留为可检查的 Markdown：
 
-- 知识节点：`library/nodes/*.md`
-- 来源记录：`library/sources/*.md`
-- 点子种子：`library/seeds/*.md`
+- 当前知识节点主库：`knowledge/*.md`
+- 当前点子种子主库：`synthesis/idea_seeds/*.md`
+- 日报来源记录：`synthesis/daily_reports/YYYY-MM-DD/sources.json`
+- 历史兼容知识节点：`library/nodes/*.md`
+- 历史兼容点子种子：`library/seeds/*.md`
 - 长期追踪主题：`tracking/topics.md`
 
 权重 4 或 5 必须由你手动确认。不要让 automation 自动把一个节点升成核心主题。
@@ -387,6 +426,12 @@ python .\scripts\generate-radar-report.py --date 2026-05-24
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\compile-radar-report.ps1 -Date 2026-05-24
 ```
 
+把某天已经生成的日报沉淀到候选知识节点和点子种子：
+
+```powershell
+python .\scripts\sync-knowledge-from-report.py --date 2026-05-24
+```
+
 脚本只辅助，不是主要使用入口。检查失败时，按输出的缺失项修复。
 
 ## 第一版不做
@@ -401,15 +446,17 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\compile-radar-repo
 ## 文件位置
 
 - `inbox/`：每日原始输入。
-- `knowledge/`：网页入口优先读取的知识节点。
+- `knowledge/`：当前主知识节点库，网页优先读取，日报沉淀脚本会写入这里。
 - `synthesis/daily_reports/`：网页入口优先读取的每日 PDF 认知雷达报告。
-- `synthesis/idea_seeds/`：网页入口优先读取的点子种子。
+- `synthesis/idea_seeds/`：当前主点子种子库，网页优先读取，日报沉淀脚本会写入这里。
 - `system/`：预留给本地系统说明和后续轻量配置。
-- `library/nodes/`：长期知识节点。
-- `library/sources/`：来源记录。
-- `library/seeds/`：点子种子。
-- `reports/daily/`：每日复盘日报。
+- `library/nodes/`：历史兼容知识节点，只读保留。
+- `library/sources/`：历史兼容来源目录；当前日报来源写在 `synthesis/daily_reports/YYYY-MM-DD/sources.json`。
+- `library/seeds/`：历史兼容点子种子，只读保留。
+- `reports/daily/`：历史兼容日报目录。
 - `tracking/topics.md`：长期追踪主题。
-- `templates/`：可复制修改的模板。
+- `tracking/README.md`：长期追踪主题的维护说明。
+- `templates/`：当前工作流仍使用的结构模板。
+- `templates/README.md`：各模板用途和已移除旧模板说明。
 - `automation/`：Codex automation 提示词。
 - `scripts/`：本地辅助脚本。

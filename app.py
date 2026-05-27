@@ -159,12 +159,17 @@ def relative_path(path: Path) -> str:
 
 def list_markdown_files(paths: list[Path], limit: int | None = None) -> list[dict]:
     items: list[dict] = []
+    seen_stems: set[str] = set()
     for base in paths:
         if not base.exists():
             continue
         for path in base.rglob("*.md"):
             if not path.is_file():
                 continue
+            stem_key = path.stem.lower()
+            if stem_key in seen_stems:
+                continue
+            seen_stems.add(stem_key)
             stat = path.stat()
             items.append(
                 {
@@ -184,6 +189,7 @@ def list_markdown_files(paths: list[Path], limit: int | None = None) -> list[dic
 
 def list_report_files(limit: int | None = None) -> list[dict]:
     items: list[dict] = []
+    structured_dates: set[str] = set()
     primary = PRIMARY_DIRS["daily_reports"]
     if primary.exists():
         for path in primary.iterdir():
@@ -204,8 +210,10 @@ def list_report_files(limit: int | None = None) -> list[dict]:
                             "format": "pdf",
                             "status": "PDF",
                             "sources": relative_path(sources) if sources.exists() else "",
+                            "date_key": path.name,
                         }
                     )
+                    structured_dates.add(path.name)
                 elif tex.exists():
                     stat = tex.stat()
                     items.append(
@@ -219,10 +227,14 @@ def list_report_files(limit: int | None = None) -> list[dict]:
                             "format": "tex",
                             "status": "PDF 尚未生成或编译失败",
                             "sources": relative_path(sources) if sources.exists() else "",
+                            "date_key": path.name,
                         }
                     )
+                    structured_dates.add(path.name)
         for path in primary.glob("*.md"):
             if not path.is_file():
+                continue
+            if path.stem in structured_dates:
                 continue
             stat = path.stat()
             items.append(
@@ -236,12 +248,15 @@ def list_report_files(limit: int | None = None) -> list[dict]:
                     "format": "markdown",
                     "status": "旧 Markdown",
                     "sources": "",
+                    "date_key": path.stem,
                 }
             )
     legacy = LEGACY_DIRS["daily_reports"]
     if legacy.exists():
         for path in legacy.rglob("*.md"):
             if not path.is_file():
+                continue
+            if path.stem in structured_dates:
                 continue
             stat = path.stat()
             items.append(
@@ -255,9 +270,12 @@ def list_report_files(limit: int | None = None) -> list[dict]:
                     "format": "markdown",
                     "status": "旧 Markdown",
                     "sources": "",
+                    "date_key": path.stem,
                 }
             )
-    items.sort(key=lambda item: item["modified"], reverse=True)
+    items.sort(key=lambda item: (item.get("date_key", ""), item["modified"]), reverse=True)
+    for item in items:
+        item.pop("date_key", None)
     if limit is not None:
         return items[:limit]
     return items
@@ -554,9 +572,14 @@ class IdeaSproutHandler(BaseHTTPRequestHandler):
                 self.send_json({"error": "文件不存在或路径不允许。"}, HTTPStatus.NOT_FOUND)
                 return
             if target.suffix.lower() == ".pdf":
+                title = (
+                    f"个人认知雷达报告 {target.parent.name}"
+                    if kind == "report"
+                    else target.stem
+                )
                 self.send_json(
                     {
-                        "title": target.stem,
+                        "title": title,
                         "path": relative_path(target),
                         "format": "pdf",
                         "url": f"/api/raw?kind={urllib.parse.quote(kind)}&path={urllib.parse.quote(relative_path(target))}",

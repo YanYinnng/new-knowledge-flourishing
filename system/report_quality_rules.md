@@ -42,6 +42,7 @@ PDF 只允许这些主章节：
 4. 把答案整理成 `report_brief.json`，必须符合 `templates/report-brief.json`。
 5. 运行 `python scripts/generate-radar-report.py --date YYYY-MM-DD --render-only`。
 6. 用 `pdftotext` 或 `report.tex` 抽查结果；如果仍像搜索堆砌，修改 `report_brief.json` 后再次 render。
+7. `quality_check.json` 通过后，运行 `python scripts/sync-knowledge-from-report.py --date YYYY-MM-DD`，把报告沉淀成候选知识节点和 raw 点子种子。
 
 ## 内容质量标准
 
@@ -54,10 +55,24 @@ PDF 只允许这些主章节：
 - `idea_seeds`：最多 2 条；没有好点子就写“今日暂无值得保留的新点子”。
 - `reference_sources`：只列来源标题、等级和 URL，不放网页摘要。
 
-## 质量检查必须拦截
+## 渲染质量检查必须拦截
 
 - 旧标签出现在 PDF 中。
 - 每个关键词没有恰好一个“简介 / 最近有什么相关新闻 / 与我相关 / 最小下一步”。
 - 简介明显短于 200 字。
 - 正文直接复用搜索标题或长摘要。
 - 启用联网搜索却没有 `sources.json` 来源或失败说明。
+- `report_context.json.local_knowledge.scanned_paths` 为空，但本地 `knowledge/`、`synthesis/idea_seeds/`、`library/nodes/` 或 `library/seeds/` 实际上有内容。
+
+## 同步流程必须检查
+
+- 缺少 `knowledge_sync.json`，或同步结果没有 `created` / `updated` / `skipped` 任何记录。
+
+## 新知库沉淀规则
+
+- 报告生成必须读取旧知识：`report_context.json.local_knowledge.scanned_paths` 不能为空，除非 `knowledge/`、`synthesis/idea_seeds/`、`library/nodes/`、`library/seeds/` 确实都是空目录。
+- 日报通过质量检查后，必须运行 `python scripts/sync-knowledge-from-report.py --date YYYY-MM-DD`，并生成 `knowledge_sync.json`。
+- 同步脚本只写 `knowledge/` 和 `synthesis/idea_seeds/`；`library/nodes/` 和 `library/seeds/` 只读兼容，不再写入。
+- 新知识节点默认 `Status: candidate`，权重最高只写到 `3`；已有人工设置的 `4/5` 不被自动降低或覆盖。
+- 新点子种子默认 `Status: raw`。
+- 新写入内容只使用“补充信息”这个字段名；历史“上下文”只允许作为旧输入兼容读取。

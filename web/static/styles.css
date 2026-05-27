@@ -183,9 +183,9 @@ label,
   padding: 18px;
 }
 
-.reports-panel {
+.content-panel {
   display: grid;
-  grid-template-rows: auto auto minmax(260px, 1fr);
+  grid-template-rows: auto auto minmax(220px, 1fr);
 }
 
 .list {
@@ -211,6 +211,12 @@ label,
   background: #f6fbfa;
 }
 
+.list button.selected {
+  border-color: var(--accent);
+  background: var(--soft);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
 .item-title {
   font-weight: 700;
 }
@@ -224,6 +230,7 @@ label,
 .reader {
   border-top: 1px solid var(--line);
   padding-top: 16px;
+  min-height: 220px;
   overflow: auto;
 }
 
@@ -236,6 +243,14 @@ label,
 .reader p,
 .reader li {
   line-height: 1.65;
+}
+
+.pdf-frame {
+  width: 100%;
+  min-height: 68vh;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
 }
 
 .reader.empty,

@@ -7,9 +7,18 @@ const keywordMessage = document.querySelector("#keyword-message");
 const reportsList = document.querySelector("#reports-list");
 const knowledgeList = document.querySelector("#knowledge-list");
 const seedsList = document.querySelector("#seeds-list");
-const reader = document.querySelector("#reader");
 const logoutButton = document.querySelector("#logout-button");
 const refreshButton = document.querySelector("#refresh-button");
+const readers = {
+  report: document.querySelector("#report-reader"),
+  knowledge: document.querySelector("#knowledge-reader"),
+  seed: document.querySelector("#seed-reader"),
+};
+const lists = {
+  report: reportsList,
+  knowledge: knowledgeList,
+  seed: seedsList,
+};
 
 async function api(path, options = {}) {
   const response = await fetch(path, {
@@ -113,6 +122,7 @@ function renderList(container, items, kind, emptyText) {
   for (const item of items) {
     const button = document.createElement("button");
     button.type = "button";
+    button.className = "list-item";
     button.dataset.path = item.path;
     button.dataset.kind = kind;
     button.dataset.format = item.format || "markdown";
@@ -121,13 +131,19 @@ function renderList(container, items, kind, emptyText) {
       <span class="item-meta">${escapeHtml(item.path)} · ${escapeHtml(item.status || item.format || "Markdown")} · ${escapeHtml(item.modified)}</span>
     `;
     button.addEventListener("click", () => {
-      if (kind === "report" && item.format === "pdf") {
-        window.open(`/api/raw?kind=report&path=${encodeURIComponent(item.path)}`, "_blank", "noopener");
-        return;
-      }
       loadFile(kind, item.path, item.status || "");
     });
     container.append(button);
+  }
+}
+
+function markSelected(kind, path) {
+  const container = lists[kind];
+  if (!container) {
+    return;
+  }
+  for (const button of container.querySelectorAll("button")) {
+    button.classList.toggle("selected", button.dataset.path === path);
   }
 }
 
@@ -139,18 +155,32 @@ async function loadOverview() {
 }
 
 async function loadFile(kind, path, status = "") {
-  const file = await api(`/api/file?kind=${encodeURIComponent(kind)}&path=${encodeURIComponent(path)}`);
-  reader.classList.remove("empty");
-  if (file.format === "pdf") {
-    reader.innerHTML = `<p><a href="${escapeHtml(file.url)}" target="_blank" rel="noopener">打开 PDF 报告</a></p>`;
+  const reader = readers[kind];
+  if (!reader) {
     return;
   }
-  const notice = status === "PDF 尚未生成或编译失败"
-    ? "<p class=\"message error\">PDF 尚未生成或编译失败。下面显示 report.tex 供检查。</p>"
-    : "";
-  reader.innerHTML = renderMarkdown(file.content);
-  if (notice) {
-    reader.innerHTML = notice + reader.innerHTML;
+  markSelected(kind, path);
+  reader.classList.remove("empty");
+  reader.innerHTML = "<p class=\"empty\">正在读取文件...</p>";
+  try {
+    const file = await api(`/api/file?kind=${encodeURIComponent(kind)}&path=${encodeURIComponent(path)}`);
+    if (file.format === "pdf") {
+      const url = escapeHtml(file.url);
+      reader.innerHTML = `
+        <p><a href="${url}" target="_blank" rel="noopener">打开 PDF 报告</a></p>
+        <iframe class="pdf-frame" src="${url}" title="${escapeHtml(file.title || "PDF 报告")}"></iframe>
+      `;
+      return;
+    }
+    const notice = status === "PDF 尚未生成或编译失败"
+      ? "<p class=\"message error\">PDF 尚未生成或编译失败。下面显示 report.tex 供检查。</p>"
+      : "";
+    reader.innerHTML = renderMarkdown(file.content);
+    if (notice) {
+      reader.innerHTML = notice + reader.innerHTML;
+    }
+  } catch (error) {
+    reader.innerHTML = `<p class="message error">${escapeHtml(error.message)}</p>`;
   }
 }
 

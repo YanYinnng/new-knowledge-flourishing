@@ -1,0 +1,49 @@
+\documentclass[UTF8,zihao=-4]{ctexart}
+\usepackage[a4paper,margin=2.2cm]{geometry}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{array}
+\hypersetup{colorlinks=true,linkcolor=teal,urlcolor=teal}
+\setlist{itemsep=0.25em,topsep=0.35em}
+\title{\bfseries 点子发芽日报 2026-05-26}
+\author{点子发芽}
+\date{2026-05-26}
+\begin{document}
+\maketitle
+\section*{今日总结}
+今天的输入指向一个很实际的问题：多智能体协作不只是热门概念，而是在判断“什么时候直接使用现成平台，什么时候值得自己手搓一个最小系统”。它和当前的新知孵化工作流有天然连接，因为日报、知识沉淀、点子种子本身就可以拆成收集、判断、写作、同步几个角色。
+\section*{今日输入}
+\begin{longtable}{|p{0.22\linewidth}|p{0.58\linewidth}|p{0.10\linewidth}|}
+\hline
+\textbf{关键词} & \textbf{补充信息} & \textbf{权重} \\
+\hline
+多智能体协作 & 待调研的方向，有没有什么好用的平台可以直接用？自己有办法手搓吗？ & 3 \\
+\hline
+\end{longtable}
+\section*{今日新知}
+\subsection*{多智能体协作}
+\paragraph{简介} 多智能体协作是把一个复杂任务拆给多个具备不同角色、工具或上下文边界的 AI Agent 共同完成的系统设计方法。每个智能体通常承担相对清晰的职责，例如检索资料、规划步骤、编写代码、审查结果或整理输出；系统再通过消息传递、任务路由、共享状态、工作流编排和终止条件，把这些局部能力组织成一个整体。它的核心不是简单多开几个聊天窗口，而是设计角色分工、协作顺序、冲突处理和质量检查，让模型在有限上下文中更稳定地处理长链路任务。
+\paragraph{最近有什么相关新闻} 近期可见的材料主要集中在两类方向：一类是面向开发者的多智能体工作流平台或可视化编排项目，例如 S1 展示了代码审查、重构、文档生成等场景；另一类是架构选型文章，把多智能体系统拆成路由、主管-执行、并行分工、图式工作流等模式。当前来源质量以项目页和普通线索为主，足够作为调研入口，但还不宜直接得出“某个平台已经最优”的结论。
+\paragraph{与我相关} 你的补充信息关心的是“直接用平台”还是“自己手搓”。这正好可以放进现有点子发芽 MVP 里做小实验：如果只是为了每天晚间复盘，完全可以先手搓一个轻量多角色流程，例如收集者读取输入和来源，写作者产出 brief，质检者检查章节和标签，同步者沉淀知识节点。等这个流程跑稳定后，再比较现成平台是否在可视化、监控、重试和多人协作上提供了明显增益。
+\paragraph{最小下一步} 选一个现有流程，把“收集者、写作者、质检者、同步者”四个角色写成一页最小架构草图。
+\section*{与旧知识的链接}
+\begin{itemize}[leftmargin=2em]
+\item 多智能体协作可以连接到“新知孵化工作流”：当前日报流程已经隐含了收集、写作、检查、同步几个角色。
+\item 它也连接到“每日小推进”：多智能体系统的第一个验证不应是大平台，而应是一个 10-20 分钟能完成的角色拆分实验。
+\end{itemize}
+\section*{今日发芽点子}
+\begin{itemize}[leftmargin=2em]
+\item 点子种子：把点子发芽日报改造成四角色多智能体样板，先不引入新依赖，只用本地 JSON 文件在角色之间传递结果。
+\item 点子种子：建立多智能体平台评估清单，只比较角色编排、状态可见性、失败重试、人工介入和本地化成本五项。
+\end{itemize}
+\section*{参考搜索内容}
+\begin{itemize}[leftmargin=2em]
+\item \href{https://github.com/JAYzhang-666/agent-flow}{[S1] 项目主页/机构主页：GitHub - JAYzhang-666/agent-flow: 多智能体工作流编排平台 — AI Agent 协作可视化与监控}
+\item \href{https://cloud.tencent.com/developer/article/2649756}{[S2] 普通线索：Multi-Agent多智能体协作系统:架构原理、框架选型与实战指南}
+\item \href{https://eastondev.com/blog/zh/posts/ai/20260325-multi-agent-system/}{[S3] 普通线索：多智能体协作实战:4 种架构模式选择指南 · 比邻}
+\item \href{https://ofox.ai/zh/blog/openclaw-multi-agent-collaboration-guide-2026/}{[S4] 普通线索：OpenClaw 多智能体协作配置完全指南:从单兵作战到 AI 团队(2026)}
+\item \href{https://www.learngraph.online/ai-papers/module-5-compete-cooperation/5.7-Multi-Agent-Collaboration-Mechanisms.html}{[S5] 普通线索：多智能体协作机制:LLM 综述 - learngraph.online}
+\end{itemize}
+\end{document}
