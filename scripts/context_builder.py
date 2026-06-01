@@ -60,6 +60,26 @@ def entry_counts_by_kind(entries: list[dict[str, Any]]) -> dict[str, int]:
     return counts
 
 
+def daily_capture_rows(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    visible_kinds = {"task_capture", "calendar_capture", "link_capture", "file_capture"}
+    rows: list[dict[str, Any]] = []
+    for entry in entries:
+        kind = str(entry.get("kind") or "")
+        if kind not in visible_kinds:
+            continue
+        payload = entry.get("payload") if isinstance(entry.get("payload"), dict) else {}
+        rows.append(
+            {
+                "id": entry.get("id", ""),
+                "kind": kind,
+                "created_at": entry.get("created_at", ""),
+                "source": entry.get("source", ""),
+                "payload": payload,
+            }
+        )
+    return rows
+
+
 def read_memory_context() -> dict[str, Any]:
     profile_path = MEMORY_DIR / "profile.md"
     themes_path = MEMORY_DIR / "themes.md"
@@ -177,6 +197,7 @@ def build_secretary_context(date_text: str) -> dict[str, Any]:
         "date": date_text,
         "raw_input": {
             "entry_counts_by_kind": entry_counts_by_kind(raw_entries),
+            "daily_captures": daily_capture_rows(raw_entries),
             "supported_kinds": [
                 "keyword_batch",
                 "free_note",
