@@ -29,6 +29,7 @@ PDF 只允许这些主章节：
 4. 与旧知识的链接
 5. 今日发芽点子
 6. 参考搜索内容
+7. 随心记复盘（仅当 `report_context.json.free_notes` 非空时，追加在 PDF 最后）
 
 每个关键词在“今日新知”下只允许四个小节：
 
@@ -38,6 +39,8 @@ PDF 只允许这些主章节：
 4. 最小下一步
 
 不要使用旧标签：`它是什么`、`今天查到了什么`、`和我有什么关系`、`今日判断`。
+
+`free_notes` 是独立的“随心记”输入，只能用于最后的“随心记复盘”。写 `summary`、`inputs`、`knowledge_cards`、`old_knowledge_links`、`idea_seeds` 时不要使用 `free_notes` 的任何信息。
 
 ## 执行流程
 
@@ -55,6 +58,8 @@ python scripts/generate-radar-report.py --date YYYY-MM-DD --collect-only
    - `A 是什么？请用 200-300 字解释清楚，只专注关键词本身。`
    - `A 最近有什么新闻/新进展？`
    - `结合补充信息 B，A 与我的记录有什么具体联系？`
+   这一步只能使用 `inputs`、`keyword_contexts`、`reference_sources` 和本地旧知识，不能使用 `free_notes`。
+   如果 `free_notes` 非空，单独写 `free_note_review`：提炼 1-4 个主题，温和讨论和评价这些想法/感受，最后给一个不催促的问题。
 7. 运行：
 
 ```powershell
@@ -84,6 +89,7 @@ python scripts/sync-knowledge-from-report.py --date YYYY-MM-DD
 - `old_knowledge_links`：最多 3 条，只写真相关。
 - `idea_seeds`：最多 2 条，宁缺毋滥。
 - `reference_sources`：只列来源编号、标题、等级和 URL，不放网页摘要。
+- `free_note_review`：只有 `report_context.json.free_notes` 非空时才写；它只根据随心记生成，且只会被渲染到最后的“随心记复盘”。
 - 搜索来源必须写入 `sources.json`，正文引用来源编号即可，不要粘贴搜索结果标题或摘要。
 - 新写入内容只使用“补充信息”这个字段名；历史“上下文”只作为旧 inbox 兼容读取。
 
@@ -92,3 +98,13 @@ python scripts/sync-knowledge-from-report.py --date YYYY-MM-DD
 如果当天没有网页输入，不要写空报告。仍然先运行 `--collect-only`，然后根据 `report_context.json` 里的高权重节点和追踪主题写一份简短复盘。结构仍保持同一套 6 个主章节。
 
 生成 `report.pdf`、`report_brief.json`、`quality_check.json`、`sources.json`、`knowledge_sync.json` 后停止。
+
+## Secretary Layer Addendum
+
+`report_context.json.secretary_context` is the shared context layer. Use it for optional secretary modules, but do not let it change the keyword-report body.
+
+- Confirmed tasks live in `tasks/tasks.jsonl`; only these tasks and same-day `task_capture` / `calendar_capture` inputs may be used for `task_followups` and `secretary_reminders`.
+- Long-term memory lives in `memory/`; do not edit those files from automation.
+- If you notice a possible stable preference, profile fact, task, knowledge node, or idea seed, write it as a candidate field in `report_brief.json`: `memory_candidates`, `task_candidates`, `knowledge_candidates`, or `idea_seed_candidates`.
+- Candidates are synced into `review_queue/YYYY-MM-DD.jsonl` by the render step. They are not accepted facts until the user accepts them in the web UI.
+- Omit empty secretary modules. Do not create filler reminders.

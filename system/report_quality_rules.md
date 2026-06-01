@@ -21,6 +21,7 @@ PDF 只允许这些主章节：
 4. 与旧知识的链接
 5. 今日发芽点子
 6. 参考搜索内容
+7. 随心记复盘（仅当 `report_context.json.free_notes` 非空时，追加在 PDF 最后）
 
 每个关键词在“今日新知”下只允许四个小节：
 
@@ -30,6 +31,8 @@ PDF 只允许这些主章节：
 4. 最小下一步
 
 禁止出现旧标签：`它是什么`、`今天查到了什么`、`和我有什么关系`、`今日判断`。
+
+`free_notes` 是独立的“随心记”输入，只能用于最后的“随心记复盘”。关键词总结、今日新知、旧知识链接和发芽点子都不能使用随心记信息。
 
 ## Automation 写作流程
 
@@ -54,6 +57,14 @@ PDF 只允许这些主章节：
 - `old_knowledge_links`：最多 3 条，只写真相关，不强行凑。
 - `idea_seeds`：最多 2 条；没有好点子就写“今日暂无值得保留的新点子”。
 - `reference_sources`：只列来源标题、等级和 URL，不放网页摘要。
+- `free_note_review`：只有当天存在随心记时才写；只做温和讨论、评价和一个问题，不影响关键词部分。
+
+## Secretary Modules
+
+- `secretary_context` is shared context, not a replacement for the keyword report.
+- `memory_candidates`, `task_candidates`, `knowledge_candidates`, and `idea_seed_candidates` are review candidates only. They must not be treated as confirmed memory, tasks, or knowledge.
+- `task_followups` and `secretary_reminders` may only use confirmed task events plus same-day task/calendar captures.
+- Empty secretary modules should be omitted from `report_brief.json`.
 
 ## 渲染质量检查必须拦截
 
@@ -62,6 +73,7 @@ PDF 只允许这些主章节：
 - 简介明显短于 200 字。
 - 正文直接复用搜索标题或长摘要。
 - 启用联网搜索却没有 `sources.json` 来源或失败说明。
+- 当天有随心记但 PDF 缺少“随心记复盘”，或当天没有随心记却出现该章节。
 - `report_context.json.local_knowledge.scanned_paths` 为空，但本地 `knowledge/`、`synthesis/idea_seeds/`、`library/nodes/` 或 `library/seeds/` 实际上有内容。
 
 ## 同步流程必须检查

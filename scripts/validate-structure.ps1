@@ -23,7 +23,14 @@ $requiredDirs = @(
     "scripts",
     "system\email_sent",
     "system\locks",
-    "system"
+    "system",
+    "memory",
+    "tasks",
+    "review_queue",
+    "knowledge",
+    "synthesis",
+    "synthesis\daily_reports",
+    "synthesis\idea_seeds"
 )
 
 $requiredFiles = @(
@@ -43,6 +50,7 @@ $requiredFiles = @(
     "scripts\allow-phone-firewall.ps1",
     "scripts\catch-up-daily-report.ps1",
     "scripts\compile-radar-report.ps1",
+    "scripts\context_builder.py",
     "scripts\diagnose-phone-access.ps1",
     "scripts\generate-radar-report.py",
     "scripts\install-startup-catchup.ps1",
@@ -56,7 +64,12 @@ $requiredFiles = @(
     "scripts\uninstall-startup-catchup.ps1",
     "scripts\validate-structure.ps1",
     "system\report_quality_rules.md",
-    "system\report_config.json"
+    "system\report_config.json",
+    "system\architecture.md",
+    "memory\profile.md",
+    "memory\themes.md",
+    "memory\preferences.jsonl",
+    "tasks\tasks.jsonl"
 )
 
 foreach ($dir in $requiredDirs) {

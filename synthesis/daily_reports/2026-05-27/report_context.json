@@ -1,6 +1,6 @@
 {
-  "date": "2026-05-26",
-  "generated_at": "2026-06-01T18:17:57",
+  "date": "2026-05-27",
+  "generated_at": "2026-05-27T22:52:28",
   "mode": "input",
   "report_structure": [
     "今日总结",
@@ -35,80 +35,92 @@
     }
   },
   "input_source": {
-    "format": "markdown",
+    "format": "jsonl",
     "entry_counts_by_kind": {
-      "legacy_markdown_keyword": 1
-    }
-  },
-  "secretary_context": {
-    "date": "2026-05-26",
-    "raw_input": {
-      "entry_counts_by_kind": {},
-      "supported_kinds": [
-        "keyword_batch",
-        "free_note",
-        "task_capture",
-        "calendar_capture",
-        "link_capture",
-        "file_capture"
-      ]
-    },
-    "memory": {
-      "profile_path": "memory/profile.md",
-      "profile": "# 个人画像\n\n这里只保存经过确认的长期画像。日报和随心记可以提出候选，但不会自动改写这里。\n",
-      "themes_path": "memory/themes.md",
-      "themes": "# 长期主题\n\n记录反复出现的长期主题、当前关注强度和最近证据。\n",
-      "recent_preferences": [
-        {
-          "schema_version": 1,
-          "id": "memory-bootstrap",
-          "created_at": "2026-06-01T00:00:00+08:00",
-          "source": "system",
-          "kind": "memory_bootstrap",
-          "payload": {
-            "note": "Confirmed preference and memory events are appended here."
-          }
-        }
-      ]
-    },
-    "tasks": {
-      "events_path": "tasks/tasks.jsonl",
-      "open_or_due_soon": []
-    },
-    "review_queue": {
-      "pending_count": 0,
-      "pending_items": []
+      "keyword_batch": 1,
+      "free_note": 2
     }
   },
   "inputs": [
     {
-      "keyword": "多智能体协作",
-      "supplemental_info": "待调研的方向，有没有什么好用的平台可以直接用？自己有办法手搓吗？",
+      "keyword": "中美创客大赛",
+      "supplemental_info": "本来以为没啥意思，后来发现里面有些不错的人和项目。",
       "weight": "3"
     }
   ],
-  "free_notes": [],
+  "free_notes": [
+    {
+      "id": "2026-05-27T20-21-59-312e9f",
+      "text": "配置了Claude的一些skills和CLI工具，期待其大显身手！\n我现在用的是Claude的CLI界面，虽然没那么方便，但是用着用着感觉比codex要舒服一些。codex要不要也换成CLI呢？",
+      "created_at": "2026-05-27T20:21:59+08:00",
+      "source": "web"
+    },
+    {
+      "id": "2026-05-27T20-25-45-df3cf6",
+      "text": "这两天codex还出现一直“正在思考”卡住的问题，通过配置.codex/.env文件解决了，目前没有再出过问题。\n关于codex的另一个问题：这两天有人讨论codex降智，我还没太发觉，值得注意一下。",
+      "created_at": "2026-05-27T20:25:45+08:00",
+      "source": "web"
+    }
+  ],
   "keyword_contexts": [
     {
-      "keyword": "多智能体协作",
-      "supplemental_info": "待调研的方向，有没有什么好用的平台可以直接用？自己有办法手搓吗？",
+      "keyword": "中美创客大赛",
+      "supplemental_info": "本来以为没啥意思，后来发现里面有些不错的人和项目。",
       "weight": "3",
       "questions_for_model": [
-        "多智能体协作 是什么？请用 200-300 字解释清楚，只专注关键词本身。",
-        "多智能体协作 最近有什么新闻或新进展？没有可靠新进展就直接说明。",
-        "结合补充信息“待调研的方向，有没有什么好用的平台可以直接用？自己有办法手搓吗？”，这个关键词与我的记录有什么具体联系？"
+        "中美创客大赛 是什么？请用 200-300 字解释清楚，只专注关键词本身。",
+        "中美创客大赛 最近有什么新闻或新进展？没有可靠新进展就直接说明。",
+        "结合补充信息“本来以为没啥意思，后来发现里面有些不错的人和项目。”，这个关键词与我的记录有什么具体联系？"
       ],
-      "search_note": "联网搜索已在 system/report_config.json 中关闭。",
-      "search_results": [],
-      "local_matches": [
+      "search_note": "",
+      "search_results": [
         {
-          "title": "多智能体协作",
-          "path": "knowledge/node-78eeff5b.md",
-          "weight": "3",
-          "status": "candidate",
-          "excerpt": "ID: node-78eeff5b Type: concept Weight: 3 Status: candidate Last seen: 2026-05-26 Aliases: Related: Sources: inbox/2026-05-26.md, synthesis/daily_reports/2026-05-26/report.pdf ## 一句话定义 多智能体协作是把一个复杂任务拆给多个具备不同角色、工具或上下文边界的 AI Agent 共同完成的系统设计方法。每个智能体通常承担相对清晰的职责，例如检索资料、规划步骤、编写代码、审查结果或整理输出；系统再通过消息传递、任务路由、共享状态、工作流编排和终止条件，把这些局部能力组… ## 为什么对我重要 你的补充信息关心的是“直接用平台”还是“自己手搓”。这正好可以放进现有点子发芽 MVP 里做小实验：如果只是为了每天晚间复盘，完全可以先手搓一个轻量多角色流程，例如收"
+          "id": "S1",
+          "title": "中美青年创客大赛",
+          "url": "https://chinaus-maker.cscse.edu.cn/",
+          "domain": "chinaus-maker.cscse.edu.cn",
+          "quality_tier": "官方/机构资料",
+          "source_role": "优先用于核实机构定位、项目方向和公开事实。",
+          "relevance_score": 16
+        },
+        {
+          "id": "S2",
+          "title": "2026中美青年创客大赛校内赛启动报名 - si.sjtu.edu.cn",
+          "url": "https://www.si.sjtu.edu.cn/content/news-detail?params=ba608706abad4c0fa4bf8bdf712a79c1&menuIds=3,26,28",
+          "domain": "si.sjtu.edu.cn",
+          "quality_tier": "官方/机构资料",
+          "source_role": "优先用于核实机构定位、项目方向和公开事实。",
+          "relevance_score": 16
+        },
+        {
+          "id": "S3",
+          "title": "关于\"2026共创未来——中美青年创客大赛\"的报名通知-长江大学传媒学院",
+          "url": "https://yscm.yangtzeu.edu.cn/info/1087/11710.htm",
+          "domain": "yscm.yangtzeu.edu.cn",
+          "quality_tier": "官方/机构资料",
+          "source_role": "优先用于核实机构定位、项目方向和公开事实。",
+          "relevance_score": 16
+        },
+        {
+          "id": "S4",
+          "title": "2025中美青年创客大赛-全国青年大学生竞赛官网-高质量竞赛平台",
+          "url": "http://www.zhjingsai.com/?m=home&c=View&a=index&aid=739",
+          "domain": "zhjingsai.com",
+          "quality_tier": "项目主页/机构主页",
+          "source_role": "只能代表该机构或产品自己的说法，不能替行业概念背书。",
+          "relevance_score": 16
+        },
+        {
+          "id": "S5",
+          "title": "高校学生竞赛网—竞赛质量提升,创新人才培养",
+          "url": "https://cp.moocollege.com/home/competition/details?competitionId=105634",
+          "domain": "cp.moocollege.com",
+          "quality_tier": "普通线索",
+          "source_role": "可作为线索，不能直接作为核心结论。",
+          "relevance_score": 20
         }
-      ]
+      ],
+      "local_matches": []
     }
   ],
   "local_knowledge": {
@@ -120,15 +132,12 @@
     "scanned_paths": [
       "knowledge/node-0011b3bd.md",
       "knowledge/node-78eeff5b.md",
-      "knowledge/node-7c0378ad.md",
       "knowledge/personal-knowledge-incubation.md",
       "synthesis/idea_seeds/daily-review-spark.md",
       "synthesis/idea_seeds/seed-20845b10.md",
       "synthesis/idea_seeds/seed-72a2ef24.md",
       "synthesis/idea_seeds/seed-b123728a.md",
       "synthesis/idea_seeds/seed-cf82098a.md",
-      "synthesis/idea_seeds/seed-e2879fd0.md",
-      "synthesis/idea_seeds/seed-ed5e2f08.md",
       "tracking/topics.md"
     ],
     "high_weight_nodes": [
@@ -145,13 +154,6 @@
         "weight": "3",
         "status": "candidate",
         "excerpt": "ID: node-78eeff5b Type: concept Weight: 3 Status: candidate Last seen: 2026-05-26 Aliases: Related: Sources: inbox/2026-05-26.md, synthesis/daily_reports/2026-05-26/report.pdf ## 一句话定义 多智能体协作是把一个复杂任务拆给多个具备不同角色、工具或上下文边界的 AI Agent 共同完成的系统设计方法。每个智能体通常承担相对清晰的职责，例如检索资料、规划步骤、编写代码、审查结果或整理输出；系统再通过消息传递、任务路由、共享状态、工作流编排和终止条件，把这些局部能力组… ## 为什么对我重要 你的补充信息关心的是“直接用平台”还是“自己手搓”。这正好可以放进现有点子发芽 MVP 里做小实验：如果只是为了每天晚间复盘，完全可以先手搓一个轻量多角色流程，例如收"
-      },
-      {
-        "title": "中美创客大赛",
-        "path": "knowledge/node-7c0378ad.md",
-        "weight": "3",
-        "status": "candidate",
-        "excerpt": "ID: node-7c0378ad Type: concept Weight: 3 Status: candidate Last seen: 2026-05-27 Aliases: Related: Sources: inbox/2026-05-27.md, synthesis/daily_reports/2026-05-27/report.pdf ## 一句话定义 中美创客大赛通常指“中美青年创客大赛”，是围绕青年创新、创客教育和中美人文交流展开的竞赛型项目。它以团队参赛、问题定义、原型设计、现场路演和赛区选拔为主要形式，鼓励青年围绕社区韧性、低碳环保、公共卫生、健康福祉、清洁能源等公共议题提出可落地的产品或服务方案。和纯商业创业比赛相比… ## 为什么对我重要 你的补充信息里，关键变化是从“竞赛可能没意思”转为“里面有些不错的人和项目”。这说明它对你不是一个需要泛泛了解的赛事名，而是一个可观察的人才与项目入口：值得看哪些人能"
       },
       {
         "title": "新知孵化工作流",
@@ -194,8 +196,48 @@
       "普通线索",
       "低优先级线索"
     ],
-    "tier_counts": {},
+    "tier_counts": {
+      "官方/机构资料": 3,
+      "项目主页/机构主页": 1,
+      "普通线索": 1
+    },
     "low_quality_rule": "低质量来源只能作为入口线索，不能作为核心结论。"
   },
-  "reference_sources": []
+  "reference_sources": [
+    {
+      "id": "S1",
+      "keyword": "中美创客大赛",
+      "title": "中美青年创客大赛",
+      "quality_tier": "官方/机构资料",
+      "url": "https://chinaus-maker.cscse.edu.cn/"
+    },
+    {
+      "id": "S2",
+      "keyword": "中美创客大赛",
+      "title": "2026中美青年创客大赛校内赛启动报名 - si.sjtu.edu.cn",
+      "quality_tier": "官方/机构资料",
+      "url": "https://www.si.sjtu.edu.cn/content/news-detail?params=ba608706abad4c0fa4bf8bdf712a79c1&menuIds=3,26,28"
+    },
+    {
+      "id": "S3",
+      "keyword": "中美创客大赛",
+      "title": "关于\"2026共创未来——中美青年创客大赛\"的报名通知-长江大学传媒学院",
+      "quality_tier": "官方/机构资料",
+      "url": "https://yscm.yangtzeu.edu.cn/info/1087/11710.htm"
+    },
+    {
+      "id": "S4",
+      "keyword": "中美创客大赛",
+      "title": "2025中美青年创客大赛-全国青年大学生竞赛官网-高质量竞赛平台",
+      "quality_tier": "项目主页/机构主页",
+      "url": "http://www.zhjingsai.com/?m=home&c=View&a=index&aid=739"
+    },
+    {
+      "id": "S5",
+      "keyword": "中美创客大赛",
+      "title": "高校学生竞赛网—竞赛质量提升,创新人才培养",
+      "quality_tier": "普通线索",
+      "url": "https://cp.moocollege.com/home/competition/details?competitionId=105634"
+    }
+  ]
 }

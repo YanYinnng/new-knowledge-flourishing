@@ -18,6 +18,9 @@ from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
 
+from context_builder import append_jsonl as append_structured_jsonl
+from context_builder import build_secretary_context, stable_id
+
 
 ROOT = Path(__file__).resolve().parent.parent
 CONFIG_PATH = ROOT / "system" / "report_config.json"
@@ -26,6 +29,7 @@ REPORT_ROOT = ROOT / "synthesis" / "daily_reports"
 KNOWLEDGE_DIRS = [ROOT / "knowledge", ROOT / "library" / "nodes"]
 SEED_DIRS = [ROOT / "synthesis" / "idea_seeds", ROOT / "library" / "seeds"]
 TRACKING_PATH = ROOT / "tracking" / "topics.md"
+REVIEW_QUEUE_DIR = ROOT / "review_queue"
 
 
 DEFAULT_CONFIG = {
@@ -46,6 +50,22 @@ class InputRecord:
     keyword: str
     context: str
     weight: str
+
+
+@dataclass
+class FreeNote:
+    id: str
+    text: str
+    created_at: str
+    source: str = ""
+
+
+@dataclass
+class DailyEntries:
+    keyword_records: list[InputRecord]
+    free_notes: list[FreeNote]
+    entry_counts_by_kind: dict[str, int]
+    source_format: str
 
 
 @dataclass
@@ -118,6 +138,13 @@ def normalize_space(value: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(value)).strip()
 
 
+def compact_text(value: Any, limit: int = 220) -> str:
+    text = normalize_space(str(value or ""))
+    if len(text) <= limit:
+        return text
+    return text[: limit - 1].rstrip() + "…"
+
+
 def clean_source_text(value: str) -> str:
     normalized = unicodedata.normalize("NFKC", html.unescape(value or ""))
     without_controls = "".join(char for char in normalized if unicodedata.category(char)[0] != "C")
@@ -143,7 +170,7 @@ def normalize_weight(value: str, config: dict[str, Any] | None = None) -> str:
     return default if default in {"1", "2", "3", "4", "5"} else "3"
 
 
-def parse_inbox(date_text: str) -> list[InputRecord]:
+def parse_markdown_inbox(date_text: str) -> list[InputRecord]:
     path = INBOX_DIR / f"{date_text}.md"
     if not path.exists():
         return []
@@ -164,6 +191,77 @@ def parse_inbox(date_text: str) -> list[InputRecord]:
             elif weight_match:
                 current.weight = normalize_weight(weight_match.group(1).strip())
     return records
+
+
+def normalize_keyword_list(value: Any) -> list[str]:
+    if isinstance(value, list):
+        raw_items = value
+    else:
+        raw_items = str(value or "").splitlines()
+    keywords: list[str] = []
+    for item in raw_items:
+        keyword = str(item or "").strip().lstrip("-").strip()
+        if keyword:
+            keywords.append(keyword)
+    return keywords
+
+
+def parse_jsonl_inbox(date_text: str) -> DailyEntries | None:
+    path = INBOX_DIR / f"{date_text}.jsonl"
+    if not path.exists():
+        return None
+
+    records: list[InputRecord] = []
+    free_notes: list[FreeNote] = []
+    counts: dict[str, int] = {}
+    for line_number, raw in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        if not raw.strip():
+            continue
+        try:
+            entry = json.loads(raw)
+        except json.JSONDecodeError:
+            counts["invalid_json"] = counts.get("invalid_json", 0) + 1
+            continue
+        if not isinstance(entry, dict):
+            counts["invalid_entry"] = counts.get("invalid_entry", 0) + 1
+            continue
+        kind = str(entry.get("kind") or "unknown")
+        counts[kind] = counts.get(kind, 0) + 1
+        payload = entry.get("payload") if isinstance(entry.get("payload"), dict) else {}
+        if kind == "keyword_batch":
+            supplemental_info = str(payload.get("supplemental_info", payload.get("context", ""))).strip() or "未填写"
+            weight = normalize_weight(str(payload.get("weight", "")))
+            for keyword in normalize_keyword_list(payload.get("keywords", payload.get("keyword", ""))):
+                records.append(InputRecord(keyword=keyword, context=supplemental_info, weight=weight))
+        elif kind == "free_note":
+            text = str(payload.get("text", "")).strip()
+            if text:
+                free_notes.append(
+                    FreeNote(
+                        id=str(entry.get("id") or f"{date_text}-line-{line_number}"),
+                        text=text,
+                        created_at=str(entry.get("created_at") or ""),
+                        source=str(entry.get("source") or ""),
+                    )
+                )
+    return DailyEntries(records, free_notes, counts, "jsonl")
+
+
+def read_daily_entries(date_text: str) -> DailyEntries:
+    jsonl_entries = parse_jsonl_inbox(date_text)
+    if jsonl_entries is not None:
+        return jsonl_entries
+    records = parse_markdown_inbox(date_text)
+    return DailyEntries(
+        keyword_records=records,
+        free_notes=[],
+        entry_counts_by_kind={"legacy_markdown_keyword": len(records)} if records else {},
+        source_format="markdown",
+    )
+
+
+def parse_inbox(date_text: str) -> list[InputRecord]:
+    return read_daily_entries(date_text).keyword_records
 
 
 def first_heading(text: str, fallback: str) -> str:
@@ -1407,6 +1505,15 @@ def input_record_row(record: InputRecord) -> dict[str, str]:
     return {"keyword": record.keyword, "supplemental_info": record.context, "weight": record.weight}
 
 
+def free_note_row(note: FreeNote) -> dict[str, str]:
+    return {
+        "id": note.id,
+        "text": note.text,
+        "created_at": note.created_at,
+        "source": note.source,
+    }
+
+
 def local_doc_card(doc: LocalDoc, max_chars: int = 420) -> dict[str, str]:
     text = normalize_space(re.sub(r"^# .+$", "", doc.text, flags=re.MULTILINE))
     return {
@@ -1456,11 +1563,15 @@ def enrich_searches_for_report(
 def build_report_context(
     date_text: str,
     records: list[InputRecord],
+    free_notes: list[FreeNote],
+    entry_counts_by_kind: dict[str, int],
+    input_source_format: str,
     docs: list[LocalDoc],
     searches: dict[str, tuple[list[dict[str, str]], str]],
     sources_json: dict[str, Any],
     config: dict[str, Any],
 ) -> dict[str, Any]:
+    secretary_context = build_secretary_context(date_text)
     keyword_contexts: list[dict[str, Any]] = []
     for record in records:
         results, note = searches.get(record.keyword, ([], ""))
@@ -1491,6 +1602,7 @@ def build_report_context(
             "与旧知识的链接",
             "今日发芽点子",
             "参考搜索内容",
+            "随心记复盘（仅在当天有随心记时追加到最后）",
         ],
         "writing_contract": {
             "model_role": "你是报告作者。请综合材料写 report_brief.json，不要把搜索结果直接拼进正文。",
@@ -1501,9 +1613,22 @@ def build_report_context(
                 "与我相关单独分析关键词和补充信息的联系。",
                 "最近新闻最多 1 段或 2 条，最小下一步只能 1 个动作。",
                 "禁止使用旧标签：它是什么、今天查到了什么、和我有什么关系、今日判断。",
+                "随心记只用于最后的随心记复盘，不得影响今日总结、今日输入、今日新知、旧知识链接和今日发芽点子。",
             ],
+            "free_note_review_shape": {
+                "themes": "1-4 个短主题，概括随心记里反复出现的关注点。",
+                "discussion": "温和讨论这些想法或感受背后的关注点、动机或张力。",
+                "evaluation": "评价它更像短期情绪、长期信号、待观察线索，还是值得以后转成关键词或点子。",
+                "question_for_tomorrow": "一个不催促、但能继续理解自己的问题。",
+            },
         },
+        "input_source": {
+            "format": input_source_format,
+            "entry_counts_by_kind": entry_counts_by_kind,
+        },
+        "secretary_context": secretary_context,
         "inputs": [input_record_row(record) for record in records],
+        "free_notes": [free_note_row(note) for note in free_notes],
         "keyword_contexts": keyword_contexts,
         "local_knowledge": {
             "tracking_topics": read_tracking_topics(),
@@ -1531,6 +1656,21 @@ def build_report_context(
 
 def sentence_count(text: str) -> int:
     return len([part for part in re.split(r"[。！？!?；;]\s*", text) if part.strip()])
+
+
+def fallback_free_note_review(free_notes: list[dict[str, Any]]) -> dict[str, Any] | None:
+    if not free_notes:
+        return None
+    snippets = [normalize_space(note.get("text", "")) for note in free_notes if normalize_space(note.get("text", ""))]
+    if not snippets:
+        return None
+    preview = "；".join(compact_text(text, 80) for text in snippets[:3])
+    return {
+        "themes": ["随手记录的想法和感受", "可能值得继续观察的个人信号"],
+        "discussion": f"今天的随心记先不进入关键词分析，只作为一段个人状态记录来看。它里面出现了这些片段：{preview}。这些内容的价值不在于马上变成任务，而在于帮你保留当下真实冒出来的注意力。",
+        "evaluation": "这更像一组待观察线索：有些可能只是当天情绪，有些可能会在几天后反复出现。暂时不需要把它们沉淀成知识节点，等同类想法多出现几次，再决定是否转成关键词或点子种子。",
+        "question_for_tomorrow": "明天回看时，哪一句随心记仍然让你觉得有点在意？",
+    }
 
 
 def fallback_brief_from_context(context: dict[str, Any]) -> dict[str, Any]:
@@ -1570,14 +1710,19 @@ def fallback_brief_from_context(context: dict[str, Any]) -> dict[str, Any]:
             cards.append(
                 {
                     "keyword": title,
-                    "intro": f"{title} 是当前本地知识库里的高权重节点。今天没有新输入，所以它只适合作为复盘对象，而不是扩展成新主题。",
+                    "intro": (
+                        f"{title} 是当前本地知识库里的高权重节点。今天没有新的关键词输入，所以它只适合作为复盘对象，"
+                        "而不是扩展成新主题。复盘的重点是重新确认这个节点是否仍然解释你最近的学习、项目、机会判断或系统搭建需求，"
+                        "以及它是否还能帮你减少信息噪音。这里不会因为一次无输入日就自动升权或降权，只把它当作一条需要定期校准的长期线索。"
+                        "如果后续几天仍然反复出现相关记录，再考虑把它和新的关键词、行动或问题连接起来。"
+                    ),
                     "recent_news": "无新输入日只做轻量外部检查；如果没有明确新证据，不自动扩写为新闻摘要。",
                     "relevance": "今天没有新的补充信息，因此只检查它是否仍然服务当前工作流，不强行建立新关联。",
                     "next_step": "明天通过网页提交 3 个真实关键词，再检查日报是否能给出清晰总结。",
                 }
             )
 
-    return {
+    brief = {
         "date": context.get("date", ""),
         "mode": context.get("mode", "input"),
         "summary": "今天的报告由脚本 fallback 生成，质量低于 Codex 自动化写作版本。后续应由 automation 读取 report_context.json 后重写 report_brief.json。",
@@ -1587,6 +1732,22 @@ def fallback_brief_from_context(context: dict[str, Any]) -> dict[str, Any]:
         "idea_seeds": [],
         "reference_sources": context.get("reference_sources", []),
     }
+    free_note_review = fallback_free_note_review(context.get("free_notes", []))
+    if free_note_review:
+        brief["free_note_review"] = free_note_review
+    secretary = context.get("secretary_context", {})
+    open_tasks = secretary.get("tasks", {}).get("open_or_due_soon", []) if isinstance(secretary, dict) else []
+    pending_review = secretary.get("review_queue", {}).get("pending_items", []) if isinstance(secretary, dict) else []
+    if open_tasks:
+        brief["task_followups"] = [
+            f"{task.get('title', task.get('task_id', '未命名任务'))}；截止：{task.get('due_date') or '未设定'}"
+            for task in open_tasks[:5]
+        ]
+    if pending_review:
+        brief["secretary_reminders"] = [
+            f"有 {len(pending_review)} 条待确认项，优先处理记忆候选和任务候选。"
+        ]
+    return brief
 
 
 def brief_reference_sources(brief: dict[str, Any], sources_json: dict[str, Any]) -> list[dict[str, str]]:
@@ -1602,6 +1763,58 @@ def brief_reference_sources(brief: dict[str, Any], sources_json: dict[str, Any])
         }
         for source in sources_json.get("text_sources", [])
     ]
+
+
+def normalize_candidate_items(value: Any, default_kind: str, date_text: str) -> list[dict[str, Any]]:
+    if not value:
+        return []
+    raw_items = value if isinstance(value, list) else [value]
+    items: list[dict[str, Any]] = []
+    for raw_item in raw_items:
+        if isinstance(raw_item, dict):
+            payload = raw_item.copy()
+            text = str(payload.get("text") or payload.get("title") or payload.get("summary") or "").strip()
+        else:
+            text = str(raw_item).strip()
+            payload = {"text": text}
+        if not text:
+            continue
+        kind = str(payload.pop("kind", default_kind))
+        candidate_id = stable_id(date_text, kind, text, prefix="candidate")
+        items.append(
+            {
+                "schema_version": 1,
+                "id": candidate_id,
+                "date": date_text,
+                "created_at": datetime.now().astimezone().isoformat(timespec="seconds"),
+                "source": "daily_report_brief",
+                "kind": kind,
+                "payload": {
+                    **payload,
+                    "text": text,
+                    "source_report": f"synthesis/daily_reports/{date_text}/report_brief.json",
+                },
+            }
+        )
+    return items
+
+
+def sync_review_queue_from_brief(date_text: str, brief: dict[str, Any]) -> None:
+    queue_path = REVIEW_QUEUE_DIR / f"{date_text}.jsonl"
+    existing_ids = {
+        str(row.get("id"))
+        for row in (json.loads(line) for line in queue_path.read_text(encoding="utf-8").splitlines() if line.strip())
+        if isinstance(row, dict)
+    } if queue_path.exists() else set()
+    candidates: list[dict[str, Any]] = []
+    candidates.extend(normalize_candidate_items(brief.get("memory_candidates"), "memory_candidate", date_text))
+    candidates.extend(normalize_candidate_items(brief.get("task_candidates"), "task_candidate", date_text))
+    candidates.extend(normalize_candidate_items(brief.get("knowledge_candidates"), "knowledge_candidate", date_text))
+    candidates.extend(normalize_candidate_items(brief.get("idea_seed_candidates"), "idea_seed_candidate", date_text))
+    for candidate in candidates:
+        if candidate["id"] not in existing_ids:
+            append_structured_jsonl(queue_path, candidate)
+            existing_ids.add(candidate["id"])
 
 
 def tex_labeled_paragraph(label: str, text: str) -> str:
@@ -1627,12 +1840,60 @@ def tex_input_table(inputs: list[dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
+def tex_free_note_review(review: Any) -> str:
+    if not isinstance(review, dict):
+        return ""
+    lines: list[str] = []
+    themes = [str(item) for item in review.get("themes", []) if str(item).strip()]
+    if themes:
+        lines.append(r"\paragraph{主题}")
+        lines.append(tex_items(themes[:4]))
+    discussion = str(review.get("discussion") or "").strip()
+    if discussion:
+        lines.append(tex_labeled_paragraph("讨论", discussion))
+    evaluation = str(review.get("evaluation") or "").strip()
+    if evaluation:
+        lines.append(tex_labeled_paragraph("评价", evaluation))
+    question = str(review.get("question_for_tomorrow") or "").strip()
+    if question:
+        lines.append(tex_labeled_paragraph("留给明天的问题", question))
+    return "\n".join(lines)
+
+
+def tex_text_items(value: Any, limit: int = 5) -> str:
+    if not value:
+        return ""
+    if isinstance(value, dict):
+        items = []
+        for key, item_value in value.items():
+            if isinstance(item_value, list):
+                for child in item_value:
+                    if str(child).strip():
+                        items.append(f"{key}: {child}")
+            elif str(item_value).strip():
+                items.append(f"{key}: {item_value}")
+    elif isinstance(value, list):
+        items = []
+        for item in value:
+            if isinstance(item, dict):
+                text = item.get("text") or item.get("title") or item.get("summary") or json.dumps(item, ensure_ascii=False)
+            else:
+                text = item
+            if str(text).strip():
+                items.append(str(text).strip())
+    else:
+        items = [str(value).strip()]
+    items = [item for item in items if item][:limit]
+    return tex_items(items) if items else ""
+
+
 def render_report_from_brief(date_text: str, brief: dict[str, Any], sources_json: dict[str, Any]) -> str:
     title = f"点子发芽日报 {date_text}"
     inputs = brief.get("inputs") or []
     cards = brief.get("knowledge_cards") or []
     old_links = brief.get("old_knowledge_links") or []
     idea_seeds = brief.get("idea_seeds") or []
+    free_note_review = brief.get("free_note_review")
     references = brief_reference_sources(brief, sources_json)
     lines: list[str] = [
         r"\documentclass[UTF8,zihao=-4]{ctexart}",
@@ -1683,6 +1944,22 @@ def render_report_from_brief(date_text: str, brief: dict[str, Any], sources_json
         lines.append(r"\end{itemize}")
     else:
         lines.append(tex_items(["当前没有可列出的参考搜索内容。"]))
+    free_note_tex = tex_free_note_review(free_note_review)
+    if free_note_tex:
+        lines.append(r"\section*{随心记复盘}")
+        lines.append(free_note_tex)
+    memory_candidate_tex = tex_text_items(brief.get("memory_candidates"), limit=4)
+    if memory_candidate_tex:
+        lines.append(r"\section*{个人记忆候选}")
+        lines.append(memory_candidate_tex)
+    task_followup_tex = tex_text_items(brief.get("task_followups"), limit=6)
+    if task_followup_tex:
+        lines.append(r"\section*{任务与跟进}")
+        lines.append(task_followup_tex)
+    secretary_reminder_tex = tex_text_items(brief.get("secretary_reminders"), limit=3)
+    if secretary_reminder_tex:
+        lines.append(r"\section*{明日秘书提醒}")
+        lines.append(secretary_reminder_tex)
     lines.append(r"\end{document}")
     return "\n".join(lines) + "\n"
 
@@ -1735,6 +2012,7 @@ def quality_check_simple(
     sources_json: dict[str, Any],
     brief: dict[str, Any],
     context_scanned_paths: list[str] | None = None,
+    free_note_count: int = 0,
 ) -> dict[str, Any]:
     issues: list[str] = []
     for section in ["今日总结", "今日输入", "今日新知", "与旧知识的链接", "今日发芽点子", "参考搜索内容"]:
@@ -1775,6 +2053,18 @@ def quality_check_simple(
         issues.append("每个关键词必须恰好有一个“最小下一步”。")
     if not str(brief.get("summary") or "").strip():
         issues.append("report_brief 缺少今日总结。")
+    if free_note_count:
+        review = brief.get("free_note_review")
+        if "随心记复盘" not in tex:
+            issues.append("当天有随心记，但 PDF 缺少“随心记复盘”。")
+        if not isinstance(review, dict):
+            issues.append("当天有随心记，但 report_brief 缺少 free_note_review。")
+        else:
+            for field in ["discussion", "evaluation", "question_for_tomorrow"]:
+                if not str(review.get(field) or "").strip():
+                    issues.append(f"free_note_review 缺少 {field}。")
+    elif "随心记复盘" in tex:
+        issues.append("当天没有随心记，但 PDF 出现了“随心记复盘”。")
     if sources_json["config"].get("enable_web_search") and not sources_json["text_sources"] and not sources_json["search_notes"]:
         issues.append("启用联网搜索时，sources.json 没有文字来源或失败说明。")
     if local_knowledge_dirs_have_content() and not context_scanned_paths:
@@ -1839,7 +2129,9 @@ def main() -> int:
     if args.no_images:
         config["enable_images"] = False
 
-    records = parse_inbox(args.date)
+    daily_entries = read_daily_entries(args.date)
+    records = daily_entries.keyword_records
+    free_notes = daily_entries.free_notes
     docs = read_local_docs()
     mode = args.mode or str(config.get("default_report_mode", "auto"))
     if mode == "review":
@@ -1890,9 +2182,10 @@ def main() -> int:
         context_path = report_dir / "report_context.json"
         report_context = json.loads(context_path.read_text(encoding="utf-8")) if context_path.exists() else {}
         scanned_paths = report_context.get("local_knowledge", {}).get("scanned_paths", [])
+        free_note_count = len(report_context.get("free_notes", []))
         tex = render_report_from_brief(args.date, report_brief, sources_json)
         (report_dir / "report.tex").write_text(tex, encoding="utf-8")
-        quality = quality_check_simple(tex, records, sources_json, report_brief, scanned_paths)
+        quality = quality_check_simple(tex, records, sources_json, report_brief, scanned_paths, free_note_count)
         (report_dir / "quality_check.json").write_text(
             json.dumps(quality, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
@@ -1902,6 +2195,7 @@ def main() -> int:
             for issue in quality["issues"]:
                 print(f"- {issue}")
             return 1
+        sync_review_queue_from_brief(args.date, report_brief)
         if args.no_compile:
             print(f"Wrote {report_dir / 'report.tex'}")
             return 0
@@ -1911,7 +2205,17 @@ def main() -> int:
 
     searches, sources_json = enrich_searches_for_report(searches, config)
     sources_json["date"] = args.date
-    report_context = build_report_context(args.date, records, docs, searches, sources_json, config)
+    report_context = build_report_context(
+        args.date,
+        records,
+        free_notes,
+        daily_entries.entry_counts_by_kind,
+        daily_entries.source_format,
+        docs,
+        searches,
+        sources_json,
+        config,
+    )
     (report_dir / "sources.json").write_text(
         json.dumps(sources_json, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
@@ -1938,7 +2242,7 @@ def main() -> int:
     tex = render_report_from_brief(args.date, report_brief, sources_json)
     (report_dir / "report.tex").write_text(tex, encoding="utf-8")
     scanned_paths = report_context.get("local_knowledge", {}).get("scanned_paths", [])
-    quality = quality_check_simple(tex, records, sources_json, report_brief, scanned_paths)
+    quality = quality_check_simple(tex, records, sources_json, report_brief, scanned_paths, len(free_notes))
     (report_dir / "quality_check.json").write_text(
         json.dumps(quality, ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
@@ -1948,6 +2252,7 @@ def main() -> int:
         for issue in quality["issues"]:
             print(f"- {issue}")
         return 1
+    sync_review_queue_from_brief(args.date, report_brief)
 
     if args.no_compile:
         print(f"Wrote {report_dir / 'report.tex'}")

@@ -17,6 +17,14 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
+from scripts.context_builder import (
+    append_jsonl as append_structured_jsonl,
+    pending_review_items,
+    read_review_queue,
+    rebuild_tasks,
+    stable_id,
+)
+
 
 ROOT = Path(__file__).resolve().parent
 WEB_DIR = ROOT / "web"
@@ -34,7 +42,15 @@ PRIMARY_DIRS = {
     "daily_reports": ROOT / "synthesis" / "daily_reports",
     "idea_seeds": ROOT / "synthesis" / "idea_seeds",
     "system": ROOT / "system",
+    "memory": ROOT / "memory",
+    "tasks": ROOT / "tasks",
+    "review_queue": ROOT / "review_queue",
 }
+
+MEMORY_PROFILE = PRIMARY_DIRS["memory"] / "profile.md"
+MEMORY_THEMES = PRIMARY_DIRS["memory"] / "themes.md"
+MEMORY_PREFERENCES = PRIMARY_DIRS["memory"] / "preferences.jsonl"
+TASK_EVENTS = PRIMARY_DIRS["tasks"] / "tasks.jsonl"
 
 LEGACY_DIRS = {
     "knowledge": ROOT / "library" / "nodes",
@@ -47,6 +63,22 @@ def ensure_runtime_files() -> None:
     for path in PRIMARY_DIRS.values():
         path.mkdir(parents=True, exist_ok=True)
     CONFIG_DIR.mkdir(parents=True, exist_ok=True)
+    if not MEMORY_PROFILE.exists():
+        MEMORY_PROFILE.write_text(
+            "# 个人画像\n\n"
+            "这里只保存经过确认的长期画像。日报和随心记可以提出候选，但不会自动改写这里。\n",
+            encoding="utf-8",
+        )
+    if not MEMORY_THEMES.exists():
+        MEMORY_THEMES.write_text(
+            "# 长期主题\n\n"
+            "记录反复出现的长期主题、当前关注强度和最近证据。\n",
+            encoding="utf-8",
+        )
+    if not MEMORY_PREFERENCES.exists():
+        MEMORY_PREFERENCES.write_text("", encoding="utf-8")
+    if not TASK_EVENTS.exists():
+        TASK_EVENTS.write_text("", encoding="utf-8")
     if not AUTH_CONFIG.exists():
         config = {
             "password": "change-me",
@@ -310,6 +342,10 @@ def today_inbox_path() -> Path:
     return PRIMARY_DIRS["inbox"] / f"{datetime.now().strftime('%Y-%m-%d')}.md"
 
 
+def today_inbox_jsonl_path() -> Path:
+    return PRIMARY_DIRS["inbox"] / f"{datetime.now().strftime('%Y-%m-%d')}.jsonl"
+
+
 def create_inbox_if_needed(path: Path) -> None:
     if path.exists():
         return
@@ -320,7 +356,7 @@ def create_inbox_if_needed(path: Path) -> None:
     else:
         content = (
             f"# 每日输入 {today}\n\n"
-            "> 本文件由网页端自动维护。日常输入只通过网页提交：关键词、补充信息、权重。\n\n"
+            "> 本文件由网页端自动维护。日常输入只通过网页提交：关键词、补充信息、权重、随心记。\n\n"
             "## 网页输入记录\n"
         )
     path.write_text(content.rstrip() + "\n", encoding="utf-8")
@@ -349,14 +385,15 @@ def short_command_output(process: subprocess.CompletedProcess, limit: int = 500)
     return output
 
 
-def auto_git_sync(path: Path) -> dict:
+def auto_git_sync(paths: Path | list[Path]) -> dict:
     disabled = os.environ.get("IDEA_SPROUT_AUTO_GIT_SYNC", "").lower() in {
         "0",
         "false",
         "no",
         "off",
     }
-    relative = relative_path(path)
+    path_list = [paths] if isinstance(paths, Path) else list(paths)
+    relatives = [relative_path(path) for path in path_list]
     if disabled:
         return {
             "enabled": False,
@@ -386,7 +423,7 @@ def auto_git_sync(path: Path) -> dict:
                 "message": "No git remote named origin is configured.",
             }
 
-        status = run_git(["status", "--porcelain", "--", relative])
+        status = run_git(["status", "--porcelain", "--", *relatives])
         if status.returncode != 0:
             return {
                 "enabled": True,
@@ -399,10 +436,10 @@ def auto_git_sync(path: Path) -> dict:
                 "enabled": True,
                 "committed": False,
                 "pushed": False,
-                "message": "No git changes detected for the inbox file.",
+                "message": "No git changes detected for the inbox files.",
             }
 
-        added = run_git(["add", "--", relative])
+        added = run_git(["add", "--", *relatives])
         if added.returncode != 0:
             return {
                 "enabled": True,
@@ -412,7 +449,7 @@ def auto_git_sync(path: Path) -> dict:
             }
 
         stamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-        commit = run_git(["commit", "-m", f"Auto sync inbox {stamp}", "--", relative])
+        commit = run_git(["commit", "-m", f"Auto sync inbox {stamp}", "--", *relatives])
         if commit.returncode != 0:
             return {
                 "enabled": True,
@@ -448,6 +485,74 @@ def auto_git_sync(path: Path) -> dict:
         }
 
 
+def normalize_weight(value: str) -> str:
+    cleaned = str(value or "").strip()
+    return cleaned if cleaned in {"1", "2", "3", "4", "5"} else "3"
+
+
+def markdown_keyword_records(path: Path) -> list[dict[str, str]]:
+    if not path.exists():
+        return []
+    records: list[dict[str, str]] = []
+    current: dict[str, str] | None = None
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        if line.startswith("- 关键词：") or line.startswith("- 关键词:"):
+            keyword = line.split("：", 1)[-1] if "：" in line else line.split(":", 1)[-1]
+            current = {"keyword": keyword.strip(), "supplemental_info": "", "weight": "3"}
+            if current["keyword"]:
+                records.append(current)
+            continue
+        if current and (line.startswith("- 补充信息：") or line.startswith("- 补充信息:") or line.startswith("- 上下文：") or line.startswith("- 上下文:")):
+            current["supplemental_info"] = line.split("：", 1)[-1] if "：" in line else line.split(":", 1)[-1]
+            current["supplemental_info"] = current["supplemental_info"].strip()
+            continue
+        if current and (line.startswith("- 权重：") or line.startswith("- 权重:") or line.startswith("- 可选权重：") or line.startswith("- 可选权重:")):
+            weight = line.split("：", 1)[-1] if "：" in line else line.split(":", 1)[-1]
+            current["weight"] = normalize_weight(weight)
+    return records
+
+
+def raw_entry(kind: str, payload: dict, now: datetime | None = None, source: str = "web") -> dict:
+    created_at = (now or datetime.now().astimezone()).astimezone()
+    return {
+        "schema_version": 1,
+        "id": f"{created_at.strftime('%Y-%m-%dT%H-%M-%S')}-{secrets.token_hex(3)}",
+        "date": created_at.strftime("%Y-%m-%d"),
+        "created_at": created_at.isoformat(timespec="seconds"),
+        "source": source,
+        "kind": kind,
+        "payload": payload,
+    }
+
+
+def append_jsonl_entry(path: Path, entry: dict) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as file:
+        file.write(json.dumps(entry, ensure_ascii=False, separators=(",", ":")) + "\n")
+
+
+def bootstrap_jsonl_from_markdown(inbox_path: Path, jsonl_path: Path, now: datetime) -> None:
+    if jsonl_path.exists():
+        return
+    for record in markdown_keyword_records(inbox_path):
+        append_jsonl_entry(
+            jsonl_path,
+            raw_entry(
+                "keyword_batch",
+                {
+                    "keywords": [record["keyword"]],
+                    "supplemental_info": record.get("supplemental_info", ""),
+                    "weight": normalize_weight(record.get("weight", "")),
+                },
+                now=now,
+                source="web_legacy_md",
+            ),
+        )
+
+
 def append_keywords(payload: dict) -> dict:
     raw_keywords = str(payload.get("keywords", ""))
     keywords = []
@@ -456,18 +561,35 @@ def append_keywords(payload: dict) -> dict:
         if cleaned:
             keywords.append(cleaned)
     supplemental_info = str(payload.get("supplemental_info", payload.get("context", ""))).strip()
-    weight = str(payload.get("weight", "")).strip() or "3"
-    if weight and weight not in {"1", "2", "3", "4", "5"}:
+    raw_weight = str(payload.get("weight", "")).strip()
+    if raw_weight and raw_weight not in {"1", "2", "3", "4", "5"}:
         raise ValueError("权重只能是 1-5。")
+    weight = normalize_weight(raw_weight)
     if not keywords:
         raise ValueError("请至少输入一个关键词。")
 
     inbox_path = today_inbox_path()
+    jsonl_path = today_inbox_jsonl_path()
     inbox_path.parent.mkdir(parents=True, exist_ok=True)
     create_inbox_if_needed(inbox_path)
 
-    now = datetime.now().strftime("%Y-%m-%d %H:%M")
-    lines = ["", f"### 网页输入 {now}", ""]
+    now = datetime.now().astimezone()
+    bootstrap_jsonl_from_markdown(inbox_path, jsonl_path, now)
+    append_jsonl_entry(
+        jsonl_path,
+        raw_entry(
+            "keyword_batch",
+            {
+                "keywords": keywords,
+                "supplemental_info": supplemental_info,
+                "weight": weight,
+            },
+            now=now,
+        ),
+    )
+
+    stamp = now.strftime("%Y-%m-%d %H:%M")
+    lines = ["", f"### 网页输入 {stamp}", ""]
     for keyword in keywords:
         lines.append(f"- 关键词：{keyword}")
         lines.append(f"  - 补充信息：{supplemental_info or '未填写'}")
@@ -477,8 +599,282 @@ def append_keywords(payload: dict) -> dict:
     with inbox_path.open("a", encoding="utf-8") as file:
         file.write("\n".join(lines))
 
-    sync = auto_git_sync(inbox_path)
-    return {"path": relative_path(inbox_path), "count": len(keywords), "sync": sync}
+    sync = auto_git_sync([inbox_path, jsonl_path])
+    return {
+        "path": relative_path(inbox_path),
+        "jsonl_path": relative_path(jsonl_path),
+        "count": len(keywords),
+        "sync": sync,
+    }
+
+
+def append_free_note(payload: dict) -> dict:
+    text = str(payload.get("text", "")).strip()
+    if not text:
+        raise ValueError("请先写一点随心记内容。")
+    if len(text) > 8000:
+        raise ValueError("单条随心记最多 8000 字。")
+
+    inbox_path = today_inbox_path()
+    jsonl_path = today_inbox_jsonl_path()
+    inbox_path.parent.mkdir(parents=True, exist_ok=True)
+    create_inbox_if_needed(inbox_path)
+
+    now = datetime.now().astimezone()
+    bootstrap_jsonl_from_markdown(inbox_path, jsonl_path, now)
+    append_jsonl_entry(jsonl_path, raw_entry("free_note", {"text": text}, now=now))
+
+    stamp = now.strftime("%Y-%m-%d %H:%M")
+    lines = ["", f"### 随心记 {stamp}", "", text, ""]
+    with inbox_path.open("a", encoding="utf-8") as file:
+        file.write("\n".join(lines))
+
+    sync = auto_git_sync([inbox_path, jsonl_path])
+    return {
+        "path": relative_path(inbox_path),
+        "jsonl_path": relative_path(jsonl_path),
+        "count": 1,
+        "sync": sync,
+    }
+
+
+def append_task_capture(payload: dict) -> dict:
+    title = str(payload.get("title", "")).strip()
+    if not title:
+        raise ValueError("请先写任务标题。")
+    notes = str(payload.get("notes", "")).strip()
+    due_date = str(payload.get("due_date", "")).strip()
+    theme = str(payload.get("theme", "")).strip()
+
+    inbox_path = today_inbox_path()
+    jsonl_path = today_inbox_jsonl_path()
+    inbox_path.parent.mkdir(parents=True, exist_ok=True)
+    create_inbox_if_needed(inbox_path)
+
+    now = datetime.now().astimezone()
+    bootstrap_jsonl_from_markdown(inbox_path, jsonl_path, now)
+    task_id = stable_id(title, due_date, now.isoformat(timespec="seconds"), prefix="task")
+    entry = raw_entry(
+        "task_capture",
+        {
+            "task_id": task_id,
+            "title": title,
+            "notes": notes,
+            "due_date": due_date,
+            "theme": theme,
+        },
+        now=now,
+    )
+    append_jsonl_entry(jsonl_path, entry)
+    append_structured_jsonl(
+        TASK_EVENTS,
+        {
+            "schema_version": 1,
+            "id": stable_id(task_id, "created", now.isoformat(timespec="seconds"), prefix="task-event"),
+            "created_at": entry["created_at"],
+            "source": "web_manual_capture",
+            "kind": "task_created",
+            "payload": {
+                "task_id": task_id,
+                "title": title,
+                "notes": notes,
+                "due_date": due_date,
+                "theme": theme,
+                "status": "open",
+                "source_entry_id": entry["id"],
+            },
+        },
+    )
+
+    stamp = now.strftime("%Y-%m-%d %H:%M")
+    lines = ["", f"### 任务捕捉 {stamp}", "", f"- 任务：{title}"]
+    if due_date:
+        lines.append(f"  - 截止：{due_date}")
+    if theme:
+        lines.append(f"  - 关联主题：{theme}")
+    if notes:
+        lines.append(f"  - 备注：{notes}")
+    lines.append("")
+    with inbox_path.open("a", encoding="utf-8") as file:
+        file.write("\n".join(lines))
+
+    sync = auto_git_sync([inbox_path, jsonl_path, TASK_EVENTS])
+    return {
+        "path": relative_path(inbox_path),
+        "jsonl_path": relative_path(jsonl_path),
+        "task_id": task_id,
+        "sync": sync,
+    }
+
+
+def append_calendar_capture(payload: dict) -> dict:
+    title = str(payload.get("title", "")).strip()
+    if not title:
+        raise ValueError("请先写日程标题。")
+    start_at = str(payload.get("start_at", "")).strip()
+    end_at = str(payload.get("end_at", "")).strip()
+    notes = str(payload.get("notes", "")).strip()
+
+    inbox_path = today_inbox_path()
+    jsonl_path = today_inbox_jsonl_path()
+    inbox_path.parent.mkdir(parents=True, exist_ok=True)
+    create_inbox_if_needed(inbox_path)
+
+    now = datetime.now().astimezone()
+    bootstrap_jsonl_from_markdown(inbox_path, jsonl_path, now)
+    entry = raw_entry(
+        "calendar_capture",
+        {"title": title, "start_at": start_at, "end_at": end_at, "notes": notes},
+        now=now,
+    )
+    append_jsonl_entry(jsonl_path, entry)
+
+    stamp = now.strftime("%Y-%m-%d %H:%M")
+    lines = ["", f"### 日程捕捉 {stamp}", "", f"- 日程：{title}"]
+    if start_at:
+        lines.append(f"  - 开始：{start_at}")
+    if end_at:
+        lines.append(f"  - 结束：{end_at}")
+    if notes:
+        lines.append(f"  - 备注：{notes}")
+    lines.append("")
+    with inbox_path.open("a", encoding="utf-8") as file:
+        file.write("\n".join(lines))
+
+    sync = auto_git_sync([inbox_path, jsonl_path])
+    return {
+        "path": relative_path(inbox_path),
+        "jsonl_path": relative_path(jsonl_path),
+        "entry_id": entry["id"],
+        "sync": sync,
+    }
+
+
+def current_tasks() -> list[dict]:
+    tasks = list(rebuild_tasks().values())
+    tasks.sort(key=lambda item: (str(item.get("status") or ""), str(item.get("due_date") or "9999-99-99"), str(item.get("title") or "")))
+    return tasks
+
+
+def update_task_status(payload: dict) -> dict:
+    task_id = str(payload.get("task_id", "")).strip()
+    action = str(payload.get("action", "")).strip()
+    if not task_id:
+        raise ValueError("缺少 task_id。")
+    if action not in {"complete", "cancel", "defer"}:
+        raise ValueError("任务动作只能是 complete、cancel 或 defer。")
+    tasks = rebuild_tasks()
+    if task_id not in tasks:
+        raise ValueError("任务不存在。")
+    kind_by_action = {
+        "complete": "task_completed",
+        "cancel": "task_cancelled",
+        "defer": "task_deferred",
+    }
+    event_payload = {"task_id": task_id}
+    if action == "defer":
+        event_payload["due_date"] = str(payload.get("due_date", "")).strip()
+    now = datetime.now().astimezone()
+    append_structured_jsonl(
+        TASK_EVENTS,
+        {
+            "schema_version": 1,
+            "id": stable_id(task_id, action, now.isoformat(timespec="seconds"), prefix="task-event"),
+            "created_at": now.isoformat(timespec="seconds"),
+            "source": "web_manual_update",
+            "kind": kind_by_action[action],
+            "payload": event_payload,
+        },
+    )
+    sync = auto_git_sync(TASK_EVENTS)
+    return {"task_id": task_id, "action": action, "sync": sync}
+
+
+def review_queue_summary() -> dict:
+    pending = pending_review_items()
+    return {
+        "pending": pending,
+        "all": read_review_queue(),
+    }
+
+
+def find_review_candidate(candidate_id: str) -> dict | None:
+    for item in pending_review_items():
+        if str(item.get("id")) == candidate_id:
+            return item
+    return None
+
+
+def append_review_decision(candidate: dict, decision: str, edited_payload: dict | None = None) -> dict:
+    if decision not in {"accepted", "rejected"}:
+        raise ValueError("确认动作只能是 accepted 或 rejected。")
+    queue_path = ROOT / str(candidate.get("queue_path", ""))
+    if not queue_path.exists():
+        queue_path = PRIMARY_DIRS["review_queue"] / f"{datetime.now().strftime('%Y-%m-%d')}.jsonl"
+    row = raw_entry(
+        "review_decision",
+        {
+            "candidate_id": candidate.get("id"),
+            "candidate_kind": candidate.get("kind"),
+            "decision": decision,
+            "edited_payload": edited_payload or {},
+        },
+        source="web_review",
+    )
+    append_jsonl_entry(queue_path, row)
+    return row
+
+
+def materialize_review_acceptance(candidate: dict, edited_payload: dict | None = None) -> list[str]:
+    payload = edited_payload if edited_payload else candidate.get("payload")
+    if not isinstance(payload, dict):
+        payload = {}
+    kind = str(candidate.get("kind") or "")
+    written: list[str] = []
+    now = datetime.now().astimezone()
+    if kind == "memory_candidate":
+        append_structured_jsonl(
+            MEMORY_PREFERENCES,
+            {
+                "schema_version": 1,
+                "id": stable_id(str(candidate.get("id")), "memory", now.isoformat(timespec="seconds"), prefix="memory"),
+                "created_at": now.isoformat(timespec="seconds"),
+                "source": "review_queue",
+                "kind": "memory_accepted",
+                "payload": {
+                    "candidate_id": candidate.get("id"),
+                    "text": str(payload.get("text") or payload.get("summary") or "").strip(),
+                    "target": str(payload.get("target") or "preferences"),
+                    "source_report": payload.get("source_report", ""),
+                },
+            },
+        )
+        written.append(relative_path(MEMORY_PREFERENCES))
+    elif kind == "task_candidate":
+        title = str(payload.get("title") or payload.get("text") or "").strip()
+        if title:
+            task_id = stable_id(str(candidate.get("id")), title, prefix="task")
+            append_structured_jsonl(
+                TASK_EVENTS,
+                {
+                    "schema_version": 1,
+                    "id": stable_id(task_id, "review-created", now.isoformat(timespec="seconds"), prefix="task-event"),
+                    "created_at": now.isoformat(timespec="seconds"),
+                    "source": "review_queue",
+                    "kind": "task_created",
+                    "payload": {
+                        "task_id": task_id,
+                        "title": title,
+                        "notes": str(payload.get("notes") or ""),
+                        "due_date": str(payload.get("due_date") or ""),
+                        "theme": str(payload.get("theme") or ""),
+                        "status": "open",
+                        "source_candidate_id": candidate.get("id"),
+                    },
+                },
+            )
+            written.append(relative_path(TASK_EVENTS))
+    return written
 
 
 def primary_lan_ip() -> str | None:
@@ -558,6 +954,8 @@ class IdeaSproutHandler(BaseHTTPRequestHandler):
                     "seeds": list_markdown_files(
                         [PRIMARY_DIRS["idea_seeds"], LEGACY_DIRS["idea_seeds"]]
                     ),
+                    "review_queue": review_queue_summary()["pending"],
+                    "tasks": current_tasks(),
                 }
             )
             return
@@ -641,6 +1039,83 @@ class IdeaSproutHandler(BaseHTTPRequestHandler):
                 self.send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
                 return
             self.send_json(result)
+            return
+        if parsed.path == "/api/free-notes":
+            if not self.require_auth():
+                return
+            payload = self.read_json_body()
+            if payload is None:
+                return
+            try:
+                result = append_free_note(payload)
+            except ValueError as exc:
+                self.send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+                return
+            self.send_json(result)
+            return
+        if parsed.path == "/api/tasks":
+            if not self.require_auth():
+                return
+            payload = self.read_json_body()
+            if payload is None:
+                return
+            try:
+                result = append_task_capture(payload)
+            except ValueError as exc:
+                self.send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+                return
+            self.send_json(result)
+            return
+        if parsed.path == "/api/calendar":
+            if not self.require_auth():
+                return
+            payload = self.read_json_body()
+            if payload is None:
+                return
+            try:
+                result = append_calendar_capture(payload)
+            except ValueError as exc:
+                self.send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+                return
+            self.send_json(result)
+            return
+        if parsed.path == "/api/tasks/status":
+            if not self.require_auth():
+                return
+            payload = self.read_json_body()
+            if payload is None:
+                return
+            try:
+                result = update_task_status(payload)
+            except ValueError as exc:
+                self.send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+                return
+            self.send_json(result)
+            return
+        if parsed.path == "/api/review":
+            if not self.require_auth():
+                return
+            payload = self.read_json_body()
+            if payload is None:
+                return
+            candidate_id = str(payload.get("candidate_id", "")).strip()
+            action = str(payload.get("action", "")).strip()
+            if action not in {"accept", "reject"}:
+                self.send_json({"error": "确认动作只能是 accept 或 reject。"}, HTTPStatus.BAD_REQUEST)
+                return
+            candidate = find_review_candidate(candidate_id)
+            if not candidate:
+                self.send_json({"error": "待确认项不存在或已经处理。"}, HTTPStatus.NOT_FOUND)
+                return
+            edited_payload = payload.get("edited_payload") if isinstance(payload.get("edited_payload"), dict) else {}
+            try:
+                decision = "accepted" if action == "accept" else "rejected"
+                written = materialize_review_acceptance(candidate, edited_payload) if decision == "accepted" else []
+                append_review_decision(candidate, decision, edited_payload)
+            except ValueError as exc:
+                self.send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
+                return
+            self.send_json({"candidate_id": candidate_id, "decision": decision, "written": written})
             return
         self.send_error(HTTPStatus.NOT_FOUND)
 

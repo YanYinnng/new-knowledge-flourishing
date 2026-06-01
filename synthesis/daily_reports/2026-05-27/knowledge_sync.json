@@ -1,0 +1,42 @@
+{
+  "date": "2026-05-27",
+  "generated_at": "2026-05-27T22:54:15",
+  "dry_run": false,
+  "library_policy": "read-only",
+  "context_scanned_paths": [
+    "knowledge/node-0011b3bd.md",
+    "knowledge/node-78eeff5b.md",
+    "knowledge/personal-knowledge-incubation.md",
+    "synthesis/idea_seeds/daily-review-spark.md",
+    "synthesis/idea_seeds/seed-20845b10.md",
+    "synthesis/idea_seeds/seed-72a2ef24.md",
+    "synthesis/idea_seeds/seed-b123728a.md",
+    "synthesis/idea_seeds/seed-cf82098a.md",
+    "tracking/topics.md"
+  ],
+  "created": [
+    {
+      "kind": "knowledge",
+      "keyword": "中美创客大赛",
+      "slug": "node-7c0378ad",
+      "path": "knowledge/node-7c0378ad.md",
+      "action": "created"
+    },
+    {
+      "kind": "seed",
+      "title": "赛事场域观察卡",
+      "slug": "seed-ed5e2f08",
+      "path": "synthesis/idea_seeds/seed-ed5e2f08.md",
+      "action": "created"
+    },
+    {
+      "kind": "seed",
+      "title": "早期项目雷达",
+      "slug": "seed-e2879fd0",
+      "path": "synthesis/idea_seeds/seed-e2879fd0.md",
+      "action": "created"
+    }
+  ],
+  "updated": [],
+  "skipped": []
+}

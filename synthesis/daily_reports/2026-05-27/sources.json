@@ -1,0 +1,81 @@
+{
+  "generated_at": "2026-05-27T22:52:28",
+  "config": {
+    "enable_web_search": true,
+    "latex_engine": "xelatex"
+  },
+  "text_sources": [
+    {
+      "keyword": "中美创客大赛",
+      "title": "中美青年创客大赛",
+      "url": "https://chinaus-maker.cscse.edu.cn/",
+      "snippet": "首页 大赛简介 INTRODUCTION 教育部\"中美青年创客大赛\"(以下简称\"大赛\")自2014年起由中华人民共和国教育部主办,是中美两国青年交流的最高级别创客赛事。大赛自首届起持续被纳入中美人文交流高层磋商机制成果清单,并列入中美社会和人文对话成果清单,并于2020年入选中国高等教育学会 ...",
+      "domain": "chinaus-maker.cscse.edu.cn",
+      "quality_tier": "官方/机构资料",
+      "source_role": "优先用于核实机构定位、项目方向和公开事实。",
+      "authority_score": 90,
+      "relevance_score": 16,
+      "id": "S1",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
+      "accessed_at": "2026-05-27"
+    },
+    {
+      "keyword": "中美创客大赛",
+      "title": "2026中美青年创客大赛校内赛启动报名 - si.sjtu.edu.cn",
+      "url": "https://www.si.sjtu.edu.cn/content/news-detail?params=ba608706abad4c0fa4bf8bdf712a79c1&menuIds=3,26,28",
+      "snippet": "大赛简介 \"中美青年创客大赛\"由中华人民共和国教育部主办。该竞赛为全国普通高校大学生竞赛榜单赛事,是 上海交通大学认定的A类学科竞赛。 大赛以\" 共创未来 \"为主题,探索韧性社区、环境教育、低碳环保、食物系统、危机应对、公共卫生、健康福祉、清洁能源、气候变化、绿色交通 ...",
+      "domain": "si.sjtu.edu.cn",
+      "quality_tier": "官方/机构资料",
+      "source_role": "优先用于核实机构定位、项目方向和公开事实。",
+      "authority_score": 90,
+      "relevance_score": 16,
+      "id": "S2",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
+      "accessed_at": "2026-05-27"
+    },
+    {
+      "keyword": "中美创客大赛",
+      "title": "关于\"2026共创未来——中美青年创客大赛\"的报名通知-长江大学传媒学院",
+      "url": "https://yscm.yangtzeu.edu.cn/info/1087/11710.htm",
+      "snippet": "(1)2026中美青年创客大赛启动 (2)2026中美青年创客大赛参赛团队报名 (3)分赛区选拔赛 分赛区选拔赛将持续至2026年6月下旬 2.第二阶段:决赛入围团队优化作品 2026年6月20日至决赛前 3.第三阶段:大赛决赛 2026年7月中下旬(如时间变更以组委会最终通知时间 ...",
+      "domain": "yscm.yangtzeu.edu.cn",
+      "quality_tier": "官方/机构资料",
+      "source_role": "优先用于核实机构定位、项目方向和公开事实。",
+      "authority_score": 90,
+      "relevance_score": 16,
+      "id": "S3",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
+      "accessed_at": "2026-05-27"
+    },
+    {
+      "keyword": "中美创客大赛",
+      "title": "2025中美青年创客大赛-全国青年大学生竞赛官网-高质量竞赛平台",
+      "url": "http://www.zhjingsai.com/?m=home&c=View&a=index&aid=739",
+      "snippet": "2025中美青年创客大赛 平台支持:全国青年大学生竞赛网 教育部\"中美青年创客大赛\"(以下简称\"大赛\")由中华人民共和国教育部主办,中国(教育部)留学服务中心、清华大学、北京歌华文化发展集团有限公司、中国大学科技园联盟和美有关合作方承办。 大赛以\"共创未来\"为主题,探索 ...",
+      "domain": "zhjingsai.com",
+      "quality_tier": "项目主页/机构主页",
+      "source_role": "只能代表该机构或产品自己的说法，不能替行业概念背书。",
+      "authority_score": 45,
+      "relevance_score": 16,
+      "id": "S4",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
+      "accessed_at": "2026-05-27"
+    },
+    {
+      "keyword": "中美创客大赛",
+      "title": "高校学生竞赛网—竞赛质量提升,创新人才培养",
+      "url": "https://cp.moocollege.com/home/competition/details?competitionId=105634",
+      "snippet": "中美青年创客大赛致力于搭建跨文化共创平台,深化两国人文交流,通过融合中美文化视角与跨界合作,鼓励青年创客以首创精神为核心,共同开发解决社会问题的创新原型。大赛不仅强调开源共享文化、引导创意向实际应用转化,更推动两国青年关注人类未来福祉,促进中美创客文化与生态的共同 ...",
+      "domain": "cp.moocollege.com",
+      "quality_tier": "普通线索",
+      "source_role": "可作为线索，不能直接作为核心结论。",
+      "authority_score": 35,
+      "relevance_score": 20,
+      "id": "S5",
+      "used_for": "外部核实和写作参考；正文必须由大模型综合改写，不直接粘贴搜索片段。",
+      "accessed_at": "2026-05-27"
+    }
+  ],
+  "search_notes": [],
+  "date": "2026-05-27"
+}

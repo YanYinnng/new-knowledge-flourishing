@@ -1,27 +1,23 @@
-# 点子发芽 MVP
+# 点子发芽：本地优先的个人秘书与知识孵化系统
 
-这是一个个人自用的新知孵化工作流。日常输入只通过网页完成，系统用本地 Markdown 文件、少量 PowerShell 脚本和 Codex automation 提示词支撑每天的轻量输入、晚间整理和旧内容复盘。
+这是一个给个人使用的本地优先工作流。它从“每天写几个关键词，晚上生成一份知识报告”开始，正在逐步升级成一个“可确认、可追踪、逐渐理解你的个人秘书”。
 
-第一版的原则很简单：白天在网页里写关键词、一点补充信息和可选权重；晚上看一份 PDF 版“个人认知雷达报告”；最后由你决定什么保留、什么合并、什么升权或降权。
+它不依赖数据库、向量库、知识图谱引擎或 OpenAI API。系统状态主要保存在 Markdown、JSONL、JSON、LaTeX/PDF 和少量 Python/PowerShell 脚本里。你可以直接读文件、用 Git 备份，也可以在网页里完成日常输入和确认。
 
-## 每天怎么用
+## 核心理念
 
-日常使用只走网页入口。Markdown 文件是本地存储和备份，不再作为主要输入界面。
+1. 原始输入永远 append-only。每天的输入写入 `inbox/YYYY-MM-DD.jsonl`，旧内容不被覆盖。
+2. Markdown 负责可读，JSONL 负责事实。人看 Markdown，脚本读 JSONL。
+3. AI 只提出候选，不自动替你做最终决定。
+4. 长期记忆、任务状态、知识节点分层存储，不把所有东西混进日报。
+5. 所有关键写入都尽量可追溯：来源、时间、候选、确认结果都留在本地文件里。
 
-### 网页入口
+## 快速开始
 
-本项目新增了一个零依赖的本地 Python Web 服务。它只服务本机浏览器，不需要数据库，也不使用 OpenAI API。
-
-启动：
+在项目根目录运行：
 
 ```powershell
 python app.py
-```
-
-也可以用脚本启动，效果相同，会明确面向手机访问：
-
-```powershell
-.\scripts\start-web.ps1
 ```
 
 电脑本机访问：
@@ -30,433 +26,740 @@ python app.py
 http://127.0.0.1:3000
 ```
 
-手机访问：
-
-1. 确保手机和电脑在同一个 Wi-Fi 或局域网里。
-2. 启动服务后，看终端里打印的“手机访问链接”。
-3. 在手机浏览器里打开类似下面的地址：
-
-```text
-http://电脑局域网IP:3000
-```
-
-例如本机当前 WLAN 地址可能显示为：
-
-```text
-http://10.180.77.192:3000
-```
-
-注意：手机上不能打开 `http://127.0.0.1:3000`，因为手机里的 `127.0.0.1` 指的是手机自己，不是电脑。
-
-如果 3000 端口被占用，可以临时换端口：
+如果 3000 端口被占用：
 
 ```powershell
 $env:IDEA_SPROUT_PORT="3001"; python app.py
 ```
 
-如果只想让电脑本机能访问，不开放给同一局域网的手机：
-
-```powershell
-$env:IDEA_SPROUT_HOST="127.0.0.1"; python app.py
-```
-
-如果手机打不开，但电脑本机能打开，通常是 Windows 防火墙拦截了 Python 或 3000 端口。允许 Python 通过当前专用网络，或在防火墙里放行 3000 端口后再试。
-
-如果电脑正在开 VPN，也可能出现手机打不开的情况。优先检查 VPN 客户端里是否有“允许局域网访问”“Allow LAN”“Bypass local network”之类的开关；如果有，打开它。仍然打不开时，可以临时暂停 VPN 再试。除非手机也接入同一个 VPN，否则不要优先使用 VPN 分配的 IP，优先使用 `WLAN` 或 `Ethernet` 对应的 IPv4 地址。
-
-如果你连接的是校园网、公司网或 `WPA2-Enterprise` Wi-Fi，例如 `SJTU`，即使手机和电脑连着同一个 Wi-Fi，也可能因为网络启用了“客户端隔离”而无法互相访问。这种情况下网页服务本身已经启动成功，防火墙也可能没问题，但手机请求到不了电脑。
-
-校园网下更稳的做法：
-
-1. 让电脑连接手机热点，然后重新运行 `.\scripts\start-web.ps1`，用脚本新打印的手机访问链接。
-2. 或者让电脑开启 Windows 移动热点，手机连接电脑热点，再访问脚本打印的地址。
-3. 如果必须使用校园网，只能看学校网络是否允许同网设备互访；项目代码无法绕过校园网的客户端隔离。
-
-排查脚本：
-
-```powershell
-.\scripts\diagnose-phone-access.ps1
-```
-
-如果诊断显示服务监听正常、本机访问正常，但手机打不开，优先怀疑校园网客户端隔离。若你确认不是校园网隔离，而是 Windows 防火墙，可以用管理员 PowerShell 运行：
-
-```powershell
-.\scripts\allow-phone-firewall.ps1
-```
-
-安装依赖：不需要额外安装依赖，只需要本机有 Python 3。
-
-### 设置或修改本地密码
-
-真实密码配置文件是 `config/local_auth.json`。第一次启动 `python app.py` 时，如果该文件不存在，服务会自动创建一个本地配置文件，默认密码是 `change-me`。
-
-建议第一次启动后立刻编辑：
-
-```json
-{
-  "password": "你的本地密码",
-  "session_secret": "一段较长的随机字符串"
-}
-```
-
-也可以先复制示例文件：
-
-```powershell
-Copy-Item .\config\local_auth.example.json .\config\local_auth.json
-```
-
-然后修改其中的 `password` 和 `session_secret`。`config/local_auth.json` 已写入 `.gitignore`，不要把真实密码提交进 Git。
-
-### 登录状态
-
-输入正确密码后，服务会写入一个带签名的 `httpOnly` cookie：`idea_sprout_session`。cookie 和服务端签名内容都会记录过期时间，默认 30 天。
-
-30 天后需要重新登录，是为了让本地门禁不会永久有效。点击网页右上角“退出登录”会清除 cookie，再次访问会回到密码页。
-
-### 网页里能做什么
-
-- 在“网页输入”里一次输入多个关键词，每行一个。
-- 为这批关键词写一点补充信息，比如在哪里听到它，或它引发了什么思考。
-- 可选填写权重 1-5。
-- 提交后内容会按“网页输入记录”格式追加到当天 `inbox/YYYY-MM-DD.md`，不会覆盖旧内容。
-- 提交后会自动把当天 `inbox/YYYY-MM-DD.md` 做一次 Git commit，并推送到 `origin` 当前分支。
-- 在“最近日报”里优先打开 `synthesis/daily_reports/YYYY-MM-DD/report.pdf`；如果只有 `report.tex`，页面会提示 PDF 尚未生成或编译失败；旧 Markdown 日报仍可兼容查看。
-- 在“知识节点”里查看 `knowledge/` 中的知识卡片；页面也会兼容读取旧目录 `library/nodes/`。
-- 在“点子种子”里查看 `synthesis/idea_seeds/` 中的点子；页面也会兼容读取旧目录 `library/seeds/`。
-- 三栏各自有自己的阅读区：点击“最近日报”只更新日报栏下方的 PDF 预览；点击“知识节点”只更新知识栏下方的 Markdown；点击“点子种子”只更新种子栏下方的 Markdown。
-
-列表读取规则：
-
-- “最近日报”按日报日期排序，优先显示 `synthesis/daily_reports/YYYY-MM-DD/report.pdf`，其次是同目录 `report.tex`。如果同一天已经有结构化 PDF/TEX，旧的 `synthesis/daily_reports/YYYY-MM-DD.md` 不再重复显示在列表里。
-- “知识节点”优先显示 `knowledge/`；“点子种子”优先显示 `synthesis/idea_seeds/`。`library/nodes/` 和 `library/seeds/` 仍保留为旧目录兼容来源，但同名文件不会在网页列表中重复出现。
-- 点击列表条目时，后端只允许读取白名单目录中的报告、知识节点或点子种子文件；路径不存在或越界时，网页会显示友好的错误提示。
-
-### 自动 Git 同步
-
-网页每次成功提交关键词后，会自动同步这次写入：
-
-1. 只暂存当天 `inbox/YYYY-MM-DD.md`。
-2. 自动创建一条提交，格式类似 `Auto sync inbox 2026-05-24 19:30`。
-3. 推送到 `origin` 的当前分支。
-
-如果 GitHub 凭据失效、网络断开或远程仓库不可用，本地 Markdown 仍会先写入成功，网页会提示 Git 同步失败原因。你可以之后手动运行：
-
-```powershell
-git status
-git push
-```
-
-真实密码文件 `config/local_auth.json` 和运行日志已在 `.gitignore` 中，自动同步不会主动添加这些文件。
-
-如果临时不想自动提交和推送，可以这样启动：
+如果调试时不想让网页提交后自动 Git commit / push：
 
 ```powershell
 $env:IDEA_SPROUT_AUTO_GIT_SYNC="0"; python app.py
 ```
 
-### 网页门禁的安全限制
+也可以用脚本启动：
 
-这是本地自用的轻量门禁，不是正式产品级用户系统。它没有注册、多用户、找回密码、邮箱验证或短信验证。
+```powershell
+.\scripts\start-web.ps1
+```
 
-当前方案适合自己电脑和同一局域网内的个人设备访问。手机访问时，局域网内其他设备也可能看到这个服务入口，所以请务必修改默认密码。不要把它直接暴露到公网；如果未来要公网访问，需要升级认证方式，例如 HTTPS、正式 session 存储、密码哈希策略、CSRF 防护、访问日志和更严格的权限边界。
+第一次启动会自动创建 `config/local_auth.json`。默认密码是 `change-me`，请尽快改掉。
 
-1. 白天打开网页，在“网页输入”里写 3-5 个触发词、链接、人物、问题或粗糙想法。
-2. 为这批关键词补一点补充信息，例如从哪里看到、为什么注意、它引发了什么思考。
-3. 可选填写权重 1-5；不确定就留空。
-4. 晚上查看 `synthesis/daily_reports/YYYY-MM-DD/report.pdf`。报告应该帮助你判断哪些内容值得留下、哪些只是噪音、哪些和旧内容有关。
+## 每天怎么用
 
-## 晚上会发生什么
+白天打开网页，优先做四类轻量输入。
 
-Codex automation 应提前于 23:00 Asia/Shanghai 运行。它不是 23:00 才开始整理，而是预留时间先生成 PDF 报告。
+1. 关键词输入：写今天注意到的概念、人物、项目、问题或机会。每行一个关键词，可加补充信息和权重。
+2. 随心记：写突发想法、感受、判断、困惑。它不会影响关键词日报主体，只会用于独立复盘和候选生成。
+3. 任务捕捉：写下一步要做的事情、截止日期、关联主题和备注。
+4. 日程捕捉：写会议、课程、固定安排或临时事项。当前只做本地手动录入，不连接外部日历。
 
-当前目标：每天 22:50 开始整理，先由脚本收集 `report_context.json` 和 `sources.json`，再由 Codex automation 写 `report_brief.json`，最后渲染 `report.tex` 和 `report.pdf`。邮件发送不再放在 Codex automation 里等待或调度，而是交给 Windows 本地计划任务在 23:00 执行。
+晚上由日报流程整理：
 
-22:50 视为当日报告的截稿和生成时间。23:00 的发信任务只负责发送当天已经生成的 `report.pdf`，不因为 `inbox/YYYY-MM-DD.md` 的修改时间晚于 `report.pdf` 就默认拒发。22:50 之后追加的输入不会阻塞当晚邮件；如果确实要纳入当晚报告，需要手动重新生成一次当天报告。
+```powershell
+python scripts/generate-radar-report.py --date YYYY-MM-DD --collect-only
+```
 
-如果电脑在 22:50-23:00 之间关机或没有登录，Windows 登录补跑任务会在下一次开机登录后检查漏掉的报告。它会先补生成缺失的 `synthesis/daily_reports/YYYY-MM-DD/report.pdf`，再立刻发送邮件，不会等到当天晚上 23:00。它只处理安装补跑任务之后的日期，避免把旧报告突然重复补发。
-
-automation 只把网页写入的 `关键词`、`补充信息`、`权重` 三类信息当作当天输入依据。权重未填写时默认按 `3` 处理。
-
-如果当天有输入，它会：
-
-- 读取“网页输入记录”中的关键词、补充信息和权重。
-- 尽量联网搜索，资料来源写入 `sources.json`，写作材料写入 `report_context.json`。
-- 由 Codex automation 综合材料写 `report_brief.json`，而不是让脚本硬编码正文。
-- 每个关键词只写“简介 / 最近有什么相关新闻 / 与我相关 / 最小下一步”。
-- 在“与旧知识的链接”和“今日发芽点子”中只保留真正相关的内容。
-- 报告质量通过后，把新知识和点子沉淀成 `knowledge/` 与 `synthesis/idea_seeds/` 里的候选条目。
-
-如果当天没有有效输入，它会：
-
-- 读取 `tracking/topics.md`。
-- 复盘高权重或久未更新的节点。
-- 尽量联网检查 watchlist 新进展，无法联网则在报告中说明。
-- 生成一份“无新输入复盘模式”报告，最后只给一个“明日一问”。
-
-automation 的完整提示词在 `automation/nightly-codex-prompt.md`。如果需要手动创建 automation，就把该文件内容作为任务提示词，工作目录设为本仓库根目录，时间设为每天 22:50 Asia/Shanghai。这个 automation 不负责发邮件，不等待 23:00。
-
-## PDF 认知雷达报告
-
-每日报告的主输出目录为：
+Codex automation 读取 `report_context.json` 和 `sources.json`，写入：
 
 ```text
-synthesis/daily_reports/YYYY-MM-DD/
-├─ report_context.json
-├─ report_brief.json
-├─ quality_check.json
-├─ knowledge_sync.json
-├─ report.tex
-├─ report.pdf
-└─ sources.json
+synthesis/daily_reports/YYYY-MM-DD/report_brief.json
 ```
 
-收集某天报告材料：
+然后渲染 PDF：
 
 ```powershell
-python .\scripts\generate-radar-report.py --date 2026-05-24 --collect-only
+python scripts/generate-radar-report.py --date YYYY-MM-DD --render-only
 ```
 
-写好 `report_brief.json` 后渲染 PDF：
+质量通过后，同步知识候选：
 
 ```powershell
-python .\scripts\generate-radar-report.py --date 2026-05-24 --render-only
+python scripts/sync-knowledge-from-report.py --date YYYY-MM-DD
 ```
 
-兼容旧的单命令生成某天报告。如果没有 `report_brief.json`，脚本会生成一个低配 fallback brief，质量低于 Codex automation 写作版本：
+## 秘书体系是怎么架构的
 
-```powershell
-python .\scripts\generate-radar-report.py --date 2026-05-24
+系统现在分为六层。
+
+### 1. 原始输入层
+
+位置：
+
+```text
+inbox/YYYY-MM-DD.md
+inbox/YYYY-MM-DD.jsonl
 ```
 
-只生成 `report.tex`，不编译 PDF：
+`inbox/YYYY-MM-DD.md` 是人类可读日志。网页每次提交后会追加一段文本，方便直接查看当天写了什么。
 
-```powershell
-python .\scripts\generate-radar-report.py --date 2026-05-24 --render-only --no-compile
-```
-
-重新编译某天的 `report.tex`：
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\compile-radar-report.ps1 -Date 2026-05-24
-```
-
-LaTeX 工具要求：优先使用 TeX Live 或 MiKTeX，并确保 `xelatex` 和最好还有 `latexmk` 在 PATH 中。本机当前已检测到 TeX Live 2024 的 `xelatex` 和 `latexmk`。如果编译失败，`report.tex` 会保留，脚本会输出清楚的错误信息，详细日志在当天报告目录。
-
-报告配置在 `system/report_config.json`：
+`inbox/YYYY-MM-DD.jsonl` 是结构化事实来源。每行都是一个事件，基本形状是：
 
 ```json
 {
-  "enable_web_search": true,
-  "enable_images": true,
-  "enable_ai_generated_images": false,
-  "default_report_mode": "auto",
-  "default_input_weight": 3,
-  "max_idea_seeds_per_report": 3,
-  "latex_engine": "xelatex"
+  "schema_version": 1,
+  "id": "2026-06-01T18-00-00-abc123",
+  "date": "2026-06-01",
+  "created_at": "2026-06-01T18:00:00+08:00",
+  "source": "web",
+  "kind": "keyword_batch",
+  "payload": {}
 }
 ```
 
-临时关闭联网搜索：
+当前支持的 `kind`：
 
-```powershell
-python .\scripts\generate-radar-report.py --date 2026-05-24 --no-web
-```
+- `keyword_batch`：关键词日报主体。
+- `free_note`：随心记，只用于独立复盘和候选生成。
+- `task_capture`：手动捕捉任务，并写入任务事件流。
+- `calendar_capture`：手动捕捉日程。
+- `link_capture`：后续链接/文章输入预留。
+- `file_capture`：后续文件/长笔记输入预留。
 
-联网搜索结果会写入 `sources.json`。如果当前环境无法联网，`report_context.json` 会保留失败说明，Codex automation 需要在正文里明确降低置信度，不要编造新闻。
+设计原因：以后无论接入链接、文件、会议、邮件还是外部日历，都可以继续写入同一个 append-only 原始输入底座，不需要推翻现有日报流程。
 
-### 报告质量规则
+### 2. 统一上下文层
 
-这份 PDF 不是搜索结果合集。质量规则写在 `system/report_quality_rules.md`，核心要求是：
-
-- PDF 只保留“今日总结 / 今日输入 / 今日新知 / 与旧知识的链接 / 今日发芽点子 / 参考搜索内容”。
-- 每个关键词只允许“简介 / 最近有什么相关新闻 / 与我相关 / 最小下一步”四个小节。
-- `简介` 约 200-300 字，只专注解释关键词本身，不联系补充信息。
-- `最近有什么相关新闻` 最多 1 段或 2 条；没有可靠新进展就明确说明。
-- `与我相关` 单独分析关键词和补充信息之间的联系。
-- 禁止旧标签：`它是什么`、`今天查到了什么`、`和我有什么关系`、`今日判断`。
-- `quality_check.json` 会在编译前拦截旧标签、重复小节、过短简介和搜索结果直贴。
-
-### 日报如何沉淀为新知库
-
-当前主库是：
-
-- 知识节点：`knowledge/*.md`
-- 点子种子：`synthesis/idea_seeds/*.md`
-
-旧目录 `library/nodes/` 和 `library/seeds/` 只作为历史兼容读取，不再自动写入，也不做双向同步。
-
-每晚流程是：
-
-1. `generate-radar-report.py --collect-only` 读取当天 inbox，也读取已有 `knowledge/`、`synthesis/idea_seeds/` 和旧 `library/` 内容，写入 `report_context.json`。
-2. Codex automation 根据 `report_context.json` 写 `report_brief.json`。
-3. `generate-radar-report.py --render-only` 渲染 PDF，并生成 `quality_check.json`。
-4. 质量检查通过后，运行：
-
-```powershell
-python .\scripts\sync-knowledge-from-report.py --date 2026-05-25
-```
-
-同步脚本会把 `knowledge_cards[]` 写成或更新 `knowledge/` 中的候选知识节点，把 `idea_seeds[]` 写成或更新 `synthesis/idea_seeds/` 中的 raw 点子种子，并生成：
+位置：
 
 ```text
-synthesis/daily_reports/YYYY-MM-DD/knowledge_sync.json
+scripts/context_builder.py
 ```
 
-它不会自动把节点升到 4/5，也不会替你做最终判断。你之后可以人工确认、升权、合并或归档。
+这是秘书体系的“读数据入口”。它负责统一读取：
 
-## 邮件报告
+- 当天原始输入统计。
+- 长期记忆。
+- 当前任务和临近截止任务。
+- 待确认队列。
 
-PDF 报告邮件通过本地 SMTP 发送到：
+日报脚本已经通过它把 `secretary_context` 写入：
 
 ```text
-13583286559@163.com
+synthesis/daily_reports/YYYY-MM-DD/report_context.json
 ```
 
-真实邮箱授权配置放在 `config/email_auth.json`，该文件已被 `.gitignore` 忽略，不会上传 GitHub。先复制示例：
+未来做秘书问答、周报、任务建议、主动提醒时，都应该优先复用 `context_builder.py`，避免每个脚本各读各的，导致逻辑分叉。
+
+### 3. 长期记忆层
+
+位置：
+
+```text
+memory/profile.md
+memory/preferences.jsonl
+memory/themes.md
+```
+
+`memory/profile.md` 保存稳定个人画像，例如长期目标、工作方式、项目方向、长期身份变化。
+
+`memory/preferences.jsonl` 保存可追溯偏好事件，例如你更喜欢命令行还是网页、报告语气偏好、提醒方式偏好。它是 JSONL，因为偏好可能随时间变化，事件流比覆盖式 JSON 更适合追踪。
+
+`memory/themes.md` 保存长期反复主题和当前关注强度，例如某个领域最近是否频繁出现、是否正在从兴趣变成项目。
+
+重要原则：日报和随心记可以产生 `memory_candidate`，但不会自动改写 `memory/`。只有你在网页“待确认”里接受后，才会写入长期记忆相关文件。
+
+### 4. 任务与日程层
+
+位置：
+
+```text
+tasks/tasks.jsonl
+```
+
+任务状态不放在 `inbox/` 里。`inbox/` 只保存原始捕捉，`tasks/tasks.jsonl` 保存任务生命周期事件。
+
+典型事件：
+
+- `task_created`
+- `task_updated`
+- `task_completed`
+- `task_cancelled`
+- `task_deferred`
+
+每个任务有稳定的 `task_id`。当前任务状态由事件流重建，而不是靠某个唯一表格覆盖。这么做的好处是：你可以看到任务是怎么来的、什么时候延期、什么时候完成或取消。
+
+网页当前支持：
+
+- 手动创建任务。
+- 完成任务。
+- 延期任务。
+- 取消任务。
+
+日程当前写入 `inbox/YYYY-MM-DD.jsonl` 的 `calendar_capture`。它暂时不进入复杂日历库，主要用于当天秘书简报和后续提醒。
+
+### 5. 确认队列层
+
+位置：
+
+```text
+review_queue/YYYY-MM-DD.jsonl
+```
+
+AI 产物默认先进入确认队列。支持的候选类型：
+
+- `memory_candidate`
+- `task_candidate`
+- `knowledge_candidate`
+- `idea_seed_candidate`
+
+确认事件也写在队列里：
+
+- 接受：`review_decision`，`decision: accepted`
+- 拒绝：`review_decision`，`decision: rejected`
+
+接受后才会真正写入目标位置，例如：
+
+- 记忆候选接受后写入 `memory/preferences.jsonl`。
+- 任务候选接受后写入 `tasks/tasks.jsonl`。
+- 知识候选和点子候选目前先保留队列能力，后续可接入更完整的“编辑后接受并写库”流程。
+
+这个机制让秘书可以“主动观察和建议”，但不会越权替你修改长期事实。
+
+### 6. 产出层
+
+主要输出位置：
+
+```text
+synthesis/daily_reports/YYYY-MM-DD/
+```
+
+一个完整日报目录通常包含：
+
+```text
+report_context.json
+sources.json
+report_brief.json
+report.tex
+report.pdf
+quality_check.json
+knowledge_sync.json
+```
+
+各文件作用：
+
+- `report_context.json`：脚本收集出的写作上下文，包括关键词、随心记、本地知识、搜索来源、秘书上下文。
+- `sources.json`：联网搜索结果和来源分层。
+- `report_brief.json`：Codex automation 写出的结构化报告正文。
+- `report.tex`：由脚本把 brief 渲染成 LaTeX。
+- `report.pdf`：最终可读报告。
+- `quality_check.json`：结构与质量检查结果。
+- `knowledge_sync.json`：知识同步脚本的结果记录。
+
+## 网页里能做什么
+
+网页由三个文件构成：
+
+```text
+web/index.html
+web/static/app.js
+web/static/styles.css
+```
+
+后端在：
+
+```text
+app.py
+```
+
+当前网页区域：
+
+- 今日收集台：关键词输入、随心记。
+- 秘书工作台：任务捕捉、日程捕捉、待确认、当前任务。
+- 阅读索引：最近日报、知识节点、点子种子。
+- 阅读器：预览 PDF、Markdown、TeX 等允许读取的文件。
+
+网页提交后会写入本地文件，并默认自动 Git 同步。如果你不想自动同步，用：
+
+```powershell
+$env:IDEA_SPROUT_AUTO_GIT_SYNC="0"; python app.py
+```
+
+## 日报如何升级成秘书简报
+
+当前日报主体仍保持原逻辑：
+
+1. 今日总结。
+2. 今日输入。
+3. 今日新知。
+4. 与旧知识的链接。
+5. 今日发芽点子。
+6. 参考搜索内容。
+7. 随心记复盘，仅当当天有随心记时出现。
+
+秘书模块作为可选尾部模块逐步加入：
+
+- 个人记忆候选：AI 认为可能值得写入长期记忆的观察。
+- 任务与跟进：基于已确认任务和当天任务/日程输入生成。
+- 明日秘书提醒：明天最该关注的 1-3 件事。
+
+空模块应该省略，不写套话。
+
+## 如何更好地使用这个系统
+
+### 白天输入要短，但要带一点上下文
+
+关键词不要只写名词。最好加一句“为什么今天注意到它”。
+
+好的输入：
+
+```text
+关键词：AI 产品经理工作流
+补充信息：今天看到一个团队把 PRD、原型和验收标准都交给多智能体协作，想判断这是不是我之后做项目管理工具的方向。
+权重：4
+```
+
+比只写“AI 产品经理”更有用。
+
+### 随心记不要怕乱
+
+随心记不是正式笔记。它适合记录：
+
+- 一个突然冒出来的判断。
+- 一段情绪。
+- 一个还没想清楚的问题。
+- 对某件事的犹豫。
+
+系统会把它放在独立复盘里，不会污染关键词日报主体。真正有长期价值的内容会先变成候选，等你确认。
+
+### 任务要写成可执行动作
+
+不要写：
+
+```text
+研究比赛
+```
+
+更适合写：
+
+```text
+整理中美创客大赛的报名条件和截止日期
+```
+
+任务有截止日期时尽量填日期。没有日期也可以先捕捉，之后在“当前任务”里处理。
+
+### 每天看“待确认”
+
+待确认区是秘书体系变聪明的关键。你接受什么、拒绝什么，决定了系统怎样理解你。
+
+建议每天花 2-5 分钟做三件事：
+
+- 接受明显正确的记忆候选。
+- 编辑后接受表达不准但方向对的候选。
+- 拒绝过度推断、情绪化、短期噪声。
+
+### 每周做一次复盘
+
+日报适合当天理解，周报更适合更新个人画像。后续建议加入周报脚本，集中处理：
+
+- 本周反复主题。
+- 任务拖延。
+- 兴趣漂移。
+- 值得写入长期画像的稳定变化。
+- 值得清理或归档的点子种子。
+
+## 重要文件和目录
+
+### 根目录
+
+- `README.md`：系统说明和使用手册。
+- `PLAN.md`：当前秘书路线图。
+- `CODEX_HANDOFF.md`：给下一次 Codex 接手时看的工作交接。
+- `app.py`：零依赖本地 Web 服务，负责登录、API、文件读取、输入写入和自动 Git 同步。
+
+### 输入和状态
+
+- `inbox/`：每日原始输入。
+- `memory/`：长期记忆层。
+- `tasks/`：任务事件流。
+- `review_queue/`：候选和确认结果。
+- `tracking/topics.md`：长期追踪主题。
+
+### 知识和点子
+
+- `knowledge/`：当前主知识节点库。
+- `synthesis/idea_seeds/`：当前主点子种子库。
+- `library/nodes/`：历史兼容知识节点，只读。
+- `library/seeds/`：历史兼容点子种子，只读。
+
+### 报告和合成
+
+- `synthesis/daily_reports/`：每日结构化报告输出。
+- `reports/daily/`：历史兼容日报目录，不是当前主输出。
+
+### 脚本
+
+- `scripts/context_builder.py`：统一上下文读取层。
+- `scripts/generate-radar-report.py`：日报收集、搜索、渲染、质量检查。
+- `scripts/sync-knowledge-from-report.py`：把通过质量检查的日报沉淀到知识节点和点子种子。
+- `scripts/send-daily-report.py`：发送日报邮件。
+- `scripts/validate-structure.ps1`：检查关键目录和文件是否完整。
+- `scripts/start-web.ps1`：启动网页服务。
+- `scripts/compile-radar-report.ps1`：单独编译 LaTeX 报告。
+- `scripts/install-nightly-mailer.ps1`：安装 23:00 本地发信任务。
+- `scripts/install-startup-catchup.ps1`：安装开机补跑任务。
+
+### 配置和规则
+
+- `system/report_config.json`：日报配置，例如是否联网搜索、LaTeX 引擎等。
+- `system/report_quality_rules.md`：日报质量规则。
+- `system/architecture.md`：当前数据架构说明。
+- `automation/nightly-codex-prompt.md`：夜间 Codex automation 的主提示词。
+- `automation/catch-up-codex-prompt.md`：补跑日报时使用的提示词。
+- `templates/report-brief.json`：Codex 应写出的日报 brief 结构。
+- `templates/daily-input.md`：每日 Markdown 输入模板。
+- `templates/knowledge-node.md`：知识节点模板。
+- `templates/idea-seed.md`：点子种子模板。
+
+### 本地秘密文件
+
+这些文件应保留在本地，不要提交真实内容：
+
+- `config/local_auth.json`
+- `config/email_auth.json`
+
+仓库里只保留示例：
+
+- `config/local_auth.example.json`
+- `config/email_auth.example.json`
+
+## 常用命令
+
+启动网页：
+
+```powershell
+python app.py
+```
+
+禁用自动 Git 同步后启动：
+
+```powershell
+$env:IDEA_SPROUT_AUTO_GIT_SYNC="0"; python app.py
+```
+
+收集某天日报上下文：
+
+```powershell
+python scripts/generate-radar-report.py --date 2026-06-01 --collect-only
+```
+
+渲染某天日报：
+
+```powershell
+python scripts/generate-radar-report.py --date 2026-06-01 --render-only
+```
+
+只生成 TeX，不编译 PDF：
+
+```powershell
+python scripts/generate-radar-report.py --date 2026-06-01 --render-only --no-compile
+```
+
+关闭联网搜索：
+
+```powershell
+python scripts/generate-radar-report.py --date 2026-06-01 --collect-only --no-web
+```
+
+同步知识，先 dry-run：
+
+```powershell
+python scripts/sync-knowledge-from-report.py --date 2026-06-01 --dry-run
+```
+
+真正同步：
+
+```powershell
+python scripts/sync-knowledge-from-report.py --date 2026-06-01
+```
+
+检查结构：
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/validate-structure.ps1
+```
+
+Python 编译检查：
+
+```powershell
+python -m py_compile app.py scripts/generate-radar-report.py scripts/sync-knowledge-from-report.py scripts/send-daily-report.py scripts/context_builder.py
+```
+
+检查 Git 空白问题：
+
+```powershell
+git diff --check
+```
+
+## 邮件发送
+
+PDF 报告可以通过本地 SMTP 发送。真实配置在：
+
+```text
+config/email_auth.json
+```
+
+先复制示例：
 
 ```powershell
 Copy-Item .\config\email_auth.example.json .\config\email_auth.json
 ```
 
-然后编辑 `config/email_auth.json`：
-
-```json
-{
-  "smtp_host": "smtp.163.com",
-  "smtp_port": 465,
-  "use_ssl": true,
-  "username": "13583286559@163.com",
-  "password": "这里填 163 邮箱 SMTP 授权码，不是网页登录密码",
-  "from_email": "13583286559@163.com",
-  "to_emails": ["13583286559@163.com"]
-}
-```
-
-163 邮箱通常需要在网页版邮箱设置中开启 SMTP/POP3/IMAP，并生成“授权码”。不要把邮箱网页登录密码填进这里。
-
-手动测试发送：
+手动 dry-run：
 
 ```powershell
-python .\scripts\send-daily-report.py --date 2026-05-24 --dry-run
+python scripts/send-daily-report.py --date 2026-06-01 --dry-run
 ```
 
-去掉 `--dry-run` 会真正发送邮件；如果当天 PDF 存在，会优先把 PDF 作为附件发送：
+真正发送：
 
 ```powershell
-python .\scripts\send-daily-report.py --date 2026-05-24
+python scripts/send-daily-report.py --date 2026-06-01
 ```
 
-发送成功后，脚本会写入 `system/email_sent/YYYY-MM-DD.sent` 作为本地标记。后续本地发信或补跑任务看到这个标记，会跳过同一天的重复发送；如果你确实要手动重发，可以加 `--force`。
-
-安装 23:00 本地发信任务：
+安装每天 23:00 本地发信任务：
 
 ```powershell
 .\scripts\install-nightly-mailer.ps1
 ```
 
-这个任务会在每天 23:00 运行 `scripts/send-today-report.ps1`。如果当天 `report.pdf` 还没生成，它会最多等 30 分钟，但这个等待发生在本地 PowerShell 里，不消耗 Codex 用量。
-
-安装开机登录补跑任务：
+安装开机补跑任务：
 
 ```powershell
 .\scripts\install-startup-catchup.ps1
 ```
 
-这个任务会在 Windows 登录时运行 `scripts/catch-up-daily-report.ps1`。默认只回看最近 2 天，并且不会处理安装日期之前的日报。手动试运行但不真正生成或发送：
-
-```powershell
-.\scripts\catch-up-daily-report.ps1 -DryRun
-```
-
-如果以后想移除补跑任务：
-
-```powershell
-.\scripts\uninstall-startup-catchup.ps1
-```
-
-如果以后想移除 23:00 本地发信任务：
+卸载：
 
 ```powershell
 .\scripts\uninstall-nightly-mailer.ps1
+.\scripts\uninstall-startup-catchup.ps1
 ```
 
-## 如何确认
+## 手机访问
 
-日报里的建议不是最终决定。第一版网页先覆盖日常输入和查看；如果需要确认节点更新、关系或权重，可以让 Codex 根据日报建议继续处理，或者在后续版本把这些确认动作也搬进网页。
+默认服务监听 `0.0.0.0`，同一局域网内手机可以访问电脑的局域网 IP。
 
-本地文件仍然会保留为可检查的 Markdown：
+注意：
 
-- 当前知识节点主库：`knowledge/*.md`
-- 当前点子种子主库：`synthesis/idea_seeds/*.md`
-- 日报来源记录：`synthesis/daily_reports/YYYY-MM-DD/sources.json`
-- 历史兼容知识节点：`library/nodes/*.md`
-- 历史兼容点子种子：`library/seeds/*.md`
-- 长期追踪主题：`tracking/topics.md`
+- 手机上不能打开 `127.0.0.1:3000`，那指向手机自己。
+- 电脑和手机需要在同一个 Wi-Fi 或局域网。
+- 校园网、公司网、WPA2-Enterprise Wi-Fi 可能开启客户端隔离。
+- VPN 可能阻止局域网访问。
+- Windows 防火墙可能拦截 Python 或端口。
 
-权重 4 或 5 必须由你手动确认。不要让 automation 自动把一个节点升成核心主题。
-
-## 权重 1-5
-
-- 1：低价值存档，见过即可。
-- 2：轻度关注，有意思但暂不投入。
-- 3：稳定关注，和长期兴趣有关。
-- 4：高优先级，近期反复出现或有行动价值。
-- 5：核心主题，值得持续追踪，并可能转成项目、文章、研究或产品。
-
-网页输入未填写权重时默认使用 3，表示“稳定关注但还不升为高优先级”。权重 4 或 5 仍需要你手动确认。同一主题 7 天内多次出现，或关联到多个 active 节点，可以建议 +1；30 天无更新且无行动，可以建议 -1。
-
-## Helper 脚本
-
-创建当天输入文件。不建议作为日常入口；网页提交时会自动创建当天文件：
+诊断：
 
 ```powershell
-.\scripts\new-today.ps1
+.\scripts\diagnose-phone-access.ps1
 ```
 
-检查目录和关键文件是否完整：
+如果确认是防火墙问题，可以用管理员 PowerShell：
 
 ```powershell
-.\scripts\validate-structure.ps1
+.\scripts\allow-phone-firewall.ps1
 ```
 
-生成/编译 PDF 报告：
+如果只想电脑本机访问：
 
 ```powershell
-python .\scripts\generate-radar-report.py --date 2026-05-24
-powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\compile-radar-report.ps1 -Date 2026-05-24
+$env:IDEA_SPROUT_HOST="127.0.0.1"; python app.py
 ```
 
-把某天已经生成的日报沉淀到候选知识节点和点子种子：
+## 安全边界
+
+这是个人本地工具，不是正式多用户 Web 产品。
+
+当前安全能力：
+
+- 本地密码登录。
+- httpOnly session cookie。
+- 允许读取的文件路径有白名单限制。
+- 真实密码和邮箱配置被 `.gitignore` 忽略。
+
+当前不做：
+
+- 多用户权限。
+- 注册和找回密码。
+- HTTPS。
+- CSRF 完整防护。
+- 公网部署安全加固。
+
+不要把它直接暴露到公网。如果以后要公网访问，需要补 HTTPS、正式 session 存储、密码哈希策略、CSRF、访问日志和更严格权限边界。
+
+## 未来扩展路线
+
+### 第一阶段：稳住秘书骨架
+
+已经具备：
+
+- 多类型原始输入。
+- 长期记忆目录。
+- 任务事件流。
+- 确认队列。
+- 统一上下文构建层。
+- 日报尾部秘书模块。
+
+接下来应该补：
+
+- 更好的待确认编辑界面。
+- 任务编辑和批量清理。
+- 记忆候选写入 `profile.md` / `themes.md` 的更精细规则。
+- 周报脚本。
+
+### 第二阶段：周报和画像更新
+
+周报比日报更适合更新长期画像。建议新增：
+
+```text
+scripts/generate-weekly-review.py
+synthesis/weekly_reports/YYYY-WW/
+```
+
+周报负责：
+
+- 汇总本周反复主题。
+- 生成长期画像候选。
+- 检查任务拖延。
+- 检查兴趣漂移。
+- 清理低价值点子种子。
+
+### 第三阶段：链接和文章
+
+新增输入：
+
+```json
+{
+  "kind": "link_capture",
+  "payload": {
+    "url": "https://example.com",
+    "excerpt": "摘录",
+    "why_saved": "为什么保存",
+    "read_later": true
+  }
+}
+```
+
+建议先做：
+
+- 手动保存 URL。
+- 记录为什么保存。
+- 生成阅读摘要。
+- 只产生知识候选，不自动沉淀。
+
+### 第四阶段：文件和长笔记
+
+支持论文、PDF、课程笔记、项目文档。
+
+原则：
+
+- 不把大文件全文塞进日报。
+- 保存文件索引、摘要、关键摘录和来源路径。
+- 对长文生成候选，而不是自动写知识库。
+
+### 第五阶段：对话、会议、邮件
+
+这类信息最敏感，应该晚一点做。
+
+建议顺序：
+
+1. 手动导入会议纪要。
+2. 摘要进入确认队列。
+3. 确认后生成任务或记忆候选。
+4. 最后再考虑连接飞书、邮箱、日历。
+
+### 第六阶段：主动秘书
+
+当记忆、任务、日程和知识库足够稳定后，可以做主动建议：
+
+- 每日早晨建议。
+- 明日准备事项。
+- 长期目标冲突提醒。
+- 重复拖延提醒。
+- 任务拆解建议。
+
+仍然保持“确认后执行”：创建任务、改任务状态、更新画像、沉淀知识都需要你确认。
+
+## 开发和维护建议
+
+改代码前先看：
+
+```text
+CODEX_HANDOFF.md
+system/architecture.md
+PLAN.md
+```
+
+改日报逻辑后至少跑：
 
 ```powershell
-python .\scripts\sync-knowledge-from-report.py --date 2026-05-24
+python -m py_compile app.py scripts/generate-radar-report.py scripts/sync-knowledge-from-report.py scripts/context_builder.py
+powershell -NoProfile -ExecutionPolicy Bypass -File scripts/validate-structure.ps1
+git diff --check
 ```
 
-脚本只辅助，不是主要使用入口。检查失败时，按输出的缺失项修复。
+改前端后至少跑：
 
-## 第一版不做
+```powershell
+node --check web/static/app.js
+python app.py
+```
 
+改知识同步后跑：
+
+```powershell
+python scripts/sync-knowledge-from-report.py --date 2026-05-26 --dry-run
+```
+
+改输入结构后确认：
+
+- 旧 Markdown-only inbox 仍可读。
+- `keyword_batch` 行为不变。
+- `free_note` 不影响关键词主体。
+- 新 kind 不影响旧日报生成。
+- 未确认候选不会被当作事实。
+
+## 当前不做什么
+
+- 不引入正式数据库。
+- 不引入向量库。
+- 不引入知识图谱引擎。
 - 不使用 OpenAI API。
-- 不引入数据库、向量库或知识图谱引擎。
-- 不做复杂或正式产品级 Web UI、移动端、多用户、注册登录体系或商业化功能。
-- 不做复杂爬虫、自动订阅系统或复杂标签体系。
-- 不自动替你做最终判断。
-- 不把日报写成资讯简报。
+- 不自动更新长期记忆。
+- 不自动创建真实任务。
+- 不自动把知识节点升权到 4/5。
+- 不把所有内容混进日报。
+- 不把敏感外部信息源过早自动接入。
 
-## 文件位置
+## 故障排查
 
-- `inbox/`：每日原始输入。
-- `knowledge/`：当前主知识节点库，网页优先读取，日报沉淀脚本会写入这里。
-- `synthesis/daily_reports/`：网页入口优先读取的每日 PDF 认知雷达报告。
-- `synthesis/idea_seeds/`：当前主点子种子库，网页优先读取，日报沉淀脚本会写入这里。
-- `system/`：预留给本地系统说明和后续轻量配置。
-- `library/nodes/`：历史兼容知识节点，只读保留。
-- `library/sources/`：历史兼容来源目录；当前日报来源写在 `synthesis/daily_reports/YYYY-MM-DD/sources.json`。
-- `library/seeds/`：历史兼容点子种子，只读保留。
-- `reports/daily/`：历史兼容日报目录。
-- `tracking/topics.md`：长期追踪主题。
-- `tracking/README.md`：长期追踪主题的维护说明。
-- `templates/`：当前工作流仍使用的结构模板。
-- `templates/README.md`：各模板用途和已移除旧模板说明。
-- `automation/`：Codex automation 提示词。
-- `scripts/`：本地辅助脚本。
+如果网页打不开：
+
+1. 确认 `python app.py` 正在运行。
+2. 换端口启动。
+3. 本机先试 `http://127.0.0.1:3000`。
+4. 手机访问时检查局域网、VPN、防火墙。
+
+如果日报生成失败：
+
+1. 先运行 `--collect-only` 看 `report_context.json` 是否生成。
+2. 检查 `report_brief.json` 是否存在且 JSON 合法。
+3. 运行 `--render-only --no-compile` 看 `report.tex` 是否生成。
+4. 如果 PDF 编译失败，检查 LaTeX 日志。
+
+如果知识同步异常：
+
+1. 先用 `--dry-run`。
+2. 检查 `quality_check.json` 是否通过。
+3. 检查 `report_brief.json` 的 `knowledge_cards` 和 `idea_seeds`。
+
+如果确认队列没出现：
+
+1. 检查 `report_brief.json` 是否包含 `memory_candidates`、`task_candidates` 等字段。
+2. 重新运行 `generate-radar-report.py --render-only`。
+3. 查看 `review_queue/YYYY-MM-DD.jsonl` 是否写入候选。
+
+## 一句话总结
+
+`inbox/` 记录你今天真实输入了什么，`context_builder.py` 把这些输入和长期状态组装成上下文，日报负责理解和提出候选，`review_queue/` 让你确认，`memory/` 和 `tasks/` 只保存确认后的长期事实。这个系统真正变聪明的方式，不是一次性自动化所有东西，而是每天把“观察、建议、确认、沉淀”这条链路跑顺。

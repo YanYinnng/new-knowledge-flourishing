@@ -1,7 +1,7 @@
 {
   "date": "YYYY-MM-DD",
   "mode": "input|review",
-  "summary": "今日总结。1-2 段，说明今天这些输入共同指向什么，以及最值得用户明天做什么。",
+  "summary": "今日总结。1-2 段，说明今天这些输入共同指向什么，以及明天最值得做什么。",
   "inputs": [
     {
       "keyword": "关键词",
@@ -12,7 +12,7 @@
   "knowledge_cards": [
     {
       "keyword": "关键词",
-      "intro": "简介。约 200-300 字，只专注解释这个关键词本身，不要联系补充信息。",
+      "intro": "简介。约 200-300 字，只解释关键词本身，不联系补充信息。",
       "recent_news": "最近有什么相关新闻。1 段或最多 2 条；没有可靠新进展就明确说明。",
       "relevance": "与我相关。单独分析关键词和补充信息之间的联系。",
       "next_step": "最小下一步。只写 1 个具体、可执行的小动作。"
@@ -31,5 +31,43 @@
       "quality_tier": "官方/机构资料|论文/报告|权威媒体|项目主页/机构主页|普通线索|低优先级线索",
       "url": "https://example.com"
     }
+  ],
+  "free_note_review": {
+    "themes": [
+      "今天随心记里反复出现的主题"
+    ],
+    "discussion": "只根据 free_notes 写，温和讨论这些想法或感受背后的关注点、动机或张力。不影响关键词总结、今日新知、旧知识链接和发芽点子。",
+    "evaluation": "评价它更像短期情绪、长期信号、待观察线索，还是值得以后转成关键词或点子。",
+    "question_for_tomorrow": "一个不催促、但能继续理解自己的问题。"
+  },
+  "memory_candidates": [
+    {
+      "text": "可能值得写入长期记忆的观察。只列候选，不会自动写入 memory/。",
+      "target": "profile|preferences|themes"
+    }
+  ],
+  "task_candidates": [
+    {
+      "title": "可能需要确认的新任务",
+      "notes": "为什么它像一个任务",
+      "due_date": "YYYY-MM-DD 或留空",
+      "theme": "关联主题"
+    }
+  ],
+  "knowledge_candidates": [
+    {
+      "text": "可能值得沉淀为知识节点的候选，确认前不写入知识库。"
+    }
+  ],
+  "idea_seed_candidates": [
+    {
+      "text": "可能值得保留的原始点子种子，确认前不写入点子库。"
+    }
+  ],
+  "task_followups": [
+    "只基于已确认任务和当天 task_capture/calendar_capture 生成的提醒。"
+  ],
+  "secretary_reminders": [
+    "明天最该关注的 1-3 件事；没有内容时省略。"
   ]
 }

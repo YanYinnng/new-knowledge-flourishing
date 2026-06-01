@@ -4,20 +4,39 @@ const loginForm = document.querySelector("#login-form");
 const loginMessage = document.querySelector("#login-message");
 const keywordForm = document.querySelector("#keyword-form");
 const keywordMessage = document.querySelector("#keyword-message");
+const freeNoteForm = document.querySelector("#free-note-form");
+const freeNoteMessage = document.querySelector("#free-note-message");
+const freeNoteText = document.querySelector("#free-note-text");
+const freeNoteCount = document.querySelector("#free-note-count");
+const taskForm = document.querySelector("#task-form");
+const taskMessage = document.querySelector("#task-message");
+const calendarForm = document.querySelector("#calendar-form");
+const calendarMessage = document.querySelector("#calendar-message");
+const reviewList = document.querySelector("#review-list");
+const taskList = document.querySelector("#task-list");
 const reportsList = document.querySelector("#reports-list");
 const knowledgeList = document.querySelector("#knowledge-list");
 const seedsList = document.querySelector("#seeds-list");
 const logoutButton = document.querySelector("#logout-button");
 const refreshButton = document.querySelector("#refresh-button");
-const readers = {
-  report: document.querySelector("#report-reader"),
-  knowledge: document.querySelector("#knowledge-reader"),
-  seed: document.querySelector("#seed-reader"),
-};
+const sharedReaderKind = document.querySelector("#shared-reader-kind");
+const sharedReaderTitle = document.querySelector("#shared-reader-title");
+const sharedReaderMeta = document.querySelector("#shared-reader-meta");
+const sharedReaderContent = document.querySelector("#shared-reader-content");
 const lists = {
   report: reportsList,
   knowledge: knowledgeList,
   seed: seedsList,
+};
+const kindLabels = {
+  report: "最近日报",
+  knowledge: "知识节点",
+  seed: "点子种子",
+};
+const kindEyebrows = {
+  report: "Reports",
+  knowledge: "Knowledge",
+  seed: "Seeds",
 };
 
 async function api(path, options = {}) {
@@ -48,10 +67,22 @@ function showApp() {
 }
 
 function escapeHtml(value) {
-  return value.replace(/[&<>"']/g, (char) => {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => {
     const map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
     return map[char];
   });
+}
+
+function setMessage(node, text, type = "") {
+  node.textContent = text;
+  node.classList.toggle("success", type === "success");
+  node.classList.toggle("error", type === "error");
+}
+
+function setFormBusy(form, busy) {
+  for (const button of form.querySelectorAll("button")) {
+    button.disabled = busy;
+  }
 }
 
 function renderMarkdown(markdown) {
@@ -112,6 +143,22 @@ function emptyMessage(text) {
   return node;
 }
 
+function syncSummary(sync) {
+  if (!sync) {
+    return "";
+  }
+  if (sync.pushed) {
+    return `；已同步到 GitHub（${sync.commit}）`;
+  }
+  if (sync.committed) {
+    return `；已本地提交，但推送失败：${sync.message}`;
+  }
+  if (sync.enabled === false) {
+    return "；自动 Git 同步未启用";
+  }
+  return `；Git 同步未完成：${sync.message}`;
+}
+
 function renderList(container, items, kind, emptyText) {
   container.replaceChildren();
   if (!items.length) {
@@ -126,9 +173,12 @@ function renderList(container, items, kind, emptyText) {
     button.dataset.path = item.path;
     button.dataset.kind = kind;
     button.dataset.format = item.format || "markdown";
+    button.dataset.status = item.status || item.format || "Markdown";
+    button.dataset.title = item.title || "";
+    button.dataset.modified = item.modified || "";
     button.innerHTML = `
       <span class="item-title">${escapeHtml(item.title)}</span>
-      <span class="item-meta">${escapeHtml(item.path)} · ${escapeHtml(item.status || item.format || "Markdown")} · ${escapeHtml(item.modified)}</span>
+      <span class="item-meta">${escapeHtml(item.path)} / ${escapeHtml(item.status || item.format || "Markdown")} / ${escapeHtml(item.modified)}</span>
     `;
     button.addEventListener("click", () => {
       loadFile(kind, item.path, item.status || "");
@@ -137,14 +187,120 @@ function renderList(container, items, kind, emptyText) {
   }
 }
 
-function markSelected(kind, path) {
-  const container = lists[kind];
-  if (!container) {
+function candidateText(item) {
+  const payload = item.payload && typeof item.payload === "object" ? item.payload : {};
+  return payload.text || payload.title || payload.summary || item.id || "";
+}
+
+function renderReviewQueue(items = []) {
+  if (!reviewList) {
     return;
   }
-  for (const button of container.querySelectorAll("button")) {
-    button.classList.toggle("selected", button.dataset.path === path);
+  reviewList.replaceChildren();
+  if (!items.length) {
+    reviewList.append(emptyMessage("暂无待确认项。"));
+    return;
   }
+  for (const item of items) {
+    const card = document.createElement("section");
+    card.className = "review-item";
+    const text = candidateText(item);
+    card.innerHTML = `
+      <div class="review-item-head">
+        <span>${escapeHtml(item.kind || "candidate")}</span>
+        <small>${escapeHtml(item.created_at || "")}</small>
+      </div>
+      <textarea rows="3">${escapeHtml(text)}</textarea>
+      <div class="review-actions">
+        <button type="button" data-action="accept">接受</button>
+        <button type="button" class="secondary" data-action="reject">拒绝</button>
+      </div>
+    `;
+    for (const button of card.querySelectorAll("button")) {
+      button.addEventListener("click", async () => {
+        const action = button.dataset.action;
+        const editedText = card.querySelector("textarea").value.trim();
+        try {
+          await api("/api/review", {
+            method: "POST",
+            body: JSON.stringify({
+              candidate_id: item.id,
+              action,
+              edited_payload: { ...(item.payload || {}), text: editedText, title: editedText },
+            }),
+          });
+          await loadOverview();
+        } catch (error) {
+          card.append(emptyMessage(error.message));
+        }
+      });
+    }
+    reviewList.append(card);
+  }
+}
+
+function renderTasks(items = []) {
+  if (!taskList) {
+    return;
+  }
+  taskList.replaceChildren();
+  const visible = items.filter((item) => item.status !== "completed" && item.status !== "cancelled");
+  if (!visible.length) {
+    taskList.append(emptyMessage("暂无打开的任务。"));
+    return;
+  }
+  for (const task of visible) {
+    const card = document.createElement("section");
+    card.className = "review-item task-item";
+    card.innerHTML = `
+      <div class="review-item-head">
+        <span>${escapeHtml(task.title || task.task_id)}</span>
+        <small>${escapeHtml(task.due_date || "无截止日期")}</small>
+      </div>
+      <p>${escapeHtml(task.notes || task.theme || "等待下一次秘书简报跟进。")}</p>
+      <div class="review-actions">
+        <button type="button" data-action="complete">完成</button>
+        <button type="button" class="secondary" data-action="defer">延期</button>
+        <button type="button" class="secondary" data-action="cancel">取消</button>
+      </div>
+    `;
+    for (const button of card.querySelectorAll("button")) {
+      button.addEventListener("click", async () => {
+        const action = button.dataset.action;
+        const dueDate = action === "defer" ? window.prompt("新的截止日期 YYYY-MM-DD", task.due_date || "") : "";
+        if (action === "defer" && dueDate === null) {
+          return;
+        }
+        try {
+          await api("/api/tasks/status", {
+            method: "POST",
+            body: JSON.stringify({ task_id: task.task_id, action, due_date: dueDate || "" }),
+          });
+          await loadOverview();
+        } catch (error) {
+          card.append(emptyMessage(error.message));
+        }
+      });
+    }
+    taskList.append(card);
+  }
+}
+
+function markSelected(kind, path) {
+  for (const [listKind, container] of Object.entries(lists)) {
+    if (!container) {
+      continue;
+    }
+    for (const button of container.querySelectorAll("button")) {
+      button.classList.toggle("selected", listKind === kind && button.dataset.path === path);
+    }
+  }
+}
+
+function setReaderHeader(kind, title, meta = "") {
+  sharedReaderKind.textContent = kindEyebrows[kind] || "Reader";
+  sharedReaderTitle.textContent = title || "选择内容后阅读";
+  sharedReaderMeta.textContent = meta || "左侧选择日报、知识节点或点子种子。";
 }
 
 async function loadOverview() {
@@ -152,21 +308,28 @@ async function loadOverview() {
   renderList(reportsList, overview.reports, "report", "还没有日报。");
   renderList(knowledgeList, overview.knowledge, "knowledge", "还没有知识节点。");
   renderList(seedsList, overview.seeds, "seed", "还没有点子种子。");
+  renderReviewQueue(overview.review_queue || []);
+  renderTasks(overview.tasks || []);
 }
 
 async function loadFile(kind, path, status = "") {
-  const reader = readers[kind];
-  if (!reader) {
+  if (!sharedReaderContent) {
     return;
   }
   markSelected(kind, path);
-  reader.classList.remove("empty");
-  reader.innerHTML = "<p class=\"empty\">正在读取文件...</p>";
+  const selected = lists[kind]?.querySelector(`button[data-path="${CSS.escape(path)}"]`);
+  const title = selected?.dataset.title || kindLabels[kind] || "阅读内容";
+  const statusText = selected?.dataset.status || "Markdown";
+  const modified = selected?.dataset.modified || "";
+  const meta = modified ? `${kindLabels[kind] || "文件"} / ${statusText} / ${modified}` : `${kindLabels[kind] || "文件"} / ${path}`;
+  setReaderHeader(kind, title, meta);
+  sharedReaderContent.classList.remove("empty");
+  sharedReaderContent.innerHTML = "<p class=\"empty\">正在读取文件...</p>";
   try {
     const file = await api(`/api/file?kind=${encodeURIComponent(kind)}&path=${encodeURIComponent(path)}`);
     if (file.format === "pdf") {
       const url = escapeHtml(file.url);
-      reader.innerHTML = `
+      sharedReaderContent.innerHTML = `
         <p><a href="${url}" target="_blank" rel="noopener">打开 PDF 报告</a></p>
         <iframe class="pdf-frame" src="${url}" title="${escapeHtml(file.title || "PDF 报告")}"></iframe>
       `;
@@ -175,12 +338,12 @@ async function loadFile(kind, path, status = "") {
     const notice = status === "PDF 尚未生成或编译失败"
       ? "<p class=\"message error\">PDF 尚未生成或编译失败。下面显示 report.tex 供检查。</p>"
       : "";
-    reader.innerHTML = renderMarkdown(file.content);
+    sharedReaderContent.innerHTML = renderMarkdown(file.content);
     if (notice) {
-      reader.innerHTML = notice + reader.innerHTML;
+      sharedReaderContent.innerHTML = notice + sharedReaderContent.innerHTML;
     }
   } catch (error) {
-    reader.innerHTML = `<p class="message error">${escapeHtml(error.message)}</p>`;
+    sharedReaderContent.innerHTML = `<p class="message error">${escapeHtml(error.message)}</p>`;
   }
 }
 
@@ -200,9 +363,9 @@ async function boot() {
 
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  loginMessage.textContent = "";
-  loginMessage.classList.remove("error");
+  setMessage(loginMessage, "");
   const password = document.querySelector("#password").value;
+  setFormBusy(loginForm, true);
   try {
     await api("/api/login", {
       method: "POST",
@@ -213,44 +376,122 @@ loginForm.addEventListener("submit", async (event) => {
     await loadOverview();
   } catch (error) {
     showLogin(error.message);
+  } finally {
+    setFormBusy(loginForm, false);
   }
 });
 
 keywordForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  keywordMessage.textContent = "";
-  keywordMessage.classList.remove("error");
+  setMessage(keywordMessage, "");
   const payload = {
     keywords: document.querySelector("#keywords").value,
     supplemental_info: document.querySelector("#supplemental-info").value,
     weight: document.querySelector("#weight").value,
   };
+  setFormBusy(keywordForm, true);
   try {
     const result = await api("/api/keywords", {
       method: "POST",
       body: JSON.stringify(payload),
     });
-    let syncText = "";
-    if (result.sync) {
-      if (result.sync.pushed) {
-        syncText = `；已同步到 GitHub（${result.sync.commit}）`;
-      } else if (result.sync.committed) {
-        syncText = `；已本地提交，但推送失败：${result.sync.message}`;
-      } else if (result.sync.enabled === false) {
-        syncText = "；自动 Git 同步未启用";
-      } else {
-        syncText = `；Git 同步未完成：${result.sync.message}`;
-      }
-    }
-    keywordMessage.textContent = `已追加 ${result.count} 条到 ${result.path}${syncText}`;
+    setMessage(keywordMessage, `已追加 ${result.count} 条关键词到 ${result.path}${syncSummary(result.sync)}`, "success");
     document.querySelector("#keywords").value = "";
     document.querySelector("#supplemental-info").value = "";
     document.querySelector("#weight").value = "";
   } catch (error) {
-    keywordMessage.textContent = error.message;
-    keywordMessage.classList.add("error");
+    setMessage(keywordMessage, error.message, "error");
+  } finally {
+    setFormBusy(keywordForm, false);
   }
 });
+
+freeNoteForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  setMessage(freeNoteMessage, "");
+  const payload = {
+    text: freeNoteText.value,
+  };
+  setFormBusy(freeNoteForm, true);
+  try {
+    const result = await api("/api/free-notes", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    setMessage(freeNoteMessage, `已追加随心记到 ${result.path}${syncSummary(result.sync)}`, "success");
+    freeNoteText.value = "";
+    updateFreeNoteCount();
+  } catch (error) {
+    setMessage(freeNoteMessage, error.message, "error");
+  } finally {
+    setFormBusy(freeNoteForm, false);
+  }
+});
+
+taskForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  setMessage(taskMessage, "");
+  const payload = {
+    title: document.querySelector("#task-title").value,
+    due_date: document.querySelector("#task-due-date").value,
+    theme: document.querySelector("#task-theme").value,
+    notes: document.querySelector("#task-notes").value,
+  };
+  setFormBusy(taskForm, true);
+  try {
+    const result = await api("/api/tasks", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    setMessage(taskMessage, `已加入任务 ${result.task_id}，并写入 ${result.path}${syncSummary(result.sync)}`, "success");
+    document.querySelector("#task-title").value = "";
+    document.querySelector("#task-due-date").value = "";
+    document.querySelector("#task-theme").value = "";
+    document.querySelector("#task-notes").value = "";
+    await loadOverview();
+  } catch (error) {
+    setMessage(taskMessage, error.message, "error");
+  } finally {
+    setFormBusy(taskForm, false);
+  }
+});
+
+calendarForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  setMessage(calendarMessage, "");
+  const payload = {
+    title: document.querySelector("#calendar-title").value,
+    start_at: document.querySelector("#calendar-start").value,
+    end_at: document.querySelector("#calendar-end").value,
+    notes: document.querySelector("#calendar-notes").value,
+  };
+  setFormBusy(calendarForm, true);
+  try {
+    const result = await api("/api/calendar", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    setMessage(calendarMessage, `已加入日程，并写入 ${result.path}${syncSummary(result.sync)}`, "success");
+    document.querySelector("#calendar-title").value = "";
+    document.querySelector("#calendar-start").value = "";
+    document.querySelector("#calendar-end").value = "";
+    document.querySelector("#calendar-notes").value = "";
+    await loadOverview();
+  } catch (error) {
+    setMessage(calendarMessage, error.message, "error");
+  } finally {
+    setFormBusy(calendarForm, false);
+  }
+});
+
+function updateFreeNoteCount() {
+  if (!freeNoteText || !freeNoteCount) {
+    return;
+  }
+  freeNoteCount.textContent = `${freeNoteText.value.length} / ${freeNoteText.maxLength || 8000}`;
+}
+
+freeNoteText.addEventListener("input", updateFreeNoteCount);
 
 logoutButton.addEventListener("click", async () => {
   await api("/api/logout", { method: "POST", body: "{}" });
@@ -262,3 +503,4 @@ refreshButton.addEventListener("click", async () => {
 });
 
 boot();
+updateFreeNoteCount();
