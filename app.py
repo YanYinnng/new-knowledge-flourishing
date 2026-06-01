@@ -955,7 +955,6 @@ class IdeaSproutHandler(BaseHTTPRequestHandler):
                         [PRIMARY_DIRS["idea_seeds"], LEGACY_DIRS["idea_seeds"]]
                     ),
                     "review_queue": review_queue_summary()["pending"],
-                    "tasks": current_tasks(),
                 }
             )
             return
@@ -1048,45 +1047,6 @@ class IdeaSproutHandler(BaseHTTPRequestHandler):
                 return
             try:
                 result = append_free_note(payload)
-            except ValueError as exc:
-                self.send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
-                return
-            self.send_json(result)
-            return
-        if parsed.path == "/api/tasks":
-            if not self.require_auth():
-                return
-            payload = self.read_json_body()
-            if payload is None:
-                return
-            try:
-                result = append_task_capture(payload)
-            except ValueError as exc:
-                self.send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
-                return
-            self.send_json(result)
-            return
-        if parsed.path == "/api/calendar":
-            if not self.require_auth():
-                return
-            payload = self.read_json_body()
-            if payload is None:
-                return
-            try:
-                result = append_calendar_capture(payload)
-            except ValueError as exc:
-                self.send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
-                return
-            self.send_json(result)
-            return
-        if parsed.path == "/api/tasks/status":
-            if not self.require_auth():
-                return
-            payload = self.read_json_body()
-            if payload is None:
-                return
-            try:
-                result = update_task_status(payload)
             except ValueError as exc:
                 self.send_json({"error": str(exc)}, HTTPStatus.BAD_REQUEST)
                 return

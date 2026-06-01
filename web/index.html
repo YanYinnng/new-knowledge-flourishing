@@ -111,70 +111,6 @@
 
       <section class="secretary-band" aria-label="秘书工作台">
         <div class="secretary-grid">
-          <section class="secretary-panel" aria-labelledby="task-capture-title">
-            <div class="panel-heading">
-              <div>
-                <p class="eyebrow">Tasks</p>
-                <h3 id="task-capture-title">任务捕捉</h3>
-              </div>
-              <span class="entry-mark">03</span>
-            </div>
-            <form id="task-form" class="secretary-form">
-              <label class="field">
-                <span>标题</span>
-                <input id="task-title" type="text" maxlength="160" placeholder="下一步要推进的事情">
-              </label>
-              <label class="field">
-                <span>截止日期</span>
-                <input id="task-due-date" type="date">
-              </label>
-              <label class="field">
-                <span>关联主题</span>
-                <input id="task-theme" type="text" maxlength="80" placeholder="可选">
-              </label>
-              <label class="field wide">
-                <span>备注</span>
-                <textarea id="task-notes" rows="3" placeholder="背景、阻塞点或完成标准"></textarea>
-              </label>
-              <div class="submit-row">
-                <button type="submit">加入任务</button>
-                <p id="task-message" class="message" role="status"></p>
-              </div>
-            </form>
-          </section>
-
-          <section class="secretary-panel" aria-labelledby="calendar-capture-title">
-            <div class="panel-heading">
-              <div>
-                <p class="eyebrow">Calendar</p>
-                <h3 id="calendar-capture-title">日程捕捉</h3>
-              </div>
-              <span class="entry-mark">04</span>
-            </div>
-            <form id="calendar-form" class="secretary-form">
-              <label class="field">
-                <span>标题</span>
-                <input id="calendar-title" type="text" maxlength="160" placeholder="会议、课程或固定安排">
-              </label>
-              <label class="field">
-                <span>开始</span>
-                <input id="calendar-start" type="datetime-local">
-              </label>
-              <label class="field">
-                <span>结束</span>
-                <input id="calendar-end" type="datetime-local">
-              </label>
-              <label class="field wide">
-                <span>备注</span>
-                <textarea id="calendar-notes" rows="3" placeholder="地点、参会人或准备事项"></textarea>
-              </label>
-              <div class="submit-row">
-                <button type="submit">加入日程</button>
-                <p id="calendar-message" class="message" role="status"></p>
-              </div>
-            </form>
-          </section>
-
           <section class="secretary-panel review-panel" aria-labelledby="review-queue-title">
             <div class="panel-heading">
               <div>
@@ -183,16 +119,6 @@
               </div>
             </div>
             <div id="review-list" class="review-list"></div>
-          </section>
-
-          <section class="secretary-panel task-list-panel" aria-labelledby="task-list-title">
-            <div class="panel-heading">
-              <div>
-                <p class="eyebrow">Follow-up</p>
-                <h3 id="task-list-title">当前任务</h3>
-              </div>
-            </div>
-            <div id="task-list" class="review-list"></div>
           </section>
         </div>
       </section>

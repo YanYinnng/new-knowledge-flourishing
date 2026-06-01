@@ -8,12 +8,7 @@ const freeNoteForm = document.querySelector("#free-note-form");
 const freeNoteMessage = document.querySelector("#free-note-message");
 const freeNoteText = document.querySelector("#free-note-text");
 const freeNoteCount = document.querySelector("#free-note-count");
-const taskForm = document.querySelector("#task-form");
-const taskMessage = document.querySelector("#task-message");
-const calendarForm = document.querySelector("#calendar-form");
-const calendarMessage = document.querySelector("#calendar-message");
 const reviewList = document.querySelector("#review-list");
-const taskList = document.querySelector("#task-list");
 const reportsList = document.querySelector("#reports-list");
 const knowledgeList = document.querySelector("#knowledge-list");
 const seedsList = document.querySelector("#seeds-list");
@@ -239,53 +234,6 @@ function renderReviewQueue(items = []) {
   }
 }
 
-function renderTasks(items = []) {
-  if (!taskList) {
-    return;
-  }
-  taskList.replaceChildren();
-  const visible = items.filter((item) => item.status !== "completed" && item.status !== "cancelled");
-  if (!visible.length) {
-    taskList.append(emptyMessage("暂无打开的任务。"));
-    return;
-  }
-  for (const task of visible) {
-    const card = document.createElement("section");
-    card.className = "review-item task-item";
-    card.innerHTML = `
-      <div class="review-item-head">
-        <span>${escapeHtml(task.title || task.task_id)}</span>
-        <small>${escapeHtml(task.due_date || "无截止日期")}</small>
-      </div>
-      <p>${escapeHtml(task.notes || task.theme || "等待下一次秘书简报跟进。")}</p>
-      <div class="review-actions">
-        <button type="button" data-action="complete">完成</button>
-        <button type="button" class="secondary" data-action="defer">延期</button>
-        <button type="button" class="secondary" data-action="cancel">取消</button>
-      </div>
-    `;
-    for (const button of card.querySelectorAll("button")) {
-      button.addEventListener("click", async () => {
-        const action = button.dataset.action;
-        const dueDate = action === "defer" ? window.prompt("新的截止日期 YYYY-MM-DD", task.due_date || "") : "";
-        if (action === "defer" && dueDate === null) {
-          return;
-        }
-        try {
-          await api("/api/tasks/status", {
-            method: "POST",
-            body: JSON.stringify({ task_id: task.task_id, action, due_date: dueDate || "" }),
-          });
-          await loadOverview();
-        } catch (error) {
-          card.append(emptyMessage(error.message));
-        }
-      });
-    }
-    taskList.append(card);
-  }
-}
-
 function markSelected(kind, path) {
   for (const [listKind, container] of Object.entries(lists)) {
     if (!container) {
@@ -309,7 +257,6 @@ async function loadOverview() {
   renderList(knowledgeList, overview.knowledge, "knowledge", "还没有知识节点。");
   renderList(seedsList, overview.seeds, "seed", "还没有点子种子。");
   renderReviewQueue(overview.review_queue || []);
-  renderTasks(overview.tasks || []);
 }
 
 async function loadFile(kind, path, status = "") {
@@ -425,62 +372,6 @@ freeNoteForm.addEventListener("submit", async (event) => {
     setMessage(freeNoteMessage, error.message, "error");
   } finally {
     setFormBusy(freeNoteForm, false);
-  }
-});
-
-taskForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  setMessage(taskMessage, "");
-  const payload = {
-    title: document.querySelector("#task-title").value,
-    due_date: document.querySelector("#task-due-date").value,
-    theme: document.querySelector("#task-theme").value,
-    notes: document.querySelector("#task-notes").value,
-  };
-  setFormBusy(taskForm, true);
-  try {
-    const result = await api("/api/tasks", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-    setMessage(taskMessage, `已加入任务 ${result.task_id}，并写入 ${result.path}${syncSummary(result.sync)}`, "success");
-    document.querySelector("#task-title").value = "";
-    document.querySelector("#task-due-date").value = "";
-    document.querySelector("#task-theme").value = "";
-    document.querySelector("#task-notes").value = "";
-    await loadOverview();
-  } catch (error) {
-    setMessage(taskMessage, error.message, "error");
-  } finally {
-    setFormBusy(taskForm, false);
-  }
-});
-
-calendarForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  setMessage(calendarMessage, "");
-  const payload = {
-    title: document.querySelector("#calendar-title").value,
-    start_at: document.querySelector("#calendar-start").value,
-    end_at: document.querySelector("#calendar-end").value,
-    notes: document.querySelector("#calendar-notes").value,
-  };
-  setFormBusy(calendarForm, true);
-  try {
-    const result = await api("/api/calendar", {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-    setMessage(calendarMessage, `已加入日程，并写入 ${result.path}${syncSummary(result.sync)}`, "success");
-    document.querySelector("#calendar-title").value = "";
-    document.querySelector("#calendar-start").value = "";
-    document.querySelector("#calendar-end").value = "";
-    document.querySelector("#calendar-notes").value = "";
-    await loadOverview();
-  } catch (error) {
-    setMessage(calendarMessage, error.message, "error");
-  } finally {
-    setFormBusy(calendarForm, false);
   }
 });
 

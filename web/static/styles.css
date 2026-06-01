@@ -387,7 +387,7 @@ label,
   width: min(1280px, 100%);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 14px;
 }
 
@@ -398,21 +398,6 @@ label,
   background: rgba(255, 255, 253, 0.96);
   box-shadow: var(--shadow-soft);
   padding: 18px;
-}
-
-.secretary-form {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(160px, 0.8fr) minmax(160px, 0.8fr);
-  gap: 12px;
-  align-items: start;
-}
-
-.secretary-form .wide {
-  grid-column: 1 / -1;
-}
-
-.secretary-form textarea {
-  min-height: 96px;
 }
 
 .review-list {
@@ -662,10 +647,6 @@ label,
   }
 
   .keyword-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .secretary-form {
     grid-template-columns: 1fr;
   }
 
