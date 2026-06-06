@@ -2,7 +2,7 @@
 
 你正在补跑一个错过的报告日期：`{{DATE}}`。
 
-请读取 `system/report_quality_rules.md` 和 `automation/nightly-codex-prompt.md`，但本次日期固定为 `{{DATE}}`，不要使用当前日期替代它。
+请读取 `system/report_quality_rules.md`、`system/report_voice_rules.md` 和 `automation/nightly-codex-prompt.md`，但本次日期固定为 `{{DATE}}`，不要使用当前日期替代它。
 
 目标输出：
 
@@ -29,7 +29,7 @@ python scripts/generate-radar-report.py --date {{DATE}} --collect-only
 python scripts/generate-radar-report.py --date {{DATE}} --render-only
 ```
 
-检查 `quality_check.json` 和 PDF 文本。如果报告仍像搜索堆砌、百科词条或新闻摘要，修改 `report_brief.json` 后重新 render。
+检查 `quality_check.json` 和 PDF 文本。如果报告仍像搜索堆砌、百科词条、新闻摘要，或出现明显 AI 分析腔，修改 `report_brief.json` 后重新 render。
 
 报告通过后运行：
 

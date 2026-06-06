@@ -1,0 +1,133 @@
+{
+  "date": "2026-06-03",
+  "mode": "review",
+  "summary": "今天没有新的关键词输入，适合把注意力放回几个已经反复出现的基础主题：新知孵化工作流、本地 Markdown 知识库，以及多智能体协作。它们共同指向一件事：AI 工具本身已经够快，接下来更值得打磨的是你怎样提出问题、留下材料、复盘结论，并把每天的小观察沉淀成可再用的东西。\n\n明天不必扩展太多方向。先挑一个最常用的知识主题，把它的定义、来源和下一步整理到能让未来的自己直接接着用的程度。",
+  "inputs": [
+    {
+      "keyword": "新知孵化工作流",
+      "supplemental_info": "今日无新关键词输入；来自本地追踪主题复盘。",
+      "weight": 3
+    },
+    {
+      "keyword": "本地 Markdown 知识库",
+      "supplemental_info": "今日无新关键词输入；来自本地追踪主题复盘。",
+      "weight": 3
+    },
+    {
+      "keyword": "多智能体协作",
+      "supplemental_info": "今日无新关键词输入；来自本地候选知识节点复盘。",
+      "weight": 3
+    }
+  ],
+  "knowledge_cards": [
+    {
+      "keyword": "新知孵化工作流",
+      "intro": "新知孵化工作流是一套把零散输入变成可复用知识的个人流程。它通常从一个关键词、一段随手记、一个网页或一次对话开始，先记录触发点和原始语境，再补充外部资料、旧笔记和个人理解，最后产出一个小结论、一个待验证问题或一个可以继续推进的点子。它的重点不在于一次性整理得很完整，而在于让信息经过固定步骤后变得可回看、可比较、可继续生长。对个人来说，这类流程能减少“看过很多但什么也没留下”的损耗，也能让长期兴趣慢慢显形。",
+      "recent_news": "近期平台线索里，个人知识管理、AI 工作流和个人 Agent 的讨论仍然活跃，尤其集中在“把 AI 接入日常信息处理”和“让知识库支持后续行动”两类方向上 [S21][S22][S23]。这些来源更适合作为趋势入口，不能单独支撑强结论。",
+      "relevance": "这个主题会影响你怎么安排每天的信息入口：先把工具复杂度放低，让输入、复盘、知识节点和点子种子形成一个稳定闭环。这样你明天看到新概念时，知道该补哪一句原话、哪条来源、哪一个下一步。",
+      "next_step": "明天选一条最近生成的知识节点，检查它是否能在三分钟内让你想起当时为什么记录它。"
+    },
+    {
+      "keyword": "本地 Markdown 知识库",
+      "intro": "本地 Markdown 知识库是用普通文本文件保存个人笔记、概念卡片、项目记录和复盘材料的一种知识管理方式。Markdown 文件结构简单，容易被版本管理、全文搜索、脚本和 AI 工具读取，也不会被某个单一软件完全绑定。它适合长期积累，因为每条记录都可以保留清晰路径、标题、标签、来源和更新时间；当内容变多时，还能通过目录、链接和轻量自动化把材料组织起来。它的价值不在漂亮界面，而在稳定、可迁移、可被程序处理，以及多年后仍能打开和理解。",
+      "recent_news": "近期搜索线索显示，本地 Markdown、Obsidian、Dendron 和个人知识库自动化仍有持续讨论，重点多放在本地优先、AI 可调用、规范化写作和工具链整合上 [S26][S27][S28][S29]。这些线索和本主题贴近，但多为经验分享。",
+      "relevance": "这个主题会影响你保存知识的粒度。与其把所有内容塞进一个长文档，不如让每个节点有清楚标题、简短定义、来源和下一步；以后 AI 帮你检索或整理时，也更容易拿到干净材料。",
+      "next_step": "明天打开 `knowledge/`，把一个标题含糊的节点改成能直接表达主题的标题。"
+    },
+    {
+      "keyword": "多智能体协作",
+      "intro": "多智能体协作是把一个复杂任务分给多个 AI Agent 或角色共同完成的设计方法。每个智能体通常有自己的职责，例如检索资料、拆解计划、编写代码、检查风险、整理输出或维护记忆；系统再通过消息、队列、共享状态和停止条件把它们连接起来。它适合处理步骤多、资料杂、需要反复校验的任务，但也会带来协调成本、上下文污染和结果追责问题。好的多智能体系统重在角色边界清楚、输入输出稳定、失败时容易定位，角色数量本身不是重点。",
+      "recent_news": "近期平台线索里，多智能体协作被放进复杂工作流、知识库问答、软件测试和个人 Agent 架构中讨论 [S6][S7][S8][S10]。这些材料说明它正在从概念演示走向具体流程，但来源仍以平台内容为主，适合作为案例入口。",
+      "relevance": "这个主题会影响你怎么使用 AI：当任务已经能被一个清晰提示解决时，不需要急着拆成多个角色；当任务包含资料收集、方案比较、执行和复核时，再考虑把角色边界写清楚。",
+      "next_step": "明天把一个常用 AI 工作任务拆成“收集、执行、检查”三个步骤，先不写代码，只写清每一步的输入和输出。"
+    }
+  ],
+  "old_knowledge_links": [
+    "可以和《每日晚间复盘》放在一起看：今天的重点仍是把每天的输入收束成一个明天能做的小动作。",
+    "可以和《点子种子：每日小推进》放在一起看：日报最有用的地方，是把整理变成下一次行动的起点。",
+    "可以和《多智能体协作》候选节点放在一起看：复杂系统先从清楚的角色边界开始，而不是先增加角色数量。"
+  ],
+  "idea_seeds": [
+    "知识节点三分钟回看测试：每晚随机抽一个候选节点，检查标题、定义、来源和下一步是否足够让未来的自己接着用。",
+    "AI 工作任务三段拆解卡：把常见任务固定拆成收集、执行、检查三段，用来判断什么时候需要多智能体，什么时候一个提示就够。"
+  ],
+  "reference_sources": [
+    {
+      "id": "S21",
+      "title": "一个人,30天,8万行代码,AI 正在重新定义“程序员” One Person, 30 Days, 80,000 Lines of Code",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLNqZmVKQmZwEq7LeflhQuhlqXa8Fplpd9CNqIlk7-a31w5BGMbZJF9EWapIMqwvOQv4NfS0aoqp90KQY4bouZtCIpzpcV1GAG7Ql4aQy981DI5_YvU65Wx7RIuSm_DQfuJ5H8h-MVkM4zF-lDIEm_1jT-8S3aDcSjjU6ufcsvDgQAHvuE0UGbiTd-nik8UXzcRlmMxbHNciUNGbbB75bUeA..&type=2&query=%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20AI%20workflow%20daily%20review%20knowledge%20management&token=3302AF2C6CC021EDD6D084FB26161CAED7C4929C6A204099"
+    },
+    {
+      "id": "S22",
+      "title": "OpenClaw进阶技巧:解锁高级功能,打造专属AI工作流",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLNqZmVKQmZwEq7LeflhQuhlqXa8Fplpd9uxSsebPt2G7ep94XnrFS2k_9uY7KfpAsTzqzlXYH6vQplwzzrM-ORdXXjgCbrrDcsox8rcNKq7_v7VD3ZNujvMSYjOnUpDXGDDeFQknJRXQoffqNua40Wxxko2p21aFNE_aspAThVaouS2qAqPHSsR37Rzq79gMqffbho6K_iZC54z_tGSZTqA..&type=2&query=%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20AI%20workflow%20daily%20review%20knowledge%20management&token=3302AF2C6CC021EDD6D084FB26161CAED7C4929C6A204099"
+    },
+    {
+      "id": "S23",
+      "title": "个人Agent:每个人的AI管家",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLNqZmVKQmZwEq7LeflhQuhlqXa8Fplpd9Jw3AegiWpd_7i1FH5Q6oCDIyJiEVma1QCRGoNJZ7c4hzPh6efjLP5H_iU9oudjoCi1f9aQZAdR83YFhybZNmKwFA4WosuG1NV4TFy0A7RdMWAozpKiuzJEc9qqX-euP7Tenvyj6E9fF1paT3ZVDCOVxLVSuS1dUoBdM6q4BlJVOq3X8EKMKOIA..&type=2&query=%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20AI%20workflow%20daily%20review%20knowledge%20management&token=3302AF2C6CC021EDD6D084FB26161CAED7C4929C6A204099"
+    },
+    {
+      "id": "S26",
+      "title": "别折腾了!AI时代最好的知识管理工具是Obsidian,当它遇上OpenClaw......",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLc2r5uZgnqUUq7LeflhQuhlqXa8Fplpd9xCcLtzrpqFQwtgV_RHC7qw0VMshEKYdyhmt8unk7PkSLfR8dQBujFPJUor8I9uqFA6V0BMWrt-95ZtFgFLP6mJFVeIDBRK8cay1V58p5yJUkq0TVpsYO6rpFD1yHikgYZpq822fB2StT8A9fZNfQ7QEiuWMK898730cVnc-8v35hWLv6O878UA..&type=2&query=%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%9F%A5%E8%AF%86%E5%BA%93%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E7%AC%94%E8%AE%B0%20%E5%B7%A5%E5%85%B7&token=3303835E6CC021EDD6D084FB26161CAED7C4929C6A2040BC"
+    },
+    {
+      "id": "S27",
+      "title": "专为开发人员构建的个人知识管理工具 - Dendron",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLc2r5uZgnqUUq7LeflhQuhlqXa8Fplpd9rrWr835fx70fSq7CO0R34CrroZ1uVc-f8Zq6DAaGFOLsAlLi1iI9jjOCaT5-5SKPMGrQuGXzvQR9FqKA4J2ceOBw2grBIYcwFSwsSWOE7T3WNEiH5LeKTAsuFr3Qg1dgdlCKJEPt67qu6wGk4KWcEfUFVtMwXUXaOSLtfElbZk_0OK9DLfgmPA..&type=2&query=%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%9F%A5%E8%AF%86%E5%BA%93%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E7%AC%94%E8%AE%B0%20%E5%B7%A5%E5%85%B7&token=3303835E6CC021EDD6D084FB26161CAED7C4929C6A2040BC"
+    },
+    {
+      "id": "S28",
+      "title": "用 Markdown 整理笔记,构建个人知识库:Obsidian 入门体验",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLc2r5uZgnqUUq7LeflhQuhlqXa8Fplpd9cwVArrsDNfhrrFHXoEv-enB8Yho_mqtvx_cZr--YJY5zrqSy-ojevDWrMnkSkRrzcQrMWh6yta_SCAUOwpQYkEeXyoTK2Fr7_NXWYbXODg6H9K8xcEQ6klr8MajdTHRKb0qzGWjNr_tdihANIGqkmaUarB6LBD1fOF4ByjE0GQHs46dn8Efgxg..&type=2&query=%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%9F%A5%E8%AF%86%E5%BA%93%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E7%AC%94%E8%AE%B0%20%E5%B7%A5%E5%85%B7&token=3303835E6CC021EDD6D084FB26161CAED7C4929C6A2040BC"
+    },
+    {
+      "id": "S29",
+      "title": "Obsidian知识库:Markdown编写规范与实践指南",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLc2r5uZgnqUUq7LeflhQuhlqXa8Fplpd9LWFYGt9NCl4MRW9kMAacKSUh73PLsChizQS1e15T-eC7-6zXBIVI2Sk1ugBs2cmKHUvQaMTVOnqMAKHwemNSLrStoa41pIcADV-s8MRLK4SloS9Ai_MvzInBw652TRtXZSfzKEsw0O0lMigoj3G1o43VisVKlH3lqKAxZoPVhWPwdVqCwyPdzA..&type=2&query=%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%9F%A5%E8%AF%86%E5%BA%93%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E7%AC%94%E8%AE%B0%20%E5%B7%A5%E5%85%B7&token=3303835E6CC021EDD6D084FB26161CAED7C4929C6A2040BC"
+    },
+    {
+      "id": "S6",
+      "title": "在线部署多智能体协作系统,管理复杂工作流,打造下一代对话式AI!",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLbDjuaCaJVykq7LeflhQuhlqXa8Fplpd9dWJU890zHpPzmK8b02ZBaiHGWPLWxO40c-nRaK1bfpBD6qItjQmbCilF9GY4nba0EEXMrZWwLE33bbHpEdZD6XR1uIYiu4_5ZY3Ge94IONOzky0my8TjlRMEawKBKB1L4_bWM7D9HsQbUciKk6lQXMHsrEKndVrwWSlppZEzdtgO8fIRwtipOg..&type=2&query=%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E5%8D%8F%E4%BD%9C%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=330088C06CC021EDD6D084FB26161CAED7C4929C6A204042"
+    },
+    {
+      "id": "S7",
+      "title": "个人知识库与智能体构建实战(工程管理类)",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLbDjuaCaJVykq7LeflhQuhlqXa8Fplpd96R_0enJUxU7cWXHWLTo6dwPG0ZhgLP5e5oLGHR5k3zu6nqL2KQqTv6MLs7FTovXXh54-cgT1v79gMi-uvv6bkbpAiYnR-H_5uxs8bmqjvKAkRx_YsTZop440NYe-iHy3kJf8_CHZe1csTYxcqYI2F_MoqS_9d5zXgpCXU7-u38N535pjGOOjYg..&type=2&query=%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E5%8D%8F%E4%BD%9C%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=330088C06CC021EDD6D084FB26161CAED7C4929C6A204042"
+    },
+    {
+      "id": "S8",
+      "title": "甘肃银行基于大模型多智能体人机协作的智能软件测试创新与实践",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLbDjuaCaJVykq7LeflhQuhlqXa8Fplpd9DpI9wAqjVjhSIt7DYhcnmDU-vVsIFga9yg8hMDEbdrdH6fF-KUMgCoUqb12fX__l6vZQMGZCwadClauKdhPHS0IzzM1k6SLXHG1PT0NhUpJFfG4wDQHvDTyXmBWavWmy4soJpg72_iT8RboVB0CurGUjvLeJwHDdKigQJJvEw2DdrgozfSg6bw..&type=2&query=%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E5%8D%8F%E4%BD%9C%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=330088C06CC021EDD6D084FB26161CAED7C4929C6A204042"
+    },
+    {
+      "id": "S10",
+      "title": "【深度】AI分身工作流:从单点工具到系统架构的跃迁",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLbDjuaCaJVykq7LeflhQuhlqXa8Fplpd9g2Wu4kSFgK3iYvPs8fN_XUoN_aIg9vycazUhNjrtdcANSQYnVKIvgyY3OpX5P148QLJLDBrO8P5CYhLsWLcmjGjHhBrLVtMaUQMsEuCdb2PVsx3LIocXgCNKHFn4irKyXG2hRQNv6y7nMJ5lSGkEsOpNp_9N_EIum4HlYoXHVu5Ae0f8bRARvQ..&type=2&query=%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E5%8D%8F%E4%BD%9C%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=330088C06CC021EDD6D084FB26161CAED7C4929C6A204042"
+    }
+  ],
+  "free_note_review": {
+    "themes": [
+      "创业祛魅",
+      "AI 工具熟练之后的方向感",
+      "知识边界",
+      "系统学习"
+    ],
+    "discussion": "今天这段随心记很清楚：你已经过了“先把 AI 工具玩熟”的阶段，正在碰到更硬的一层能力问题。工具可以放大已有理解，也能帮你更快做原型，但它替代不了长期学习带来的判断力、表达力和问题感。最近的小项目做得一般，反而是一个有用提醒：真正值得补的地方，可能不是再找一个新工具，而是给自己一段更安静、更连续的学习时间。",
+    "evaluation": "这条先当作长期信号保留。它不是一个马上要执行的大任务，更适合成为接下来一段时间的节奏提醒：少开新线，多补基础。",
+    "question_for_tomorrow": "明天如果只收窄一个方向，你最愿意把哪一块基础能力放回日程里？"
+  }
+}

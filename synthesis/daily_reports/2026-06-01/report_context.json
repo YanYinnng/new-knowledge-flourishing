@@ -1,0 +1,205 @@
+{
+  "date": "2026-06-01",
+  "generated_at": "2026-06-01T22:52:26",
+  "mode": "input",
+  "report_structure": [
+    "今日总结",
+    "今日输入",
+    "今日新知",
+    "与旧知识的链接",
+    "今日发芽点子",
+    "参考搜索内容",
+    "随心记复盘（仅在当天有随心记时追加到最后）"
+  ],
+  "writing_contract": {
+    "model_role": "你是报告作者。请综合材料写 report_brief.json，不要把搜索结果直接拼进正文。",
+    "keyword_card_shape": [
+      "简介",
+      "最近有什么相关新闻",
+      "与我相关",
+      "最小下一步"
+    ],
+    "hard_limits": [
+      "每个关键词只能有一个简介、一个最近有什么相关新闻、一个与我相关、一个最小下一步。",
+      "简介约 200-300 字，只解释关键词本身，不要联系补充信息。",
+      "与我相关单独分析关键词和补充信息的联系。",
+      "最近新闻最多 1 段或 2 条，最小下一步只能 1 个动作。",
+      "禁止使用旧标签：它是什么、今天查到了什么、和我有什么关系、今日判断。",
+      "随心记只用于最后的随心记复盘，不得影响今日总结、今日输入、今日新知、旧知识链接和今日发芽点子。"
+    ],
+    "free_note_review_shape": {
+      "themes": "1-4 个短主题，概括随心记里反复出现的关注点。",
+      "discussion": "温和讨论这些想法或感受背后的关注点、动机或张力。",
+      "evaluation": "评价它更像短期情绪、长期信号、待观察线索，还是值得以后转成关键词或点子。",
+      "question_for_tomorrow": "一个不催促、但能继续理解自己的问题。"
+    }
+  },
+  "input_source": {
+    "format": "jsonl",
+    "entry_counts_by_kind": {
+      "free_note": 1,
+      "keyword_batch": 1
+    }
+  },
+  "secretary_context": {
+    "date": "2026-06-01",
+    "raw_input": {
+      "entry_counts_by_kind": {
+        "free_note": 1,
+        "keyword_batch": 1
+      },
+      "daily_captures": [],
+      "supported_kinds": [
+        "keyword_batch",
+        "free_note",
+        "task_capture",
+        "calendar_capture",
+        "link_capture",
+        "file_capture"
+      ]
+    },
+    "memory": {
+      "profile_path": "memory/profile.md",
+      "profile": "# 个人画像\n\n这里只保存经过确认的长期画像。日报和随心记可以提出候选，但不会自动改写这里。\n",
+      "themes_path": "memory/themes.md",
+      "themes": "# 长期主题\n\n记录反复出现的长期主题、当前关注强度和最近证据。\n",
+      "recent_preferences": [
+        {
+          "schema_version": 1,
+          "id": "memory-bootstrap",
+          "created_at": "2026-06-01T00:00:00+08:00",
+          "source": "system",
+          "kind": "memory_bootstrap",
+          "payload": {
+            "note": "Confirmed preference and memory events are appended here."
+          }
+        }
+      ]
+    },
+    "tasks": {
+      "events_path": "tasks/tasks.jsonl",
+      "open_or_due_soon": []
+    },
+    "review_queue": {
+      "pending_count": 0,
+      "pending_items": []
+    }
+  },
+  "inputs": [
+    {
+      "keyword": "交大红衫书院",
+      "supplemental_info": "交大新搞的一个书院，像是致远plus。\n强陶说大一刚上来都不懂事，很难选，我感觉有道理。\n看看要怎么搞吧，听起来还不错至少",
+      "weight": "3"
+    }
+  ],
+  "free_notes": [
+    {
+      "id": "2026-06-01T19-18-51-506ac2",
+      "text": "这两天有点焦虑，感觉有好多事情要做，时间不够用。\n今天美签加急还被拒了，有点down",
+      "created_at": "2026-06-01T19:18:51+08:00",
+      "source": "web"
+    }
+  ],
+  "keyword_contexts": [
+    {
+      "keyword": "交大红衫书院",
+      "supplemental_info": "交大新搞的一个书院，像是致远plus。\n强陶说大一刚上来都不懂事，很难选，我感觉有道理。\n看看要怎么搞吧，听起来还不错至少",
+      "weight": "3",
+      "questions_for_model": [
+        "交大红衫书院 是什么？请用 200-300 字解释清楚，只专注关键词本身。",
+        "交大红衫书院 最近有什么新闻或新进展？没有可靠新进展就直接说明。",
+        "结合补充信息“交大新搞的一个书院，像是致远plus。\n强陶说大一刚上来都不懂事，很难选，我感觉有道理。\n看看要怎么搞吧，听起来还不错至少”，这个关键词与我的记录有什么具体联系？"
+      ],
+      "search_note": "已尝试联网搜索，但没有解析到可用结果。",
+      "search_results": [],
+      "local_matches": []
+    }
+  ],
+  "local_knowledge": {
+    "tracking_topics": [
+      "新知孵化工作流",
+      "本地 Markdown 知识库",
+      "每日晚间复盘"
+    ],
+    "scanned_paths": [
+      "knowledge/node-0011b3bd.md",
+      "knowledge/node-78eeff5b.md",
+      "knowledge/node-7c0378ad.md",
+      "knowledge/personal-knowledge-incubation.md",
+      "synthesis/idea_seeds/daily-review-spark.md",
+      "synthesis/idea_seeds/seed-20845b10.md",
+      "synthesis/idea_seeds/seed-72a2ef24.md",
+      "synthesis/idea_seeds/seed-b123728a.md",
+      "synthesis/idea_seeds/seed-cf82098a.md",
+      "synthesis/idea_seeds/seed-e2879fd0.md",
+      "synthesis/idea_seeds/seed-ed5e2f08.md",
+      "tracking/topics.md"
+    ],
+    "high_weight_nodes": [
+      {
+        "title": "量子计算与AI的结合",
+        "path": "knowledge/node-0011b3bd.md",
+        "weight": "3",
+        "status": "candidate",
+        "excerpt": "ID: node-0011b3bd Type: concept Weight: 3 Status: candidate Last seen: 2026-05-25 Aliases: Related: Sources: inbox/2026-05-25.md, synthesis/daily_reports/2026-05-25/report.pdf ## 一句话定义 量子计算与 AI 的结合，通常指两条方向同时推进：一条是用量子计算去加速或改写某些机器学习任务，例如组合优化、采样、特征表示和部分训练过程；另一条是用 AI 去帮助量子系统设计、校准、误差缓解和实验控制。它不是简单把两个热门词放在一起，而是在问：当计算对象具有高维、概率性和复杂… ## 为什么对我重要 你的补充信息核心是在判断“要不要尽早下注一个可能很大的新方向”。这个关键词和你当前记录的关系，不在于立刻转向量子技术栈，而在于训练自己区分“长期值得跟踪的底层趋势”和"
+      },
+      {
+        "title": "多智能体协作",
+        "path": "knowledge/node-78eeff5b.md",
+        "weight": "3",
+        "status": "candidate",
+        "excerpt": "ID: node-78eeff5b Type: concept Weight: 3 Status: candidate Last seen: 2026-05-26 Aliases: Related: Sources: inbox/2026-05-26.md, synthesis/daily_reports/2026-05-26/report.pdf ## 一句话定义 多智能体协作是把一个复杂任务拆给多个具备不同角色、工具或上下文边界的 AI Agent 共同完成的系统设计方法。每个智能体通常承担相对清晰的职责，例如检索资料、规划步骤、编写代码、审查结果或整理输出；系统再通过消息传递、任务路由、共享状态、工作流编排和终止条件，把这些局部能力组… ## 为什么对我重要 你的补充信息关心的是“直接用平台”还是“自己手搓”。这正好可以放进现有点子发芽 MVP 里做小实验：如果只是为了每天晚间复盘，完全可以先手搓一个轻量多角色流程，例如收"
+      },
+      {
+        "title": "中美创客大赛",
+        "path": "knowledge/node-7c0378ad.md",
+        "weight": "3",
+        "status": "candidate",
+        "excerpt": "ID: node-7c0378ad Type: concept Weight: 3 Status: candidate Last seen: 2026-05-27 Aliases: Related: Sources: inbox/2026-05-27.md, synthesis/daily_reports/2026-05-27/report.pdf ## 一句话定义 中美创客大赛通常指“中美青年创客大赛”，是围绕青年创新、创客教育和中美人文交流展开的竞赛型项目。它以团队参赛、问题定义、原型设计、现场路演和赛区选拔为主要形式，鼓励青年围绕社区韧性、低碳环保、公共卫生、健康福祉、清洁能源等公共议题提出可落地的产品或服务方案。和纯商业创业比赛相比… ## 为什么对我重要 你的补充信息里，关键变化是从“竞赛可能没意思”转为“里面有些不错的人和项目”。这说明它对你不是一个需要泛泛了解的赛事名，而是一个可观察的人才与项目入口：值得看哪些人能"
+      },
+      {
+        "title": "新知孵化工作流",
+        "path": "knowledge/personal-knowledge-incubation.md",
+        "weight": "3",
+        "status": "active",
+        "excerpt": "ID: personal-knowledge-incubation Type: concept Weight: 3 Status: active Last seen: 2026-05-24 Aliases: 点子发芽, 个人新知孵化, 晚间知识复盘 Related: 本地 Markdown 知识库, 每日输入, 点子种子 Sources: PLAN.md ## 一句话定义 一种把每天遇到的新信息、问题和想法轻量沉淀为知识节点与点子种子的个人工作流。 ## 为什么对我重要 它能降低记录成本，让零散的新知在晚上被整理、判断和延续，而不是停留在临时灵感里。 ## 当前理解 网页入口只承担日常使用的最小交互：输入关键词、查看日报、看到知识节点和点子种子。 ## 近期动态 2026-05-24 新增本地网页入口。 ## 下一步 用网页连续输入 3 天，观察它是否比直接打开文件夹更顺手。 ## 更新记录 - 2026-05-24：创建网页入"
+      }
+    ],
+    "idea_seeds": [
+      {
+        "title": "点子种子：每日小推进",
+        "path": "synthesis/idea_seeds/daily-review-spark.md",
+        "weight": "",
+        "status": "raw",
+        "excerpt": "ID: daily-review-spark Status: raw Created: 2026-05-24 Related nodes: personal-knowledge-incubation Sources: inbox/2026-05-24.md, PLAN.md ## 触发 点子发芽 MVP 需要在日报里固定产出“明日一个小推进”，避免复盘只停留在整理。 ## 点子描述 每天晚上的日报只给出一个很小、可在 10-20 分钟内完成的下一步。 ## 为什么有意思 它把知识整理从“收集更多”拉回到“明天做一点”，更适合个人长期使用。 ## 可能的最小下一步 明天用网页提交关键词，然后在日报里确认一个最小动作。 ## 风险或疑问 如果小推进写得太大，系统会重新变成负担。"
+      },
+      {
+        "title": "点子种子：前沿趋势观察卡片",
+        "path": "synthesis/idea_seeds/seed-20845b10.md",
+        "weight": "",
+        "status": "raw",
+        "excerpt": "ID: seed-20845b10 Status: raw Created: 2026-05-25 Related nodes: node-0011b3bd Sources: inbox/2026-05-25.md, synthesis/daily_reports/2026-05-25/report.pdf ## 触发 2026-05-25 日报提出这个候选点子。 ## 点子描述 以后遇到“下一个 AI”式主题时，固定从技术成熟度、可落地场景、个人进入门槛三栏快速判断。 ## 为什么有意思 它把当天的新知从“看过”推进到一个可继续观察或验证的小方向。 ## 可能的最小下一步 下次遇到相关输入时，补充一个可验证案例或反例。 ## 风险或疑问 当前仍是 raw 候选，尚未经过人工确认、合并或升权。 ## 更新记录 - 2026-05-25：日报再次触发「前沿趋势观察卡片」；补充：以后遇到“下一个 AI”式主题时，固定从技术成熟度、可"
+      },
+      {
+        "title": "点子种子：把点子发芽日报改造成四角色多智能体样板",
+        "path": "synthesis/idea_seeds/seed-72a2ef24.md",
+        "weight": "",
+        "status": "raw",
+        "excerpt": "ID: seed-72a2ef24 Status: raw Created: 2026-05-26 Related nodes: node-78eeff5b Sources: inbox/2026-05-26.md, synthesis/daily_reports/2026-05-26/report.pdf ## 触发 2026-05-26 日报提出这个候选点子。 ## 点子描述 把点子发芽日报改造成四角色多智能体样板，先不引入新依赖，只用本地 JSON 文件在角色之间传递结果。 ## 为什么有意思 它把当天的新知从“看过”推进到一个可继续观察或验证的小方向。 ## 可能的最小下一步 下次遇到相关输入时，补充一个可验证案例或反例。 ## 风险或疑问 当前仍是 raw 候选，尚未经过人工确认、合并或升权。 ## 更新记录 - 2026-05-26：由日报自动沉淀为 raw 点子种子。"
+      }
+    ]
+  },
+  "source_policy": {
+    "priority": [
+      "官方/机构资料",
+      "论文/报告",
+      "权威媒体",
+      "项目主页/机构主页",
+      "普通线索",
+      "低优先级线索"
+    ],
+    "tier_counts": {},
+    "low_quality_rule": "低质量来源只能作为入口线索，不能作为核心结论。"
+  },
+  "reference_sources": []
+}

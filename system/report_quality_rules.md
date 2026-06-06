@@ -26,7 +26,7 @@ PDF 只允许这些主章节：
 每个关键词在“今日新知”下只允许四个小节：
 
 1. 简介
-2. 最近有什么相关新闻
+2. 最近有什么相关的事情
 3. 与我相关
 4. 最小下一步
 
@@ -40,18 +40,20 @@ PDF 只允许这些主章节：
 2. 读取 `synthesis/daily_reports/YYYY-MM-DD/report_context.json`。
 3. 对每个关键词按下面三个问题写作：
    - `A 是什么？`
-   - `A 最近有什么新闻/新进展？`
+   - `A 最近发生了什么相关事情？`
    - `结合补充信息 B，A 与我的记录有什么具体联系？`
 4. 把答案整理成 `report_brief.json`，必须符合 `templates/report-brief.json`。
 5. 运行 `python scripts/generate-radar-report.py --date YYYY-MM-DD --render-only`。
 6. 用 `pdftotext` 或 `report.tex` 抽查结果；如果仍像搜索堆砌，修改 `report_brief.json` 后再次 render。
 7. `quality_check.json` 通过后，运行 `python scripts/sync-knowledge-from-report.py --date YYYY-MM-DD`，把报告沉淀成候选知识节点和 raw 点子种子。
 
+写作时还必须读取 `system/report_voice_rules.md`。结构合格不等于读感合格；如果正文出现明显 AI 分析腔，`quality_check.json` 应当失败。
+
 ## 内容质量标准
 
 - `summary`：1-2 段，说明今天信息共同指向什么。
 - `intro`：每个关键词约 200-300 字；只解释关键词本身，不联系补充信息。
-- `recent_news`：1 段或最多 2 条；不能粘贴搜索标题或摘要。
+- `recent_news`：写成“近期相关事情”，2-4 条或 1 个较完整段落；有来源时必须具体说明最近出现了什么活动、项目、论文、产品、讨论或政策动向，谁在做、和关键词有什么关系。不能只列来源编号、搜索动作、标题或摘要。
 - `relevance`：单独分析关键词和补充信息的联系，可以写它为什么触发注意、连接到什么学习/项目/机会/人脉/商业观察。
 - `next_step`：只能有 1 个动作，必须可执行。
 - `old_knowledge_links`：最多 3 条，只写真相关，不强行凑。
@@ -59,18 +61,34 @@ PDF 只允许这些主章节：
 - `reference_sources`：只列来源标题、等级和 URL，不放网页摘要。
 - `free_note_review`：只有当天存在随心记时才写；只做温和讨论、评价和一个问题，不影响关键词部分。
 
+## 语言质量标准
+
+- 报告语气按 `system/report_voice_rules.md` 执行：私人秘书式晚间简报，自然、具体、克制、有温度。
+- 分析过程留在幕后。正文不要写“本地旧节点显示”“可连接”“连接价值是”“当前是弱连接，理由是”“脚本 fallback”“由 Codex automation”等元话语。
+- 控制“不是/而是”“只是”“更像”“判断”这类句式。需要对比时，优先写成正向短句。
+- 来源标题、URL 和参考搜索内容不参与语言风格拦截；正文和 `report_brief.json` 公开字段会被检查。
+
 ## Secretary Modules
 
 - `secretary_context` is shared context, not a replacement for the keyword report.
-- `memory_candidates`, `task_candidates`, `knowledge_candidates`, and `idea_seed_candidates` are review candidates only. They must not be treated as confirmed memory, tasks, or knowledge.
+- `memory_candidates`, `task_candidates`, `knowledge_candidates`, `idea_seed_candidates`, and `weight_change_candidates` are review candidates only. They must not be treated as confirmed memory, tasks, knowledge, or weight changes.
+- Weight changes must go through `weight_change_candidates`; automation must not directly edit `Weight:` fields.
 - `task_followups` and `secretary_reminders` may only use confirmed task events plus same-day task/calendar captures.
 - Empty secretary modules should be omitted from `report_brief.json`.
+
+## Multi-source Search
+
+- Treat `keyword_contexts[].search_results` as the search evidence available to the report writer. Results can come from opencli platform search, academic search, or direct web fallback.
+- `recent_news` may use highly related adjacent results when exact news is unavailable, but it must explain the relationship to the keyword and label weak confidence when needed. It must give the user a useful account of what has been happening recently, not ask the user to inspect the source list.
+- Do not write "no usable reliable source" if there are usable platform, academic, or web results. Instead, distinguish source strength: official/academic sources can support facts, platform discussions can support related-activity observations, and low-quality results only provide discovery leads.
+- Preserve source IDs in the text and keep details in `reference_sources`; do not paste long snippets into the body.
 
 ## 渲染质量检查必须拦截
 
 - 旧标签出现在 PDF 中。
-- 每个关键词没有恰好一个“简介 / 最近有什么相关新闻 / 与我相关 / 最小下一步”。
+- 每个关键词没有恰好一个“简介 / 最近有什么相关的事情 / 与我相关 / 最小下一步”。
 - 简介明显短于 200 字。
+- 有搜索来源时，“最近有什么相关的事情”明显过短、少于 3 句且没有 2 条以上具体线索，或只写“检索到/搜到/参考 S1-S3”等来源说明。
 - 正文直接复用搜索标题或长摘要。
 - 启用联网搜索却没有 `sources.json` 来源或失败说明。
 - 当天有随心记但 PDF 缺少“随心记复盘”，或当天没有随心记却出现该章节。

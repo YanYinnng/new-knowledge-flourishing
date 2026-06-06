@@ -184,6 +184,13 @@ function renderList(container, items, kind, emptyText) {
 
 function candidateText(item) {
   const payload = item.payload && typeof item.payload === "object" ? item.payload : {};
+  if (item.kind === "weight_change_candidate") {
+    const target = payload.target || payload.keyword || payload.node_title || payload.path || "未命名对象";
+    const fromWeight = payload.current_weight || payload.from_weight || "?";
+    const toWeight = payload.suggested_weight || payload.new_weight || payload.to_weight || "?";
+    const reason = payload.reason || payload.evidence || payload.text || "";
+    return `${target}: 建议权重 ${fromWeight} -> ${toWeight}${reason ? `；理由：${reason}` : ""}`;
+  }
   return payload.text || payload.title || payload.summary || item.id || "";
 }
 

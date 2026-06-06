@@ -1,0 +1,84 @@
+{
+  "date": "2026-06-05",
+  "generated_at": "2026-06-06T10:47:00",
+  "dry_run": false,
+  "library_policy": "read-only",
+  "context_scanned_paths": [
+    "knowledge/markdown.md",
+    "knowledge/node-0011b3bd.md",
+    "knowledge/node-47708567.md",
+    "knowledge/node-78eeff5b.md",
+    "knowledge/node-7c0378ad.md",
+    "knowledge/node-c567518f.md",
+    "knowledge/personal-knowledge-incubation.md",
+    "synthesis/idea_seeds/daily-review-spark.md",
+    "synthesis/idea_seeds/seed-20845b10.md",
+    "synthesis/idea_seeds/seed-4d0105e2.md",
+    "synthesis/idea_seeds/seed-72a2ef24.md",
+    "synthesis/idea_seeds/seed-8069c23e.md",
+    "synthesis/idea_seeds/seed-8c3dc099.md",
+    "synthesis/idea_seeds/seed-9395d01d.md",
+    "synthesis/idea_seeds/seed-97a9476d.md",
+    "synthesis/idea_seeds/seed-9f229ce0.md",
+    "synthesis/idea_seeds/seed-b123728a.md",
+    "synthesis/idea_seeds/seed-cf82098a.md",
+    "synthesis/idea_seeds/seed-d24e7b00.md",
+    "synthesis/idea_seeds/seed-e2879fd0.md",
+    "synthesis/idea_seeds/seed-e998fbdf.md",
+    "synthesis/idea_seeds/seed-ed5e2f08.md",
+    "tracking/topics.md"
+  ],
+  "created": [],
+  "updated": [],
+  "skipped": [
+    {
+      "kind": "knowledge",
+      "keyword": "本地 Markdown 知识库",
+      "slug": "markdown",
+      "path": "knowledge/markdown.md",
+      "action": "already_synced"
+    },
+    {
+      "kind": "knowledge",
+      "keyword": "每日晚间复盘",
+      "slug": "node-47708567",
+      "path": "knowledge/node-47708567.md",
+      "action": "already_synced"
+    },
+    {
+      "kind": "knowledge",
+      "keyword": "新知孵化工作流",
+      "slug": "node-8b9e1d7e",
+      "path": "knowledge/personal-knowledge-incubation.md",
+      "action": "already_synced"
+    },
+    {
+      "kind": "knowledge",
+      "keyword": "量子计算与AI的结合",
+      "slug": "node-0011b3bd",
+      "path": "knowledge/node-0011b3bd.md",
+      "action": "already_synced"
+    },
+    {
+      "kind": "knowledge",
+      "keyword": "多智能体协作",
+      "slug": "node-78eeff5b",
+      "path": "knowledge/node-78eeff5b.md",
+      "action": "already_synced"
+    },
+    {
+      "kind": "seed",
+      "title": "做一张“日报最小闭环检查卡”",
+      "slug": "seed-3cd5bab8",
+      "path": "synthesis/idea_seeds/seed-3cd5bab8.md",
+      "action": "already_synced"
+    },
+    {
+      "kind": "seed",
+      "title": "把前沿主题统一放进“三栏观察法”",
+      "slug": "seed-e4a74926",
+      "path": "synthesis/idea_seeds/seed-e4a74926.md",
+      "action": "already_synced"
+    }
+  ]
+}

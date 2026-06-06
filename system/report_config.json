@@ -7,5 +7,18 @@
   "max_idea_seeds_per_report": 3,
   "latex_engine": "xelatex",
   "max_sources_per_keyword": 5,
-  "web_search_provider": "duckduckgo_html"
+  "web_search_provider": "multi_source_opencli",
+  "search_channels": [
+    "opencli:weixin",
+    "opencli:bilibili",
+    "opencli:zhihu",
+    "opencli:weibo",
+    "opencli:baidu-scholar",
+    "opencli:wanfang",
+    "opencli:cnki",
+    "opencli:google-scholar",
+    "web:bing",
+    "web:baidu",
+    "web:duckduckgo_html"
+  ]
 }

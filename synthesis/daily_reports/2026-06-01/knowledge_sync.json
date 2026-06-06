@@ -1,0 +1,45 @@
+{
+  "date": "2026-06-01",
+  "generated_at": "2026-06-01T22:53:42",
+  "dry_run": false,
+  "library_policy": "read-only",
+  "context_scanned_paths": [
+    "knowledge/node-0011b3bd.md",
+    "knowledge/node-78eeff5b.md",
+    "knowledge/node-7c0378ad.md",
+    "knowledge/personal-knowledge-incubation.md",
+    "synthesis/idea_seeds/daily-review-spark.md",
+    "synthesis/idea_seeds/seed-20845b10.md",
+    "synthesis/idea_seeds/seed-72a2ef24.md",
+    "synthesis/idea_seeds/seed-b123728a.md",
+    "synthesis/idea_seeds/seed-cf82098a.md",
+    "synthesis/idea_seeds/seed-e2879fd0.md",
+    "synthesis/idea_seeds/seed-ed5e2f08.md",
+    "tracking/topics.md"
+  ],
+  "created": [
+    {
+      "kind": "knowledge",
+      "keyword": "交大红衫书院",
+      "slug": "node-c567518f",
+      "path": "knowledge/node-c567518f.md",
+      "action": "created"
+    },
+    {
+      "kind": "seed",
+      "title": "做一张“大学新培养项目判断卡”",
+      "slug": "seed-9395d01d",
+      "path": "synthesis/idea_seeds/seed-9395d01d.md",
+      "action": "created"
+    },
+    {
+      "kind": "seed",
+      "title": "把红衫书院当成一次教育产品观察",
+      "slug": "seed-4d0105e2",
+      "path": "synthesis/idea_seeds/seed-4d0105e2.md",
+      "action": "created"
+    }
+  ],
+  "updated": [],
+  "skipped": []
+}

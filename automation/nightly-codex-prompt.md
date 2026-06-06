@@ -34,7 +34,7 @@ PDF 只允许这些主章节：
 每个关键词在“今日新知”下只允许四个小节：
 
 1. 简介
-2. 最近有什么相关新闻
+2. 最近有什么相关的事情
 3. 与我相关
 4. 最小下一步
 
@@ -44,7 +44,7 @@ PDF 只允许这些主章节：
 
 ## 执行流程
 
-1. 读取 `system/report_quality_rules.md`。
+1. 读取 `system/report_quality_rules.md` 和 `system/report_voice_rules.md`。
 2. 使用当前本地日期 `YYYY-MM-DD`。
 3. 运行：
 
@@ -56,7 +56,7 @@ python scripts/generate-radar-report.py --date YYYY-MM-DD --collect-only
 5. 你作为大模型写作者，生成 `synthesis/daily_reports/YYYY-MM-DD/report_brief.json`。必须符合 `templates/report-brief.json`。
 6. 对每个关键词，用下面三个问题思考后再写入 brief：
    - `A 是什么？请用 200-300 字解释清楚，只专注关键词本身。`
-   - `A 最近有什么新闻/新进展？`
+   - `A 最近发生了什么相关事情？`
    - `结合补充信息 B，A 与我的记录有什么具体联系？`
    这一步只能使用 `inputs`、`keyword_contexts`、`reference_sources` 和本地旧知识，不能使用 `free_notes`。
    如果 `free_notes` 非空，单独写 `free_note_review`：提炼 1-4 个主题，温和讨论和评价这些想法/感受，最后给一个不催促的问题。
@@ -83,7 +83,7 @@ python scripts/sync-knowledge-from-report.py --date YYYY-MM-DD
 - `summary`：1-2 段，说明今天输入共同指向什么。
 - `inputs`：保留为三栏信息，字段为 `keyword`、`supplemental_info`、`weight`；未填写权重时用默认值 `3`。
 - `intro`：每个关键词约 200-300 字；只解释关键词本身，不联系补充信息。
-- `recent_news`：1 段或最多 2 条；没有可靠新进展就明确说“未查到可靠近期新进展”。
+- `recent_news`：写成“最近有什么相关的事情”，2-4 条或 1 个较完整段落；有搜索材料时必须具体说明最近出现了什么活动、项目、论文、产品、讨论或政策动向，谁在做、和关键词有什么关系。正文至少 3 句，或至少 2 条具体线索；不要只写“检索到 S1/S2/S3”或让用户自己看来源。没有可靠新进展才明确说“未查到可靠近期新进展”。
 - `relevance`：单独分析关键词和补充信息的联系，可以写它为什么触发注意、连接到什么学习/项目/机会/人脉/商业观察。
 - `next_step`：只给 1 个具体动作。
 - `old_knowledge_links`：最多 3 条，只写真相关。
@@ -92,6 +92,14 @@ python scripts/sync-knowledge-from-report.py --date YYYY-MM-DD
 - `free_note_review`：只有 `report_context.json.free_notes` 非空时才写；它只根据随心记生成，且只会被渲染到最后的“随心记复盘”。
 - 搜索来源必须写入 `sources.json`，正文引用来源编号即可，不要粘贴搜索结果标题或摘要。
 - 新写入内容只使用“补充信息”这个字段名；历史“上下文”只作为旧 inbox 兼容读取。
+
+## 语言风格要求
+
+- 报告是给用户本人看的晚间简报，语气像一个懂他的私人秘书：自然、具体、克制、有温度。
+- 分析过程留在幕后，PDF 正文只写读者愿意看到的结果。不要写“本地旧节点显示”“可连接”“连接价值是”“当前是弱连接，理由是”“脚本 fallback”“由 Codex automation”等元话语。
+- 少用“不是/而是”“只是”“更像”“判断”。确实需要对比时，优先改成正向短句。
+- “最近有什么相关的事情”必须给具体内容：先消化 `keyword_contexts[].search_results`，再写给用户读。来源编号只能作为证据放在句尾，不能替代正文总结。
+- 写完 `report_brief.json` 后，按 `system/report_voice_rules.md` 自查一遍，再运行 `--render-only`。
 
 ## 无新输入
 
@@ -105,6 +113,14 @@ python scripts/sync-knowledge-from-report.py --date YYYY-MM-DD
 
 - Confirmed tasks live in `tasks/tasks.jsonl`; only these tasks and same-day `task_capture` / `calendar_capture` inputs may be used for `task_followups` and `secretary_reminders`.
 - Long-term memory lives in `memory/`; do not edit those files from automation.
-- If you notice a possible stable preference, profile fact, task, knowledge node, or idea seed, write it as a candidate field in `report_brief.json`: `memory_candidates`, `task_candidates`, `knowledge_candidates`, or `idea_seed_candidates`.
+- If you notice a possible stable preference, profile fact, task, knowledge node, idea seed, or keyword/knowledge weight change, write it as a candidate field in `report_brief.json`: `memory_candidates`, `task_candidates`, `knowledge_candidates`, `idea_seed_candidates`, or `weight_change_candidates`.
+- Put weight up/down judgments in `weight_change_candidates`; never directly change `Weight:` in knowledge nodes from automation. A weight candidate should include target/path when known, current weight, suggested weight, and a short reason.
 - Candidates are synced into `review_queue/YYYY-MM-DD.jsonl` by the render step. They are not accepted facts until the user accepts them in the web UI.
 - Omit empty secretary modules. Do not create filler reminders.
+
+## Multi-source Search Addendum
+
+- `keyword_contexts[].search_results` may come from opencli platform search (`weixin`, `bilibili`, `zhihu`, `weibo`) and academic search (`baidu-scholar`, `wanfang`, `cnki`, `google-scholar`), plus direct web fallback (`bing`, `baidu`, `duckduckgo_html`).
+- For `recent_news`, do not say "no usable reliable source" when `search_results` contains usable platform, academic, or web sources. If the source is only loosely related, use it as a low-confidence related signal and explicitly explain how it connects to the keyword. Summarize what has been happening recently; do not merely list source IDs.
+- Prefer exact, recent, authoritative sources when available. If only adjacent sources are available, write a short relationship sentence instead of pretending the result is exact news.
+- Use `search_channel`, `search_endpoint`, and `source_role` to understand where a result came from. `opencli web` currently supports URL reading rather than broad search, so broad web discovery is handled by the direct web fallback.

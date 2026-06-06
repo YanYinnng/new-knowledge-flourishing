@@ -51,6 +51,7 @@ MEMORY_PROFILE = PRIMARY_DIRS["memory"] / "profile.md"
 MEMORY_THEMES = PRIMARY_DIRS["memory"] / "themes.md"
 MEMORY_PREFERENCES = PRIMARY_DIRS["memory"] / "preferences.jsonl"
 TASK_EVENTS = PRIMARY_DIRS["tasks"] / "tasks.jsonl"
+WEIGHT_DECISIONS = ROOT / "tracking" / "weight_decisions.jsonl"
 
 LEGACY_DIRS = {
     "knowledge": ROOT / "library" / "nodes",
@@ -790,6 +791,76 @@ def update_task_status(payload: dict) -> dict:
     return {"task_id": task_id, "action": action, "sync": sync}
 
 
+def safe_weight_target(path_text: str) -> Path | None:
+    if not path_text:
+        return None
+    candidate = (ROOT / path_text).resolve()
+    allowed_bases = [PRIMARY_DIRS["knowledge"], PRIMARY_DIRS["idea_seeds"]]
+    if candidate.suffix.lower() != ".md" or not candidate.is_file():
+        return None
+    for base in allowed_bases:
+        try:
+            candidate.relative_to(base.resolve())
+            return candidate
+        except ValueError:
+            continue
+    return None
+
+
+def apply_weight_change(payload: dict, candidate_id: str, now: datetime) -> list[str]:
+    new_weight = str(
+        payload.get("new_weight")
+        or payload.get("suggested_weight")
+        or payload.get("to_weight")
+        or ""
+    ).strip()
+    if new_weight not in {"1", "2", "3", "4", "5"}:
+        raise ValueError("权重调整候选必须包含 1-5 的 new_weight / suggested_weight。")
+
+    decision = {
+        "schema_version": 1,
+        "id": stable_id(candidate_id, "weight", now.isoformat(timespec="seconds"), prefix="weight"),
+        "created_at": now.isoformat(timespec="seconds"),
+        "source": "review_queue",
+        "kind": "weight_change_accepted",
+        "payload": {
+            "candidate_id": candidate_id,
+            "target": str(payload.get("target") or payload.get("keyword") or payload.get("node_title") or ""),
+            "path": str(payload.get("path") or ""),
+            "current_weight": str(payload.get("current_weight") or payload.get("from_weight") or ""),
+            "new_weight": new_weight,
+            "reason": str(payload.get("reason") or payload.get("evidence") or payload.get("text") or ""),
+            "source_report": str(payload.get("source_report") or ""),
+        },
+    }
+    append_structured_jsonl(WEIGHT_DECISIONS, decision)
+    written = [relative_path(WEIGHT_DECISIONS)]
+
+    target = safe_weight_target(str(payload.get("path") or ""))
+    if target:
+        text = target.read_text(encoding="utf-8")
+        lines = text.splitlines()
+        changed = False
+        old_weight = ""
+        for index, line in enumerate(lines):
+            if line.lower().startswith("weight:"):
+                old_weight = line.split(":", 1)[1].strip()
+                lines[index] = f"Weight: {new_weight}"
+                changed = True
+                break
+        if changed:
+            stamp = now.strftime("%Y-%m-%d")
+            lines.extend(
+                [
+                    "",
+                    f"- {stamp}: 确认权重调整 {old_weight or '?'} -> {new_weight}；来源候选 {candidate_id}。",
+                ]
+            )
+            target.write_text("\n".join(lines).rstrip() + "\n", encoding="utf-8")
+            written.append(relative_path(target))
+    return written
+
+
 def review_queue_summary() -> dict:
     pending = pending_review_items()
     return {
@@ -874,6 +945,8 @@ def materialize_review_acceptance(candidate: dict, edited_payload: dict | None =
                 },
             )
             written.append(relative_path(TASK_EVENTS))
+    elif kind == "weight_change_candidate":
+        written.extend(apply_weight_change(payload, str(candidate.get("id") or ""), now))
     return written
 
 

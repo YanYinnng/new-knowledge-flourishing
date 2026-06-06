@@ -1,0 +1,423 @@
+{
+  "date": "2026-06-03",
+  "generated_at": "2026-06-03T22:57:27",
+  "mode": "review",
+  "report_structure": [
+    "今日总结",
+    "今日输入",
+    "今日新知",
+    "与旧知识的链接",
+    "今日发芽点子",
+    "参考搜索内容",
+    "随心记复盘（仅在当天有随心记时追加到最后）"
+  ],
+  "writing_contract": {
+    "model_role": "你是报告作者。请综合材料写 report_brief.json，不要把搜索结果直接拼进正文。",
+    "keyword_card_shape": [
+      "简介",
+      "最近有什么相关新闻",
+      "与我相关",
+      "最小下一步"
+    ],
+    "hard_limits": [
+      "每个关键词只能有一个简介、一个最近有什么相关新闻、一个与我相关、一个最小下一步。",
+      "简介约 200-300 字，只解释关键词本身，不要联系补充信息。",
+      "与我相关直接说明它会影响用户怎么选、怎么问、怎么做，少写抽象的“联系”。",
+      "最近新闻最多 1 段或 2 条，最小下一步只能 1 个动作。",
+      "禁止使用旧标签：它是什么、今天查到了什么、和我有什么关系、今日判断。",
+      "随心记只用于最后的随心记复盘，不得影响今日总结、今日输入、今日新知、旧知识链接和今日发芽点子。"
+    ],
+    "voice_contract": {
+      "rules_path": "system/report_voice_rules.md",
+      "target_voice": "私人秘书式晚间简报：自然、具体、克制、有温度。",
+      "principle": "分析过程留在幕后，正文只写读者愿意看到的结果。",
+      "banned_meta_phrases": [
+        "本地旧节点显示",
+        "可连接",
+        "它说明这个关键词",
+        "连接价值是",
+        "当前是弱连接，理由是",
+        "低成本观察",
+        "脚本 fallback",
+        "由 Codex automation"
+      ],
+      "style_limits": {
+        "不是/而是": 1,
+        "只是": 2,
+        "更像": 2,
+        "判断": 3
+      },
+      "rules_excerpt": "# 点子发芽日报语言规范 这份规范只管日报正文的读感。结构、来源、确认队列和知识沉淀规则仍以 `system/report_quality_rules.md` 为准。 ## 目标语气 日报是给一个人看的晚间简报。语气像一个懂你的私人秘书：自然、具体、克制、有温度。可以有判断，但不要把推理过程摆在台面上。 ## 写法原则 - 直接告诉用户今天值得看什么、为什么值得看、明天能做什么。 - 把系统分析藏在幕后。不要解释“模型如何判断”“本地节点如何连接”“这个字段应该怎么用”。 - 少用抽象大词，多写具体场景、人、项目、材料、动作。 - 可以温和提醒，但不要像公司周报、学术摘要、搜索结果拼贴或 AI 自我说明。 - 引用来源时只保留编号，例如 `[S1]`；来源细节放在“参考搜索内容”。 ## 禁用元话语 以下短语不得出现在 PDF 正文中： - `本地旧节点显示` - `可连接` - `它说明这个关键词` - `连接价值是` - `当前是弱连接，理由是` - `低成本观察` - `脚本 fallback` - `由 Codex automation` 相近表达也要避免，例如“本地知识节点说明”“作为一个信息对象”“需要被定义、追踪和验证”。 ## 句式限制 这些句式不是完全禁用，但用多了会有明显 AI 味： - `不是/而是` 成对最多 1 次。 - `只是` 最多 2 次。 - `更像` 最多 2 次。 - `判断` 最多 3 次。 优先改成更短的正向表达。例如把“它不是 A，而是 B”改成“它更适合按 B 来看”或直接写“它适合按 B 来看”。 ## Before / After Before: > 本地旧节点显示，这个主题曾经触发的是“要不要尽早下注一个可能很大的新方向”的判断。 After: > 你之前也记过类似的担心：这类大方向很诱人，但现在更适合先看清具体入口。 Before: > 本地知识节点《新知孵化工作流》可连接：它说明这个关键词不是单日噪音，而是可能影响已有主题的使用或判断。 After: > 这条可以和你之前记过的《新知孵化工作流》放在一起看：它会影响你之后怎么收集、筛选和复盘信息。 Before: > 当前是弱连接，理由是输入还没有落到明确项目、机会、人脉或学习路径；建议低成本观察。 After: > 现在先别急着建新节点。等它再次出现，或者你补上一句原话、一个链接、一个人名，再决定要不要留下。 ## 写给各章节的提醒 - `今日总结`：像晚间开场白。用 1-2 段说清今天最值得留意的方向。 - `简介`：解释概念本身，不要套百科腔。写给未来回看时的自己。 - `最近有什么相关新闻`：有来源就说进展；来源偏松散时说明它和关键词的关系，不要堆标题。 - `与我相关`：少说“联系/连接”，多说“它会影响你怎么选、怎么问、怎么做”。 - `最…"
+    },
+    "free_note_review_shape": {
+      "themes": "1-4 个短主题，概括随心记里反复出现的关注点。",
+      "discussion": "温和讨论这些想法或感受背后的关注点、动机或张力。",
+      "evaluation": "给一个轻量结论：先当作心情、长期信号、待观察线索，还是以后可能变成关键词或点子。",
+      "question_for_tomorrow": "一个不催促、但能继续理解自己的问题。"
+    }
+  },
+  "input_source": {
+    "format": "jsonl",
+    "entry_counts_by_kind": {
+      "free_note": 1
+    }
+  },
+  "secretary_context": {
+    "date": "2026-06-03",
+    "raw_input": {
+      "entry_counts_by_kind": {
+        "free_note": 1
+      },
+      "daily_captures": [],
+      "supported_kinds": [
+        "keyword_batch",
+        "free_note",
+        "task_capture",
+        "calendar_capture",
+        "link_capture",
+        "file_capture"
+      ]
+    },
+    "memory": {
+      "profile_path": "memory/profile.md",
+      "profile": "# 个人画像\n\n这里只保存经过确认的长期画像。日报和随心记可以提出候选，但不会自动改写这里。\n",
+      "themes_path": "memory/themes.md",
+      "themes": "# 长期主题\n\n记录反复出现的长期主题、当前关注强度和最近证据。\n",
+      "recent_preferences": [
+        {
+          "schema_version": 1,
+          "id": "memory-bootstrap",
+          "created_at": "2026-06-01T00:00:00+08:00",
+          "source": "system",
+          "kind": "memory_bootstrap",
+          "payload": {
+            "note": "Confirmed preference and memory events are appended here."
+          }
+        }
+      ]
+    },
+    "tasks": {
+      "events_path": "tasks/tasks.jsonl",
+      "open_or_due_soon": []
+    },
+    "review_queue": {
+      "pending_count": 0,
+      "pending_items": []
+    }
+  },
+  "inputs": [],
+  "free_notes": [
+    {
+      "id": "2026-06-03T11-10-17-9c0944",
+      "text": "最近的探索让我对创业祛魅。\n现在我已经能够很好的用AI工具了，但是更重要的是用它来做什么。\n能够用AI做什么取决于我的知识边界，这是AI工具无法直接帮助的地方，AI没办法把知识直接装到我的脑子里。这也是为什么最近用AI搭了一些小项目，发现做的一般。\n而提升这种基础能力需要沉下心来，耐得住性子的系统学习。\n是时候收窄一下精力，把更多精力放到系统学习上了。",
+      "created_at": "2026-06-03T11:10:17+08:00",
+      "source": "web"
+    }
+  ],
+  "keyword_contexts": [],
+  "local_knowledge": {
+    "tracking_topics": [
+      "新知孵化工作流",
+      "本地 Markdown 知识库",
+      "每日晚间复盘"
+    ],
+    "scanned_paths": [
+      "knowledge/node-0011b3bd.md",
+      "knowledge/node-78eeff5b.md",
+      "knowledge/node-7c0378ad.md",
+      "knowledge/node-c567518f.md",
+      "knowledge/personal-knowledge-incubation.md",
+      "synthesis/idea_seeds/daily-review-spark.md",
+      "synthesis/idea_seeds/seed-20845b10.md",
+      "synthesis/idea_seeds/seed-4d0105e2.md",
+      "synthesis/idea_seeds/seed-72a2ef24.md",
+      "synthesis/idea_seeds/seed-8c3dc099.md",
+      "synthesis/idea_seeds/seed-9395d01d.md",
+      "synthesis/idea_seeds/seed-9f229ce0.md",
+      "synthesis/idea_seeds/seed-b123728a.md",
+      "synthesis/idea_seeds/seed-cf82098a.md",
+      "synthesis/idea_seeds/seed-e2879fd0.md",
+      "synthesis/idea_seeds/seed-ed5e2f08.md",
+      "tracking/topics.md"
+    ],
+    "high_weight_nodes": [
+      {
+        "title": "量子计算与AI的结合",
+        "path": "knowledge/node-0011b3bd.md",
+        "weight": "3",
+        "status": "candidate",
+        "excerpt": "ID: node-0011b3bd Type: concept Weight: 3 Status: candidate Last seen: 2026-06-02 Aliases: Related: Sources: inbox/2026-05-25.md, synthesis/daily_reports/2026-05-25/report.pdf, inbox/2026-06-02.md, synthesis/daily_reports/2026-06-02/report.pdf ## 一句话定义 量子计算与 AI 的结合，通常指两条方向同时推进：一条是用量子计算去加速或改写某些机器学习任务，例如组合优化、采样、特征表示和部分训练过程；另一条是用 AI 去帮助量子系统设计、校准、误差缓解和实验控制。它不是简单把两个热门词放在一起，而是在问：当计算对象具有高维、概率性和复杂… ## 为什么对我重要 你的补充信息核心是在判断“要不"
+      },
+      {
+        "title": "多智能体协作",
+        "path": "knowledge/node-78eeff5b.md",
+        "weight": "3",
+        "status": "candidate",
+        "excerpt": "ID: node-78eeff5b Type: concept Weight: 3 Status: candidate Last seen: 2026-06-02 Aliases: Related: Sources: inbox/2026-05-26.md, synthesis/daily_reports/2026-05-26/report.pdf, inbox/2026-06-02.md, synthesis/daily_reports/2026-06-02/report.pdf ## 一句话定义 多智能体协作是把一个复杂任务拆给多个具备不同角色、工具或上下文边界的 AI Agent 共同完成的系统设计方法。每个智能体通常承担相对清晰的职责，例如检索资料、规划步骤、编写代码、审查结果或整理输出；系统再通过消息传递、任务路由、共享状态、工作流编排和终止条件，把这些局部能力组… ## 为什么对我重要 你的补充信息关心的是“直接用平"
+      },
+      {
+        "title": "中美创客大赛",
+        "path": "knowledge/node-7c0378ad.md",
+        "weight": "3",
+        "status": "candidate",
+        "excerpt": "ID: node-7c0378ad Type: concept Weight: 3 Status: candidate Last seen: 2026-06-02 Aliases: Related: Sources: inbox/2026-05-27.md, synthesis/daily_reports/2026-05-27/report.pdf, inbox/2026-06-02.md, synthesis/daily_reports/2026-06-02/report.pdf ## 一句话定义 中美创客大赛通常指“中美青年创客大赛”，是围绕青年创新、创客教育和中美人文交流展开的竞赛型项目。它以团队参赛、问题定义、原型设计、现场路演和赛区选拔为主要形式，鼓励青年围绕社区韧性、低碳环保、公共卫生、健康福祉、清洁能源等公共议题提出可落地的产品或服务方案。和纯商业创业比赛相比… ## 为什么对我重要 你的补充信息里，关键变化是从“"
+      },
+      {
+        "title": "交大红衫书院",
+        "path": "knowledge/node-c567518f.md",
+        "weight": "3",
+        "status": "candidate",
+        "excerpt": "ID: node-c567518f Type: concept Weight: 3 Status: candidate Last seen: 2026-06-02 Aliases: Related: Sources: inbox/2026-06-01.md, synthesis/daily_reports/2026-06-01/report.pdf, inbox/2026-06-02.md, synthesis/daily_reports/2026-06-02/report.pdf ## 一句话定义 交大红衫书院可以理解为上海交通大学围绕优秀本科生培养设立的书院型平台。书院制通常不只是行政班级或住宿社区，而是把导师制、通识教育、学业规划、跨学科探索和同伴网络放在一个相对稳定的培养单元里。它的核心价值在于为学生提供比普通专业路径更早、更密集的学术引导和成长支持，同时也可能承担… ## 为什么对我重要 补充信息里真正触发注意的是“大"
+      }
+    ],
+    "idea_seeds": [
+      {
+        "title": "点子种子：每日小推进",
+        "path": "synthesis/idea_seeds/daily-review-spark.md",
+        "weight": "",
+        "status": "raw",
+        "excerpt": "ID: daily-review-spark Status: raw Created: 2026-05-24 Related nodes: personal-knowledge-incubation Sources: inbox/2026-05-24.md, PLAN.md ## 触发 点子发芽 MVP 需要在日报里固定产出“明日一个小推进”，避免复盘只停留在整理。 ## 点子描述 每天晚上的日报只给出一个很小、可在 10-20 分钟内完成的下一步。 ## 为什么有意思 它把知识整理从“收集更多”拉回到“明天做一点”，更适合个人长期使用。 ## 可能的最小下一步 明天用网页提交关键词，然后在日报里确认一个最小动作。 ## 风险或疑问 如果小推进写得太大，系统会重新变成负担。"
+      },
+      {
+        "title": "点子种子：前沿趋势观察卡片",
+        "path": "synthesis/idea_seeds/seed-20845b10.md",
+        "weight": "",
+        "status": "raw",
+        "excerpt": "ID: seed-20845b10 Status: raw Created: 2026-05-25 Related nodes: node-0011b3bd Sources: inbox/2026-05-25.md, synthesis/daily_reports/2026-05-25/report.pdf ## 触发 2026-05-25 日报提出这个候选点子。 ## 点子描述 以后遇到“下一个 AI”式主题时，固定从技术成熟度、可落地场景、个人进入门槛三栏快速判断。 ## 为什么有意思 它把当天的新知从“看过”推进到一个可继续观察或验证的小方向。 ## 可能的最小下一步 下次遇到相关输入时，补充一个可验证案例或反例。 ## 风险或疑问 当前仍是 raw 候选，尚未经过人工确认、合并或升权。 ## 更新记录 - 2026-05-25：日报再次触发「前沿趋势观察卡片」；补充：以后遇到“下一个 AI”式主题时，固定从技术成熟度、可"
+      },
+      {
+        "title": "点子种子：把红衫书院当成一次教育产品观察",
+        "path": "synthesis/idea_seeds/seed-4d0105e2.md",
+        "weight": "",
+        "status": "raw",
+        "excerpt": "ID: seed-4d0105e2 Status: raw Created: 2026-06-01 Related nodes: node-c567518f Sources: inbox/2026-06-01.md, synthesis/daily_reports/2026-06-01/report.pdf ## 触发 2026-06-01 日报提出这个候选点子。 ## 点子描述 追踪它如何解决大一学生信息不足时的选择问题。 ## 为什么有意思 它把当天的新知从“看过”推进到一个可继续观察或验证的小方向。 ## 可能的最小下一步 下次遇到相关输入时，补充一个可验证案例或反例。 ## 风险或疑问 当前仍是 raw 候选，尚未经过人工确认、合并或升权。 ## 更新记录 - 2026-06-01：由日报自动沉淀为 raw 点子种子。"
+      }
+    ]
+  },
+  "source_policy": {
+    "priority": [
+      "官方/机构资料",
+      "论文/报告",
+      "权威媒体",
+      "项目主页/机构主页",
+      "普通线索",
+      "低优先级线索"
+    ],
+    "tier_counts": {
+      "平台内容线索": 30
+    },
+    "low_quality_rule": "低质量来源只能作为入口线索，不能作为核心结论。"
+  },
+  "reference_sources": [
+    {
+      "id": "S1",
+      "keyword": "量子计算与AI的结合",
+      "title": "百度AI的2020",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLBvW4TGZSCDsq7LeflhQuhlqXa8Fplpd926kvwR_EFEFbRm-kEd7seID3L1POQ1uCW9gUdW8jC0B3WDU-tZXoSYFdTGnEFcaWSe8ZN7Nr0-yFYJyG4s0prdrgvkw33nY4oa2NmA2dJeDJCBZtqaLzvdl6BFWDo0qYBttEiBlPkHBtSjnaGFSWXKnGclKJ0CQioi6xyqhxcEotPujwwRB2Pw..&type=2&query=%E9%87%8F%E5%AD%90%E8%AE%A1%E7%AE%97%E4%B8%8EAI%E7%9A%84%E7%BB%93%E5%90%88%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=32FFD7D16CC021EDD6D084FB26161CAED7C4929C6A204023"
+    },
+    {
+      "id": "S2",
+      "keyword": "量子计算与AI的结合",
+      "title": "数据分析之王SAS,如何看生成式AI的前景?",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLBvW4TGZSCDsq7LeflhQuhlqXa8Fplpd9EfhTBYHtdQrEU88LxYg8seNKQj5lRcYm-SKKPsqJaaFnky5RTOO9URNW_wWxHy0JfipJHbhg5hTc-NSunkismW5qLvj2-Y6fjMDaUTGp6d0tnFCygK9TatZZ9MgS8rSIeLKnKOH-bwI0eh8h4FMJV4tN11CJJRUIhYqDyLkVVv9r1dbZWbKUeQ..&type=2&query=%E9%87%8F%E5%AD%90%E8%AE%A1%E7%AE%97%E4%B8%8EAI%E7%9A%84%E7%BB%93%E5%90%88%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=32FFD7D16CC021EDD6D084FB26161CAED7C4929C6A204023"
+    },
+    {
+      "id": "S3",
+      "keyword": "量子计算与AI的结合",
+      "title": "知识焦虑症,Ai阅读,新试管婴儿",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLBvW4TGZSCDsq7LeflhQuhlqXa8Fplpd9nFMJ0QENw0MYxwAanRoojpW1RRcmN2CuJUEuxli58KeqWggn1BaQCry7fpAoIieLnjB38lSpIZ3jtkI9FiUhJCWCuCJdpgXTwXko6gUWu-FX6q69vL0DuoOKO0UDuJWQ376eQwF9VCk6SG22aYyDjXLkvHZ91AfgnN_gTbjM9svy08OLTBhW0A..&type=2&query=%E9%87%8F%E5%AD%90%E8%AE%A1%E7%AE%97%E4%B8%8EAI%E7%9A%84%E7%BB%93%E5%90%88%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=32FFD7D16CC021EDD6D084FB26161CAED7C4929C6A204023"
+    },
+    {
+      "id": "S4",
+      "keyword": "量子计算与AI的结合",
+      "title": "从生成到行动:AI演进与硬件逻辑",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLBvW4TGZSCDsq7LeflhQuhlqXa8Fplpd94xPPYgLCA525MPLzO8veRYb5dO-c1ed9GcGAk5nhkYkDQ25-qmJzbXMHZL3jM3qtDvbWi5uafiEHRXBXu2nAtQzRTnGt5Ba_CcNMwtZRtdmW5fHZoK4e81eGtIBKwFe7U1mbtnLlEXCm4mmuW4IM4dDt_j3SznkacSSsnYO-zUvyPfCoem7FzA..&type=2&query=%E9%87%8F%E5%AD%90%E8%AE%A1%E7%AE%97%E4%B8%8EAI%E7%9A%84%E7%BB%93%E5%90%88%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=32FFD7D16CC021EDD6D084FB26161CAED7C4929C6A204023"
+    },
+    {
+      "id": "S5",
+      "keyword": "量子计算与AI的结合",
+      "title": "如何用 AI 搭建个人知识库?从零到自动化工作流的完整方案",
+      "quality_tier": "平台内容线索",
+      "url": "https://zhuanlan.zhihu.com/p/2038409468036261675"
+    },
+    {
+      "id": "S6",
+      "keyword": "多智能体协作",
+      "title": "在线部署多智能体协作系统,管理复杂工作流,打造下一代对话式AI!",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLbDjuaCaJVykq7LeflhQuhlqXa8Fplpd9dWJU890zHpPzmK8b02ZBaiHGWPLWxO40c-nRaK1bfpBD6qItjQmbCilF9GY4nba0EEXMrZWwLE33bbHpEdZD6XR1uIYiu4_5ZY3Ge94IONOzky0my8TjlRMEawKBKB1L4_bWM7D9HsQbUciKk6lQXMHsrEKndVrwWSlppZEzdtgO8fIRwtipOg..&type=2&query=%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E5%8D%8F%E4%BD%9C%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=330088C06CC021EDD6D084FB26161CAED7C4929C6A204042"
+    },
+    {
+      "id": "S7",
+      "keyword": "多智能体协作",
+      "title": "个人知识库与智能体构建实战(工程管理类)",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLbDjuaCaJVykq7LeflhQuhlqXa8Fplpd96R_0enJUxU7cWXHWLTo6dwPG0ZhgLP5e5oLGHR5k3zu6nqL2KQqTv6MLs7FTovXXh54-cgT1v79gMi-uvv6bkbpAiYnR-H_5uxs8bmqjvKAkRx_YsTZop440NYe-iHy3kJf8_CHZe1csTYxcqYI2F_MoqS_9d5zXgpCXU7-u38N535pjGOOjYg..&type=2&query=%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E5%8D%8F%E4%BD%9C%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=330088C06CC021EDD6D084FB26161CAED7C4929C6A204042"
+    },
+    {
+      "id": "S8",
+      "keyword": "多智能体协作",
+      "title": "甘肃银行基于大模型多智能体人机协作的智能软件测试创新与实践",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLbDjuaCaJVykq7LeflhQuhlqXa8Fplpd9DpI9wAqjVjhSIt7DYhcnmDU-vVsIFga9yg8hMDEbdrdH6fF-KUMgCoUqb12fX__l6vZQMGZCwadClauKdhPHS0IzzM1k6SLXHG1PT0NhUpJFfG4wDQHvDTyXmBWavWmy4soJpg72_iT8RboVB0CurGUjvLeJwHDdKigQJJvEw2DdrgozfSg6bw..&type=2&query=%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E5%8D%8F%E4%BD%9C%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=330088C06CC021EDD6D084FB26161CAED7C4929C6A204042"
+    },
+    {
+      "id": "S9",
+      "keyword": "多智能体协作",
+      "title": "我开源了一个真正能协同工作的 AI Multi-Agent 框架!Pi-Multi-Agent:支持多智能体协作、任务拆解、工具调用、长期记忆,打造你的 AI",
+      "quality_tier": "平台内容线索",
+      "url": "https://www.bilibili.com/video/BV1vRVG6cEkJ"
+    },
+    {
+      "id": "S10",
+      "keyword": "多智能体协作",
+      "title": "【深度】AI分身工作流:从单点工具到系统架构的跃迁",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLbDjuaCaJVykq7LeflhQuhlqXa8Fplpd9g2Wu4kSFgK3iYvPs8fN_XUoN_aIg9vycazUhNjrtdcANSQYnVKIvgyY3OpX5P148QLJLDBrO8P5CYhLsWLcmjGjHhBrLVtMaUQMsEuCdb2PVsx3LIocXgCNKHFn4irKyXG2hRQNv6y7nMJ5lSGkEsOpNp_9N_EIum4HlYoXHVu5Ae0f8bRARvQ..&type=2&query=%E5%A4%9A%E6%99%BA%E8%83%BD%E4%BD%93%E5%8D%8F%E4%BD%9C%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=330088C06CC021EDD6D084FB26161CAED7C4929C6A204042"
+    },
+    {
+      "id": "S11",
+      "keyword": "中美创客大赛",
+      "title": "出彩青春 | 2021届优秀毕业研究生「下」",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLpJ5Rg6oc6QIq7LeflhQuhlqXa8Fplpd9w_ZliajPzekiJ6e2p0-C4A2mHQrELgwJ0s2ngvGvXkgbRfinRAow7HJSQ_Zdrttt0D1CjI1WVj1Y1ZrHVupYJkcZxKabE8w_RG5dtdekLGZYnCNJIoij6qCOI7cCCKScEsitvNg5kw6RTaJqjVWwbFTFBzZyIo5b-7zOevCJZ6rYl_Q5RRZQjg..&type=2&query=%E4%B8%AD%E7%BE%8E%E5%88%9B%E5%AE%A2%E5%A4%A7%E8%B5%9B%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=330130F86CC021EDD6D084FB26161CAED7C4929C6A20405E"
+    },
+    {
+      "id": "S12",
+      "keyword": "中美创客大赛",
+      "title": "FABO Academy X China|中国“数制”工坊-智造学术X-2017年第二次课程时间定了!",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6ft3wfAVofsP5Peu-UiA4DAr7HV4y2Yr7PoqfTWegmjGVgrFeYQugDq-5t8BXnkT9fNYTVz1BE8wOE7X7ALXsoI4Uhh3XXG8oqxl0S4qwy9-DlMiSNrL6rklEWIdMwOBY4OkvHlnNYbg37XCNzy-owxhAspSe7JIMf5PlRk45AQV6oKKpRflWUuKsB6XvOzqdpFBrtcJos3ndw02Tc2jAlOEHZyc7jOPT2UNaHzTo1g2Blxn_X6d3CToZ71DyCLUepPGwCA7S834DIOA35Z66nPioEyNYZHtoiZqwg0yoRFw.&type=2&query=%E4%B8%AD%E7%BE%8E%E5%88%9B%E5%AE%A2%E5%A4%A7%E8%B5%9B%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=330130F86CC021EDD6D084FB26161CAED7C4929C6A20405E"
+    },
+    {
+      "id": "S13",
+      "keyword": "中美创客大赛",
+      "title": "中美创客大赛参赛指导 路演ppt建议",
+      "quality_tier": "平台内容线索",
+      "url": "https://zhuanlan.zhihu.com/p/161630984"
+    },
+    {
+      "id": "S14",
+      "keyword": "中美创客大赛",
+      "title": "中国创客教育的困惑与思考",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLpJ5Rg6oc6QIq7LeflhQuhlqXa8Fplpd9F43PJKzKTWFLrDauWQLYiOzQNFAc0D619LEGadgutf6xenpj4OQBtwXxNi83Rm8-KUsLKgVi43YcNc5OMtqC0oouXSfNZUqUh-Vh_aBPtSqWm96EX3NlRJNed_uYNrbl3R6Q4SrjMEaDxWXHZAmi8VFFadp9Juvlg5ku_-gn9tkSYTqT4eyLmA..&type=2&query=%E4%B8%AD%E7%BE%8E%E5%88%9B%E5%AE%A2%E5%A4%A7%E8%B5%9B%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=330130F86CC021EDD6D084FB26161CAED7C4929C6A20405E"
+    },
+    {
+      "id": "S15",
+      "keyword": "中美创客大赛",
+      "title": "【自录】2019中美青年创客大赛北京赛区入围演讲完整版全收录",
+      "quality_tier": "平台内容线索",
+      "url": "https://www.bilibili.com/video/BV1X4411376U"
+    },
+    {
+      "id": "S16",
+      "keyword": "交大红衫书院",
+      "title": "我的知识管理工作流(2026)",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLGAFv8RfKGBoq7LeflhQuhlqXa8Fplpd9lNd7p7fJkmG-YFoavaij_xN0A3hy0L0ep1fPpIATok1dqKy9Biv8GxxMNAMjM2LEGZ4zRjExIFNq9OPQLMm2k7_Y_-N8HTzYPo0aCIgf8l45rbTw_pYTxrdIZpBmNL-pxvs2zIaIflVs1TMZoUnaiKtkvgwR9bET59CvlK6BewTy08OLTBhW0A..&type=2&query=%E4%BA%A4%E5%A4%A7%E7%BA%A2%E8%A1%AB%E4%B9%A6%E9%99%A2%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=3301F6F56CC021EDD6D084FB26161CAED7C4929C6A20407C"
+    },
+    {
+      "id": "S17",
+      "keyword": "交大红衫书院",
+      "title": "大二科研经历复盘(三):个人知识体系的四个阶段 | 以优化工作流为目标地工作【长文干货】",
+      "quality_tier": "平台内容线索",
+      "url": "https://zhuanlan.zhihu.com/p/720904479"
+    },
+    {
+      "id": "S18",
+      "keyword": "交大红衫书院",
+      "title": "本地笔记终将成为个人笔记的最佳选择 | Obsidian | 知识管理 | 第二大脑",
+      "quality_tier": "平台内容线索",
+      "url": "https://www.bilibili.com/video/BV1aJ4m1e77m"
+    },
+    {
+      "id": "S19",
+      "keyword": "交大红衫书院",
+      "title": "8大全球顶流的AI预判,一文看懂未来20年 | 创访学",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLGAFv8RfKGBoq7LeflhQuhlqXa8Fplpd9tpNPrrijxhpikFc3SLeAUuwfJGKfi4AOAX65zv3Sb2f0831oAaXT1aNzzKk-5fmQ2wYLkCWcgAMR3sIacBtz3tD0WYoVi_pDxooc_SGhcKAHOXHEoK4Jw0IUm9MORUPFroPRBpvq5SmC0s1HtDQ3JGl-3xcaaSdhzhAFF7vNM2fS-e4Yz84xMA..&type=2&query=%E4%BA%A4%E5%A4%A7%E7%BA%A2%E8%A1%AB%E4%B9%A6%E9%99%A2%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=3301F6F56CC021EDD6D084FB26161CAED7C4929C6A20407C"
+    },
+    {
+      "id": "S20",
+      "keyword": "交大红衫书院",
+      "title": "@所有人:请查看公共管理学院/应急管理学院2022年成绩单",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLGAFv8RfKGBoq7LeflhQuhlqXa8Fplpd9GsKkxVMohw-0GlFRQGShfaVNpao-R_Wji__QB1aSg6m_0AXYt26oL51kRQ6Fe4ec5Dv8-qf4xdJ1y2PBiyvNCTZrQVB-ZmmsML8xIMw01tdW1VomD4vso5RJW2WO8x5LhQRDcdSf8KGVFdWqTTWt6LgFosP7vE82l-PCtlrOXvSTJmCU1UgHwQ..&type=2&query=%E4%BA%A4%E5%A4%A7%E7%BA%A2%E8%A1%AB%E4%B9%A6%E9%99%A2%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E5%B7%A5%E4%BD%9C%E6%B5%81&token=3301F6F56CC021EDD6D084FB26161CAED7C4929C6A20407C"
+    },
+    {
+      "id": "S21",
+      "keyword": "新知孵化工作流",
+      "title": "一个人,30天,8万行代码,AI 正在重新定义“程序员” One Person, 30 Days, 80,000 Lines of Code",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLNqZmVKQmZwEq7LeflhQuhlqXa8Fplpd9CNqIlk7-a31w5BGMbZJF9EWapIMqwvOQv4NfS0aoqp90KQY4bouZtCIpzpcV1GAG7Ql4aQy981DI5_YvU65Wx7RIuSm_DQfuJ5H8h-MVkM4zF-lDIEm_1jT-8S3aDcSjjU6ufcsvDgQAHvuE0UGbiTd-nik8UXzcRlmMxbHNciUNGbbB75bUeA..&type=2&query=%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20AI%20workflow%20daily%20review%20knowledge%20management&token=3302AF2C6CC021EDD6D084FB26161CAED7C4929C6A204099"
+    },
+    {
+      "id": "S22",
+      "keyword": "新知孵化工作流",
+      "title": "OpenClaw进阶技巧:解锁高级功能,打造专属AI工作流",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLNqZmVKQmZwEq7LeflhQuhlqXa8Fplpd9uxSsebPt2G7ep94XnrFS2k_9uY7KfpAsTzqzlXYH6vQplwzzrM-ORdXXjgCbrrDcsox8rcNKq7_v7VD3ZNujvMSYjOnUpDXGDDeFQknJRXQoffqNua40Wxxko2p21aFNE_aspAThVaouS2qAqPHSsR37Rzq79gMqffbho6K_iZC54z_tGSZTqA..&type=2&query=%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20AI%20workflow%20daily%20review%20knowledge%20management&token=3302AF2C6CC021EDD6D084FB26161CAED7C4929C6A204099"
+    },
+    {
+      "id": "S23",
+      "keyword": "新知孵化工作流",
+      "title": "个人Agent:每个人的AI管家",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLNqZmVKQmZwEq7LeflhQuhlqXa8Fplpd9Jw3AegiWpd_7i1FH5Q6oCDIyJiEVma1QCRGoNJZ7c4hzPh6efjLP5H_iU9oudjoCi1f9aQZAdR83YFhybZNmKwFA4WosuG1NV4TFy0A7RdMWAozpKiuzJEc9qqX-euP7Tenvyj6E9fF1paT3ZVDCOVxLVSuS1dUoBdM6q4BlJVOq3X8EKMKOIA..&type=2&query=%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20AI%20workflow%20daily%20review%20knowledge%20management&token=3302AF2C6CC021EDD6D084FB26161CAED7C4929C6A204099"
+    },
+    {
+      "id": "S24",
+      "keyword": "新知孵化工作流",
+      "title": "再见 Notion!全能 AI 笔记神器,打造个人知识库!",
+      "quality_tier": "平台内容线索",
+      "url": "https://zhuanlan.zhihu.com/p/2040856636009490284"
+    },
+    {
+      "id": "S25",
+      "keyword": "新知孵化工作流",
+      "title": "Obsidian CLI 个人知识管理指南:7大自动化场景,一键效率飞升",
+      "quality_tier": "平台内容线索",
+      "url": "https://zhuanlan.zhihu.com/p/2011948135191164719"
+    },
+    {
+      "id": "S26",
+      "keyword": "本地 Markdown 知识库",
+      "title": "别折腾了!AI时代最好的知识管理工具是Obsidian,当它遇上OpenClaw......",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLc2r5uZgnqUUq7LeflhQuhlqXa8Fplpd9xCcLtzrpqFQwtgV_RHC7qw0VMshEKYdyhmt8unk7PkSLfR8dQBujFPJUor8I9uqFA6V0BMWrt-95ZtFgFLP6mJFVeIDBRK8cay1V58p5yJUkq0TVpsYO6rpFD1yHikgYZpq822fB2StT8A9fZNfQ7QEiuWMK898730cVnc-8v35hWLv6O878UA..&type=2&query=%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%9F%A5%E8%AF%86%E5%BA%93%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E7%AC%94%E8%AE%B0%20%E5%B7%A5%E5%85%B7&token=3303835E6CC021EDD6D084FB26161CAED7C4929C6A2040BC"
+    },
+    {
+      "id": "S27",
+      "keyword": "本地 Markdown 知识库",
+      "title": "专为开发人员构建的个人知识管理工具 - Dendron",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLc2r5uZgnqUUq7LeflhQuhlqXa8Fplpd9rrWr835fx70fSq7CO0R34CrroZ1uVc-f8Zq6DAaGFOLsAlLi1iI9jjOCaT5-5SKPMGrQuGXzvQR9FqKA4J2ceOBw2grBIYcwFSwsSWOE7T3WNEiH5LeKTAsuFr3Qg1dgdlCKJEPt67qu6wGk4KWcEfUFVtMwXUXaOSLtfElbZk_0OK9DLfgmPA..&type=2&query=%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%9F%A5%E8%AF%86%E5%BA%93%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E7%AC%94%E8%AE%B0%20%E5%B7%A5%E5%85%B7&token=3303835E6CC021EDD6D084FB26161CAED7C4929C6A2040BC"
+    },
+    {
+      "id": "S28",
+      "keyword": "本地 Markdown 知识库",
+      "title": "用 Markdown 整理笔记,构建个人知识库:Obsidian 入门体验",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLc2r5uZgnqUUq7LeflhQuhlqXa8Fplpd9cwVArrsDNfhrrFHXoEv-enB8Yho_mqtvx_cZr--YJY5zrqSy-ojevDWrMnkSkRrzcQrMWh6yta_SCAUOwpQYkEeXyoTK2Fr7_NXWYbXODg6H9K8xcEQ6klr8MajdTHRKb0qzGWjNr_tdihANIGqkmaUarB6LBD1fOF4ByjE0GQHs46dn8Efgxg..&type=2&query=%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%9F%A5%E8%AF%86%E5%BA%93%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E7%AC%94%E8%AE%B0%20%E5%B7%A5%E5%85%B7&token=3303835E6CC021EDD6D084FB26161CAED7C4929C6A2040BC"
+    },
+    {
+      "id": "S29",
+      "keyword": "本地 Markdown 知识库",
+      "title": "Obsidian知识库:Markdown编写规范与实践指南",
+      "quality_tier": "平台内容线索",
+      "url": "https://weixin.sogou.com/link?url=dn9a_-gY295K0Rci_xozVXfdMkSQTLW6cwJThYulHEtVjXrGTiVgS2rVltFLkJqLc2r5uZgnqUUq7LeflhQuhlqXa8Fplpd9LWFYGt9NCl4MRW9kMAacKSUh73PLsChizQS1e15T-eC7-6zXBIVI2Sk1ugBs2cmKHUvQaMTVOnqMAKHwemNSLrStoa41pIcADV-s8MRLK4SloS9Ai_MvzInBw652TRtXZSfzKEsw0O0lMigoj3G1o43VisVKlH3lqKAxZoPVhWPwdVqCwyPdzA..&type=2&query=%E6%9C%AC%E5%9C%B0%20Markdown%20%E7%9F%A5%E8%AF%86%E5%BA%93%20%E4%B8%AA%E4%BA%BA%E7%9F%A5%E8%AF%86%E7%AE%A1%E7%90%86%20%E7%AC%94%E8%AE%B0%20%E5%B7%A5%E5%85%B7&token=3303835E6CC021EDD6D084FB26161CAED7C4929C6A2040BC"
+    },
+    {
+      "id": "S30",
+      "keyword": "本地 Markdown 知识库",
+      "title": "打造个人本地知识库——思源笔记",
+      "quality_tier": "平台内容线索",
+      "url": "https://www.bilibili.com/video/BV1ye411S7Dr"
+    }
+  ]
+}
