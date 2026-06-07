@@ -1,0 +1,65 @@
+{
+  "date": "2026-06-06",
+  "generated_at": "2026-06-06T23:07:40",
+  "dry_run": false,
+  "library_policy": "read-only",
+  "context_scanned_paths": [
+    "knowledge/markdown.md",
+    "knowledge/node-0011b3bd.md",
+    "knowledge/node-47708567.md",
+    "knowledge/node-78eeff5b.md",
+    "knowledge/node-7c0378ad.md",
+    "knowledge/node-c567518f.md",
+    "knowledge/personal-knowledge-incubation.md",
+    "synthesis/idea_seeds/daily-review-spark.md",
+    "synthesis/idea_seeds/seed-20845b10.md",
+    "synthesis/idea_seeds/seed-3cd5bab8.md",
+    "synthesis/idea_seeds/seed-4d0105e2.md",
+    "synthesis/idea_seeds/seed-72a2ef24.md",
+    "synthesis/idea_seeds/seed-8069c23e.md",
+    "synthesis/idea_seeds/seed-8c3dc099.md",
+    "synthesis/idea_seeds/seed-9395d01d.md",
+    "synthesis/idea_seeds/seed-97a9476d.md",
+    "synthesis/idea_seeds/seed-9f229ce0.md",
+    "synthesis/idea_seeds/seed-b123728a.md",
+    "synthesis/idea_seeds/seed-cf82098a.md",
+    "synthesis/idea_seeds/seed-d24e7b00.md",
+    "synthesis/idea_seeds/seed-e2879fd0.md",
+    "synthesis/idea_seeds/seed-e4a74926.md",
+    "synthesis/idea_seeds/seed-e998fbdf.md",
+    "synthesis/idea_seeds/seed-ed5e2f08.md",
+    "tracking/topics.md"
+  ],
+  "created": [
+    {
+      "kind": "knowledge",
+      "keyword": "倪军",
+      "slug": "node-80b8dcd7",
+      "path": "knowledge/node-80b8dcd7.md",
+      "action": "created"
+    },
+    {
+      "kind": "knowledge",
+      "keyword": "华平",
+      "slug": "node-708bf68b",
+      "path": "knowledge/node-708bf68b.md",
+      "action": "created"
+    },
+    {
+      "kind": "seed",
+      "title": "做一张“导师关系备注卡”模板",
+      "slug": "seed-7eef334f",
+      "path": "synthesis/idea_seeds/seed-7eef334f.md",
+      "action": "created"
+    },
+    {
+      "kind": "seed",
+      "title": "为重要弱关系建立“再联系触发器”",
+      "slug": "seed-811c4b66",
+      "path": "synthesis/idea_seeds/seed-811c4b66.md",
+      "action": "created"
+    }
+  ],
+  "updated": [],
+  "skipped": []
+}

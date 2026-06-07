@@ -1,0 +1,494 @@
+{
+  "date": "2026-06-06",
+  "generated_at": "2026-06-06T22:56:08",
+  "mode": "input",
+  "report_structure": [
+    "今日总结",
+    "今日输入",
+    "今日新知",
+    "与旧知识的链接",
+    "今日发芽点子",
+    "参考搜索内容",
+    "随心记复盘（仅在当天有随心记时追加到最后）"
+  ],
+  "writing_contract": {
+    "model_role": "你是报告作者。请综合材料写 report_brief.json，不要把搜索结果直接拼进正文。",
+    "keyword_card_shape": [
+      "简介",
+      "最近有什么相关的事情",
+      "与我相关",
+      "最小下一步"
+    ],
+    "hard_limits": [
+      "每个关键词只能有一个简介、一个最近有什么相关的事情、一个与我相关、一个最小下一步。",
+      "简介约 200-300 字，只解释关键词本身，不要联系补充信息。",
+      "与我相关直接说明它会影响用户怎么选、怎么问、怎么做，少写抽象的“联系”。",
+      "最近相关事情写成 2-4 个具体线索：有搜索材料时说明谁在做什么、出现了什么活动/项目/论文/讨论、和关键词有什么关系，不能只列来源编号；最小下一步只能 1 个动作。",
+      "禁止使用旧标签：它是什么、今天查到了什么、和我有什么关系、今日判断。",
+      "随心记只用于最后的随心记复盘，不得影响今日总结、今日输入、今日新知、旧知识链接和今日发芽点子。"
+    ],
+    "voice_contract": {
+      "rules_path": "system/report_voice_rules.md",
+      "target_voice": "私人秘书式晚间简报：自然、具体、克制、有温度。",
+      "principle": "分析过程留在幕后，正文只写读者愿意看到的结果。",
+      "banned_meta_phrases": [
+        "本地旧节点显示",
+        "可连接",
+        "它说明这个关键词",
+        "连接价值是",
+        "当前是弱连接，理由是",
+        "低成本观察",
+        "脚本 fallback",
+        "由 Codex automation"
+      ],
+      "style_limits": {
+        "不是/而是": 1,
+        "只是": 2,
+        "更像": 2,
+        "判断": 3
+      },
+      "rules_excerpt": "# 点子发芽日报语言规范 这份规范只管日报正文的读感。结构、来源、确认队列和知识沉淀规则仍以 `system/report_quality_rules.md` 为准。 ## 目标语气 日报是给一个人看的晚间简报。语气像一个懂你的私人秘书：自然、具体、克制、有温度。可以有判断，但不要把推理过程摆在台面上。 ## 写法原则 - 直接告诉用户今天值得看什么、为什么值得看、明天能做什么。 - 把系统分析藏在幕后。不要解释“模型如何判断”“本地节点如何连接”“这个字段应该怎么用”。 - 少用抽象大词，多写具体场景、人、项目、材料、动作。 - 可以温和提醒，但不要像公司周报、学术摘要、搜索结果拼贴或 AI 自我说明。 - 引用来源时只保留编号，例如 `[S1]`；来源细节放在“参考搜索内容”。 ## 禁用元话语 以下短语不得出现在 PDF 正文中： - `本地旧节点显示` - `可连接` - `它说明这个关键词` - `连接价值是` - `当前是弱连接，理由是` - `低成本观察` - `脚本 fallback` - `由 Codex automation` 相近表达也要避免，例如“本地知识节点说明”“作为一个信息对象”“需要被定义、追踪和验证”。 ## 句式限制 这些句式不是完全禁用，但用多了会有明显 AI 味： - `不是/而是` 成对最多 1 次。 - `只是` 最多 2 次。 - `更像` 最多 2 次。 - `判断` 最多 3 次。 优先改成更短的正向表达。例如把“它不是 A，而是 B”改成“它更适合按 B 来看”或直接写“它适合按 B 来看”。 ## Before / After Before: > 本地旧节点显示，这个主题曾经触发的是“要不要尽早下注一个可能很大的新方向”的判断。 After: > 你之前也记过类似的担心：这类大方向很诱人，但现在更适合先看清具体入口。 Before: > 本地知识节点《新知孵化工作流》可连接：它说明这个关键词不是单日噪音，而是可能影响已有主题的使用或判断。 After: > 这条可以和你之前记过的《新知孵化工作流》放在一起看：它会影响你之后怎么收集、筛选和复盘信息。 Before: > 当前是弱连接，理由是输入还没有落到明确项目、机会、人脉或学习路径；建议低成本观察。 After: > 现在先别急着建新节点。等它再次出现，或者你补上一句原话、一个链接、一个人名，再决定要不要留下。 ## 写给各章节的提醒 - `今日总结`：像晚间开场白。用 1-2 段说清今天最值得留意的方向。 - `简介`：解释概念本身，不要套百科腔。写给未来回看时的自己。 - `最近有什么相关的事情`：写得比一句新闻摘要更充分。用 2-4 条具体线索，说明最近出现了什么活动、项目、论文、产品、讨论或政策动向，谁在做，和关键词有什么关系。来源编号只放在句…"
+    },
+    "free_note_review_shape": {
+      "themes": "1-4 个短主题，概括随心记里反复出现的关注点。",
+      "discussion": "温和讨论这些想法或感受背后的关注点、动机或张力。",
+      "evaluation": "给一个轻量结论：先当作心情、长期信号、待观察线索，还是以后可能变成关键词或点子。",
+      "question_for_tomorrow": "一个不催促、但能继续理解自己的问题。"
+    }
+  },
+  "input_source": {
+    "format": "jsonl",
+    "entry_counts_by_kind": {
+      "free_note": 2,
+      "keyword_batch": 1
+    }
+  },
+  "secretary_context": {
+    "date": "2026-06-06",
+    "raw_input": {
+      "entry_counts_by_kind": {
+        "free_note": 2,
+        "keyword_batch": 1
+      },
+      "daily_captures": [],
+      "supported_kinds": [
+        "keyword_batch",
+        "free_note",
+        "task_capture",
+        "calendar_capture",
+        "link_capture",
+        "file_capture"
+      ]
+    },
+    "memory": {
+      "profile_path": "memory/profile.md",
+      "profile": "# 个人画像\n\n这里只保存经过确认的长期画像。日报和随心记可以提出候选，但不会自动改写这里。\n",
+      "themes_path": "memory/themes.md",
+      "themes": "# 长期主题\n\n记录反复出现的长期主题、当前关注强度和最近证据。\n",
+      "recent_preferences": [
+        {
+          "schema_version": 1,
+          "id": "memory-bootstrap",
+          "created_at": "2026-06-01T00:00:00+08:00",
+          "source": "system",
+          "kind": "memory_bootstrap",
+          "payload": {
+            "note": "Confirmed preference and memory events are appended here."
+          }
+        },
+        {
+          "schema_version": 1,
+          "id": "memory-ac9fee5b81cd",
+          "created_at": "2026-06-04T15:27:20+08:00",
+          "source": "review_queue",
+          "kind": "memory_accepted",
+          "payload": {
+            "candidate_id": "candidate-1eb3e79877c7",
+            "text": "用户近期开始对创业祛魅，更重视系统学习和知识边界的扩展。",
+            "target": "themes",
+            "source_report": "synthesis/daily_reports/2026-06-03/report_brief.json"
+          }
+        },
+        {
+          "schema_version": 1,
+          "id": "memory-502d356de324",
+          "created_at": "2026-06-06T18:00:12+08:00",
+          "source": "review_queue",
+          "kind": "memory_accepted",
+          "payload": {
+            "candidate_id": "candidate-7cb47072ca53",
+            "text": "用户受到“泡沫不等于行业停滞”的观点启发，倾向于用更克制的距离观察 AI、量子计算等前沿方向。",
+            "target": "themes",
+            "source_report": "synthesis/daily_reports/2026-06-04/report_brief.json"
+          }
+        }
+      ]
+    },
+    "tasks": {
+      "events_path": "tasks/tasks.jsonl",
+      "open_or_due_soon": []
+    },
+    "review_queue": {
+      "pending_count": 1,
+      "pending_items": [
+        {
+          "id": "candidate-31e2c9220e34",
+          "kind": "idea_seed_candidate",
+          "created_at": "2026-06-03T23:07:03+08:00",
+          "text": "做一个“系统学习优先级清单”：每周只选一个基础能力，记录输入、练习和可见产出。",
+          "queue_path": "review_queue/2026-06-03.jsonl"
+        }
+      ]
+    }
+  },
+  "inputs": [
+    {
+      "keyword": "倪军",
+      "supplemental_info": "范绪箕奖学金导师结果出了，这是我的两个导师。\n倪军：交大溥渊未来技术学院院长\n华平：软银中国资本管理合伙人",
+      "weight": "3"
+    },
+    {
+      "keyword": "华平",
+      "supplemental_info": "范绪箕奖学金导师结果出了，这是我的两个导师。\n倪军：交大溥渊未来技术学院院长\n华平：软银中国资本管理合伙人",
+      "weight": "3"
+    }
+  ],
+  "free_notes": [
+    {
+      "id": "2026-06-06T18-01-33-978299",
+      "text": "弱关系：\n1.写好备注，免得自己忘了这个人是谁\n2.可以通过看到这个人的新消息（比如朋友圈动态）再和他重新聊起来，平时不用说些没用的",
+      "created_at": "2026-06-06T18:01:33+08:00",
+      "source": "web"
+    },
+    {
+      "id": "2026-06-06T21-34-29-2fee5d",
+      "text": "感觉涉及到调用AI的服务必须要有足够好的约束和审查，因为大模型会有随机性，不加审查会导致输出质量不稳定。\n我们自己用的时候没感觉，这次有点问题再问一遍就行，但是给别人用的时候就不能出这种问题。",
+      "created_at": "2026-06-06T21:34:29+08:00",
+      "source": "web"
+    }
+  ],
+  "keyword_contexts": [
+    {
+      "keyword": "倪军",
+      "supplemental_info": "范绪箕奖学金导师结果出了，这是我的两个导师。\n倪军：交大溥渊未来技术学院院长\n华平：软银中国资本管理合伙人",
+      "weight": "3",
+      "questions_for_model": [
+        "倪军 是什么？请用 200-300 字解释清楚，只专注关键词本身。",
+        "倪军 最近发生了什么相关事情？请结合来源写 2-4 个具体线索，没有可靠新进展就直接说明。",
+        "结合补充信息“范绪箕奖学金导师结果出了，这是我的两个导师。\n倪军：交大溥渊未来技术学院院长\n华平：软银中国资本管理合伙人”，这个关键词与我的记录有什么具体联系？"
+      ],
+      "search_note": "weibo: exit 69 (node:46228) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --t；bilibili: exit 69 (node:33128) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --t；zhihu: exit 69 (node:35748) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --t；weixin: exit 69 (node:39440) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --t；wanfang: exit 69 (node:37904) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --t；baidu-scholar: exit 69 (node:44024) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --t；cnki: exit 69 (node:46676) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --t；google-scholar: exit 69 (node:39860) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --t",
+      "search_results": [
+        {
+          "id": "S1",
+          "title": "chagushici.com https://www.chagushici.com › zidian › 倪",
+          "url": "https://www.chagushici.com/zidian/%E5%80%AA",
+          "domain": "chagushici.com",
+          "quality_tier": "论文/学术线索",
+          "source_role": "来自 cnki 的学术搜索结果，可作为研究背景或技术趋势线索。",
+          "relevance_score": 0,
+          "search_channel": "cnki",
+          "search_endpoint": "bing",
+          "search_query": "倪军 site:cnki.net OR site:cnki.com.cn"
+        },
+        {
+          "id": "S2",
+          "title": "hanyuguoxue.com https://www.hanyuguoxue.com › zidian",
+          "url": "https://www.hanyuguoxue.com/zidian/zi-20522",
+          "domain": "hanyuguoxue.com",
+          "quality_tier": "论文/学术线索",
+          "source_role": "来自 cnki 的学术搜索结果，可作为研究背景或技术趋势线索。",
+          "relevance_score": 0,
+          "search_channel": "cnki",
+          "search_endpoint": "bing",
+          "search_query": "倪军 site:cnki.net OR site:cnki.com.cn"
+        },
+        {
+          "id": "S3",
+          "title": "gushici.net https://zidian.gushici.net",
+          "url": "https://zidian.gushici.net/10/502a.html",
+          "domain": "zidian.gushici.net",
+          "quality_tier": "论文/学术线索",
+          "source_role": "来自 cnki 的学术搜索结果，可作为研究背景或技术趋势线索。",
+          "relevance_score": 0,
+          "search_channel": "cnki",
+          "search_endpoint": "bing",
+          "search_query": "倪军 site:cnki.net OR site:cnki.com.cn"
+        },
+        {
+          "id": "S4",
+          "title": "sogou.com https://baike.sogou.com",
+          "url": "https://baike.sogou.com/v389125.htm",
+          "domain": "baike.sogou.com",
+          "quality_tier": "论文/学术线索",
+          "source_role": "来自 cnki 的学术搜索结果，可作为研究背景或技术趋势线索。",
+          "relevance_score": 0,
+          "search_channel": "cnki",
+          "search_endpoint": "bing",
+          "search_query": "倪军 site:cnki.net OR site:cnki.com.cn"
+        },
+        {
+          "id": "S5",
+          "title": "ufanv.cn https://www.ufanv.cn › zidian › 倪",
+          "url": "https://www.ufanv.cn/zidian/%E5%80%AA",
+          "domain": "ufanv.cn",
+          "quality_tier": "论文/学术线索",
+          "source_role": "来自 cnki 的学术搜索结果，可作为研究背景或技术趋势线索。",
+          "relevance_score": 0,
+          "search_channel": "cnki",
+          "search_endpoint": "bing",
+          "search_query": "倪军 site:cnki.net OR site:cnki.com.cn"
+        }
+      ],
+      "local_matches": []
+    },
+    {
+      "keyword": "华平",
+      "supplemental_info": "范绪箕奖学金导师结果出了，这是我的两个导师。\n倪军：交大溥渊未来技术学院院长\n华平：软银中国资本管理合伙人",
+      "weight": "3",
+      "questions_for_model": [
+        "华平 是什么？请用 200-300 字解释清楚，只专注关键词本身。",
+        "华平 最近发生了什么相关事情？请结合来源写 2-4 个具体线索，没有可靠新进展就直接说明。",
+        "结合补充信息“范绪箕奖学金导师结果出了，这是我的两个导师。\n倪军：交大溥渊未来技术学院院长\n华平：软银中国资本管理合伙人”，这个关键词与我的记录有什么具体联系？"
+      ],
+      "search_note": "weixin: exit 69 (node:9232) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --tr；bilibili: exit 69 (node:33148) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --t；zhihu: exit 69 (node:27672) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --t；weibo: exit 69 (node:2112) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --tr；wanfang: exit 69 (node:3992) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --tr；baidu-scholar: exit 69 (node:39588) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --t；cnki: exit 69 (node:36300) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --t；google-scholar: exit 69 (node:20888) [UNDICI-EHPA] Warning: EnvHttpProxyAgent is experimental, expect them to change at any time.\n(Use `node --t",
+      "search_results": [
+        {
+          "id": "S6",
+          "title": "eastmoney.com https://baike.eastmoney.com › item › 华平 信息技术股份...",
+          "url": "https://baike.eastmoney.com/item/%E5%8D%8E%E5%B9%B3%E4%BF%A1%E6%81%AF%E6%8A%80%E6%9C%AF%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8",
+          "domain": "baike.eastmoney.com",
+          "quality_tier": "普通线索",
+          "source_role": "来自开放网页搜索的相关线索，可用于补充近期动态；正文需要区分事实、观察和推测。",
+          "relevance_score": 54,
+          "search_channel": "open_web",
+          "search_endpoint": "bing",
+          "search_query": "华平"
+        },
+        {
+          "id": "S7",
+          "title": "zhihu.com https://zhuanlan.zhihu.com",
+          "url": "https://zhuanlan.zhihu.com/p/682014306",
+          "domain": "zhuanlan.zhihu.com",
+          "quality_tier": "论文/学术线索",
+          "source_role": "来自 baidu_scholar 的学术搜索结果，可作为研究背景或技术趋势线索。",
+          "relevance_score": 0,
+          "search_channel": "baidu_scholar",
+          "search_endpoint": "bing",
+          "search_query": "华平 site:xueshu.baidu.com"
+        },
+        {
+          "id": "S8",
+          "title": "hanyuguoxue.com https://www.hanyuguoxue.com › zidian",
+          "url": "https://www.hanyuguoxue.com/zidian/zi-33775",
+          "domain": "hanyuguoxue.com",
+          "quality_tier": "论文/学术线索",
+          "source_role": "来自 baidu_scholar 的学术搜索结果，可作为研究背景或技术趋势线索。",
+          "relevance_score": 0,
+          "search_channel": "baidu_scholar",
+          "search_endpoint": "bing",
+          "search_query": "华平 site:xueshu.baidu.com"
+        },
+        {
+          "id": "S9",
+          "title": "hanyuguoxue.com https://www.hanyuguoxue.com › zidian",
+          "url": "https://www.hanyuguoxue.com/zidian/zi-21326",
+          "domain": "hanyuguoxue.com",
+          "quality_tier": "论文/学术线索",
+          "source_role": "来自 baidu_scholar 的学术搜索结果，可作为研究背景或技术趋势线索。",
+          "relevance_score": 0,
+          "search_channel": "baidu_scholar",
+          "search_endpoint": "bing",
+          "search_query": "华平 site:xueshu.baidu.com"
+        },
+        {
+          "id": "S10",
+          "title": "zhihu.com https://www.zhihu.com › question",
+          "url": "https://www.zhihu.com/question/65369061",
+          "domain": "zhihu.com",
+          "quality_tier": "论文/学术线索",
+          "source_role": "来自 baidu_scholar 的学术搜索结果，可作为研究背景或技术趋势线索。",
+          "relevance_score": 0,
+          "search_channel": "baidu_scholar",
+          "search_endpoint": "bing",
+          "search_query": "华平 site:xueshu.baidu.com"
+        }
+      ],
+      "local_matches": []
+    }
+  ],
+  "local_knowledge": {
+    "tracking_topics": [
+      "新知孵化工作流",
+      "本地 Markdown 知识库",
+      "每日晚间复盘"
+    ],
+    "scanned_paths": [
+      "knowledge/markdown.md",
+      "knowledge/node-0011b3bd.md",
+      "knowledge/node-47708567.md",
+      "knowledge/node-78eeff5b.md",
+      "knowledge/node-7c0378ad.md",
+      "knowledge/node-c567518f.md",
+      "knowledge/personal-knowledge-incubation.md",
+      "synthesis/idea_seeds/daily-review-spark.md",
+      "synthesis/idea_seeds/seed-20845b10.md",
+      "synthesis/idea_seeds/seed-3cd5bab8.md",
+      "synthesis/idea_seeds/seed-4d0105e2.md",
+      "synthesis/idea_seeds/seed-72a2ef24.md",
+      "synthesis/idea_seeds/seed-8069c23e.md",
+      "synthesis/idea_seeds/seed-8c3dc099.md",
+      "synthesis/idea_seeds/seed-9395d01d.md",
+      "synthesis/idea_seeds/seed-97a9476d.md",
+      "synthesis/idea_seeds/seed-9f229ce0.md",
+      "synthesis/idea_seeds/seed-b123728a.md",
+      "synthesis/idea_seeds/seed-cf82098a.md",
+      "synthesis/idea_seeds/seed-d24e7b00.md",
+      "synthesis/idea_seeds/seed-e2879fd0.md",
+      "synthesis/idea_seeds/seed-e4a74926.md",
+      "synthesis/idea_seeds/seed-e998fbdf.md",
+      "synthesis/idea_seeds/seed-ed5e2f08.md",
+      "tracking/topics.md"
+    ],
+    "high_weight_nodes": [
+      {
+        "title": "本地 Markdown 知识库",
+        "path": "knowledge/markdown.md",
+        "weight": "3",
+        "status": "candidate",
+        "excerpt": "ID: markdown Type: concept Weight: 3 Status: candidate Last seen: 2026-06-05 Aliases: Related: Sources: inbox/2026-06-03.md, synthesis/daily_reports/2026-06-03/report.pdf, inbox/2026-06-04.md, synthesis/daily_reports/2026-06-04/report.pdf, inbox/2026-06-05.md, synthesis/daily_reports/2026-06-05/report.pdf ## 一句话定义 本地 Markdown 知识库是用普通文本文件保存个人笔记、概念卡片、项目记录和复盘材料的一种知识管理方式。Markdown 文件结构简单，容易被版本管理、全文搜索、脚本和 AI 工具读取，也不会被某个单一软"
+      },
+      {
+        "title": "量子计算与AI的结合",
+        "path": "knowledge/node-0011b3bd.md",
+        "weight": "3",
+        "status": "candidate",
+        "excerpt": "ID: node-0011b3bd Type: concept Weight: 3 Status: candidate Last seen: 2026-06-05 Aliases: Related: Sources: inbox/2026-05-25.md, synthesis/daily_reports/2026-05-25/report.pdf, inbox/2026-06-02.md, synthesis/daily_reports/2026-06-02/report.pdf, inbox/2026-06-04.md, synthesis/daily_reports/2026-06-04/report.pdf, inbox/2026-06-05.md, synthesis/daily_reports/2026-06-05/report.pdf ## 一句话定义 量子计算与 AI 的结合，通常指两条方向同时推进：一条是用量子"
+      },
+      {
+        "title": "每日晚间复盘",
+        "path": "knowledge/node-47708567.md",
+        "weight": "3",
+        "status": "candidate",
+        "excerpt": "ID: node-47708567 Type: concept Weight: 3 Status: candidate Last seen: 2026-06-05 Aliases: Related: Sources: inbox/2026-06-04.md, synthesis/daily_reports/2026-06-04/report.pdf, inbox/2026-06-05.md, synthesis/daily_reports/2026-06-05/report.pdf ## 一句话定义 每日晚间复盘是一种把当天输入、行动和想法收束起来的轻量习惯。它不追求完整总结一天，而是抓住几个值得留下的信号：今天遇到了什么概念，哪里触发了兴趣，哪些旧问题又出现了，明天能做哪一个小动作。好的晚间复盘应该短、稳定、可持续，让人第二天能直接接上，同时避免变成额外负担。它的价值在于… ## 为什么对我重要 这个主题会影响你怎样结束一天。"
+      },
+      {
+        "title": "多智能体协作",
+        "path": "knowledge/node-78eeff5b.md",
+        "weight": "3",
+        "status": "candidate",
+        "excerpt": "ID: node-78eeff5b Type: concept Weight: 3 Status: candidate Last seen: 2026-06-05 Aliases: Related: Sources: inbox/2026-05-26.md, synthesis/daily_reports/2026-05-26/report.pdf, inbox/2026-06-02.md, synthesis/daily_reports/2026-06-02/report.pdf, inbox/2026-06-03.md, synthesis/daily_reports/2026-06-03/report.pdf, inbox/2026-06-05.md, synthesis/daily_reports/2026-06-05/report.pdf ## 一句话定义 多智能体协作是把一个复杂任务拆给多个具备不同角色、工具或上下文"
+      }
+    ],
+    "idea_seeds": [
+      {
+        "title": "点子种子：每日小推进",
+        "path": "synthesis/idea_seeds/daily-review-spark.md",
+        "weight": "",
+        "status": "raw",
+        "excerpt": "ID: daily-review-spark Status: raw Created: 2026-05-24 Related nodes: personal-knowledge-incubation Sources: inbox/2026-05-24.md, PLAN.md ## 触发 点子发芽 MVP 需要在日报里固定产出“明日一个小推进”，避免复盘只停留在整理。 ## 点子描述 每天晚上的日报只给出一个很小、可在 10-20 分钟内完成的下一步。 ## 为什么有意思 它把知识整理从“收集更多”拉回到“明天做一点”，更适合个人长期使用。 ## 可能的最小下一步 明天用网页提交关键词，然后在日报里确认一个最小动作。 ## 风险或疑问 如果小推进写得太大，系统会重新变成负担。"
+      },
+      {
+        "title": "点子种子：前沿趋势观察卡片",
+        "path": "synthesis/idea_seeds/seed-20845b10.md",
+        "weight": "",
+        "status": "raw",
+        "excerpt": "ID: seed-20845b10 Status: raw Created: 2026-05-25 Related nodes: node-0011b3bd Sources: inbox/2026-05-25.md, synthesis/daily_reports/2026-05-25/report.pdf ## 触发 2026-05-25 日报提出这个候选点子。 ## 点子描述 以后遇到“下一个 AI”式主题时，固定从技术成熟度、可落地场景、个人进入门槛三栏快速判断。 ## 为什么有意思 它把当天的新知从“看过”推进到一个可继续观察或验证的小方向。 ## 可能的最小下一步 下次遇到相关输入时，补充一个可验证案例或反例。 ## 风险或疑问 当前仍是 raw 候选，尚未经过人工确认、合并或升权。 ## 更新记录 - 2026-05-25：日报再次触发「前沿趋势观察卡片」；补充：以后遇到“下一个 AI”式主题时，固定从技术成熟度、可"
+      },
+      {
+        "title": "点子种子：做一张“日报最小闭环检查卡”",
+        "path": "synthesis/idea_seeds/seed-3cd5bab8.md",
+        "weight": "",
+        "status": "raw",
+        "excerpt": "ID: seed-3cd5bab8 Status: raw Created: 2026-06-05 Related nodes: markdown, node-47708567, node-8b9e1d7e, node-0011b3bd, node-78eeff5b Sources: inbox/2026-06-05.md, synthesis/daily_reports/2026-06-05/report.pdf ## 触发 2026-06-05 日报提出这个候选点子。 ## 点子描述 每份日报只检查五件事，是否有 PDF、是否有质量通过、是否有知识同步、是否有一个最小下一步、是否没有越界写入。 ## 为什么有意思 它把当天的新知从“看过”推进到一个可继续观察或验证的小方向。 ## 可能的最小下一步 下次遇到相关输入时，补充一个可验证案例或反例。 ## 风险或疑问 当前仍是 raw 候选，尚未经过人工确认、合并或升权。 ## "
+      }
+    ]
+  },
+  "source_policy": {
+    "priority": [
+      "官方/机构资料",
+      "论文/报告",
+      "权威媒体",
+      "项目主页/机构主页",
+      "普通线索",
+      "低优先级线索"
+    ],
+    "tier_counts": {
+      "论文/学术线索": 9,
+      "普通线索": 1
+    },
+    "low_quality_rule": "低质量来源只能作为入口线索，不能作为核心结论。"
+  },
+  "reference_sources": [
+    {
+      "id": "S1",
+      "keyword": "倪军",
+      "title": "chagushici.com https://www.chagushici.com › zidian › 倪",
+      "quality_tier": "论文/学术线索",
+      "url": "https://www.chagushici.com/zidian/%E5%80%AA"
+    },
+    {
+      "id": "S2",
+      "keyword": "倪军",
+      "title": "hanyuguoxue.com https://www.hanyuguoxue.com › zidian",
+      "quality_tier": "论文/学术线索",
+      "url": "https://www.hanyuguoxue.com/zidian/zi-20522"
+    },
+    {
+      "id": "S3",
+      "keyword": "倪军",
+      "title": "gushici.net https://zidian.gushici.net",
+      "quality_tier": "论文/学术线索",
+      "url": "https://zidian.gushici.net/10/502a.html"
+    },
+    {
+      "id": "S4",
+      "keyword": "倪军",
+      "title": "sogou.com https://baike.sogou.com",
+      "quality_tier": "论文/学术线索",
+      "url": "https://baike.sogou.com/v389125.htm"
+    },
+    {
+      "id": "S5",
+      "keyword": "倪军",
+      "title": "ufanv.cn https://www.ufanv.cn › zidian › 倪",
+      "quality_tier": "论文/学术线索",
+      "url": "https://www.ufanv.cn/zidian/%E5%80%AA"
+    },
+    {
+      "id": "S6",
+      "keyword": "华平",
+      "title": "eastmoney.com https://baike.eastmoney.com › item › 华平 信息技术股份...",
+      "quality_tier": "普通线索",
+      "url": "https://baike.eastmoney.com/item/%E5%8D%8E%E5%B9%B3%E4%BF%A1%E6%81%AF%E6%8A%80%E6%9C%AF%E8%82%A1%E4%BB%BD%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8"
+    },
+    {
+      "id": "S7",
+      "keyword": "华平",
+      "title": "zhihu.com https://zhuanlan.zhihu.com",
+      "quality_tier": "论文/学术线索",
+      "url": "https://zhuanlan.zhihu.com/p/682014306"
+    },
+    {
+      "id": "S8",
+      "keyword": "华平",
+      "title": "hanyuguoxue.com https://www.hanyuguoxue.com › zidian",
+      "quality_tier": "论文/学术线索",
+      "url": "https://www.hanyuguoxue.com/zidian/zi-33775"
+    },
+    {
+      "id": "S9",
+      "keyword": "华平",
+      "title": "hanyuguoxue.com https://www.hanyuguoxue.com › zidian",
+      "quality_tier": "论文/学术线索",
+      "url": "https://www.hanyuguoxue.com/zidian/zi-21326"
+    },
+    {
+      "id": "S10",
+      "keyword": "华平",
+      "title": "zhihu.com https://www.zhihu.com › question",
+      "quality_tier": "论文/学术线索",
+      "url": "https://www.zhihu.com/question/65369061"
+    }
+  ]
+}
