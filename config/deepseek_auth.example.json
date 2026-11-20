@@ -1,0 +1,13 @@
+{
+  "api_key": "REPLACE_ME",
+  "base_url": "https://api.deepseek.com",
+  "model": "deepseek-v4-pro",
+  "max_context_tokens": 1000000,
+  "thinking": "enabled",
+  "reasoning_effort": "max",
+  "max_tokens": 48000,
+  "timeout_seconds": 900,
+  "command_timeout_seconds": 1800,
+  "max_repair_attempts": 2,
+  "user_id": "idea-sprout-nightly"
+}

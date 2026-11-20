@@ -1,0 +1,16 @@
+/inbox/
+/memory/
+/review_queue/
+/knowledge/
+/tracking/
+/synthesis/
+/library/
+/reports/
+/config/*_auth.json
+/system/*.log
+/system/*.err
+/system/email_sent/
+/system/locks/
+__pycache__/
+*.pyc
+.pytest_cache/

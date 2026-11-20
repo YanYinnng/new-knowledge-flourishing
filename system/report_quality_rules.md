@@ -1,0 +1,107 @@
+# 点子发芽日报质量规则
+
+这份日报不是资料汇总，也不是搜索结果排版。脚本只负责收集材料和渲染 PDF；真正的报告正文必须由 Codex automation 读取 `report_context.json` 后写入 `report_brief.json`。
+
+## 根本问题
+
+之前报告质量差，是因为 Python 脚本用硬编码模板直接写正文：
+
+- 同一个标签会重复很多次，例如多条“今天查到了什么”和“和我有什么关系”。
+- “简介”只有一句判断，读者无法真正理解关键词。
+- 搜索结果、来源分层和个人判断混在一起，正文像搜索材料拼贴。
+- 报告章节太多，阅读负担过重。
+
+## 固定报告结构
+
+PDF 只允许这些主章节：
+
+1. 今日总结
+2. 今日输入
+3. 今日新知
+4. 与旧知识的链接
+5. 今日发芽点子
+6. 参考搜索内容
+7. 随心记复盘（仅当 `report_context.json.free_notes` 非空时，追加在 PDF 最后）
+
+每个关键词在“今日新知”下只允许四个小节：
+
+1. 简介
+2. 最近有什么相关的事情
+3. 与我相关
+4. 最小下一步
+
+禁止出现旧标签：`它是什么`、`今天查到了什么`、`和我有什么关系`、`今日判断`。
+
+`free_notes` 是独立的“随心记”输入，用于随心记复盘与记忆建议。关键词总结、今日新知、旧知识链接和发芽点子使用各自的输入。
+
+## Automation 写作流程
+
+1. 运行 `python scripts/generate-radar-report.py --date YYYY-MM-DD --collect-only`。
+2. 读取 `synthesis/daily_reports/YYYY-MM-DD/report_context.json`。
+3. 对每个关键词按下面三个问题写作：
+   - `A 是什么？`
+   - `A 最近发生了什么相关事情？`
+   - `结合补充信息 B，A 与我的记录有什么具体联系？`
+4. 把答案整理成 `report_brief.json`，必须符合 `templates/report-brief.json`。
+5. 运行 `python scripts/generate-radar-report.py --date YYYY-MM-DD --render-only`。
+6. 用 `pdftotext` 或 `report.tex` 抽查结果；如果仍像搜索堆砌，修改 `report_brief.json` 后再次 render。
+7. `quality_check.json` 的 `passed` 和 `pdf_ready` 均为 `true` 时，运行 `python scripts/sync-knowledge-from-report.py --date YYYY-MM-DD`。
+
+写作时还必须读取 `system/report_voice_rules.md`。结构合格不等于读感合格；如果正文出现明显 AI 分析腔，`quality_check.json` 应当失败。
+
+## 内容质量标准
+
+- `summary`：1-2 段，说明今天信息共同指向什么。
+- 当天没有关键词且缺少值得复盘的主题时，保留总结与当天的随心记复盘，使用空的 `knowledge_cards`。
+- `intro`：每个关键词约 200-300 字；只解释关键词本身，不联系补充信息。
+- `recent_news`：写成“近期相关事情”，2-4 条或 1 个较完整段落；有来源时必须具体说明最近出现了什么活动、项目、论文、产品、讨论或政策动向，谁在做、和关键词有什么关系。不能只列来源编号、搜索动作、标题或摘要。
+- `relevance`：单独分析关键词和补充信息的联系，可以写它为什么触发注意、连接到什么学习/项目/机会/人脉/商业观察。
+- `next_step`：只能有 1 个动作，必须可执行。
+- `old_knowledge_links`：最多 3 条，只写真相关，不强行凑。
+- `idea_seeds`：最多 2 条；没有好点子就写“今日暂无值得保留的新点子”。
+- `reference_sources`：只列来源标题、等级和 URL，不放网页摘要。
+- `free_note_review`：只有当天存在随心记时才写；只做温和讨论、评价和一个问题，不影响关键词部分。
+
+## 语言质量标准
+
+- 报告语气按 `system/report_voice_rules.md` 执行：私人秘书式晚间简报，自然、具体、克制、有温度。
+- 分析过程留在幕后。正文不要写“本地旧节点显示”“可连接”“连接价值是”“当前是弱连接，理由是”“脚本 fallback”“由 Codex automation”等元话语。
+- 控制“不是/而是”“只是”“更像”“判断”这类句式。需要对比时，优先写成正向短句。
+- 来源标题、URL 和参考搜索内容不参与语言风格拦截；正文和 `report_brief.json` 公开字段会被检查。
+
+## 待确认事项
+
+- 有明确长期价值时可提出一条 `memory_candidates`。随心记可以作为来源。
+- `weight_change_candidates` 每天最多一条，要求来自当前知识库中的可写节点，包含路径、当前权重、建议权重和理由。
+- 两类建议都要等待网页确认。屏蔽或跳过时无需填充其他建议。
+
+## Multi-source Search
+
+- Treat `keyword_contexts[].search_results` as the search evidence available to the report writer. Results can come from opencli platform search, academic search, or direct web fallback.
+- `recent_news` may use highly related adjacent results when exact news is unavailable, but it must explain the relationship to the keyword and label weak confidence when needed. It must give the user a useful account of what has been happening recently, not ask the user to inspect the source list.
+- Do not write "no usable reliable source" if there are usable platform, academic, or web results. Instead, distinguish source strength: official/academic sources can support facts, platform discussions can support related-activity observations, and low-quality results only provide discovery leads.
+- Preserve source IDs in the text and keep details in `reference_sources`; do not paste long snippets into the body.
+
+## 渲染质量检查必须拦截
+
+- 旧标签出现在模型生成的公开正文字段中。
+- 每个关键词没有恰好一个“简介 / 最近有什么相关的事情 / 与我相关 / 最小下一步”。
+- 简介明显短于 200 字。
+- 有搜索来源时，“最近有什么相关的事情”明显过短、少于 3 句且没有 2 条以上具体线索，或只写“检索到/搜到/参考 S1-S3”等来源说明。
+- 正文直接复用搜索标题或长摘要。
+- 联网搜索已启用且有待查主题时，`sources.json` 缺少来源或失败说明。
+- 当天有随心记但 PDF 缺少“随心记复盘”，或当天没有随心记却出现该章节。
+- `report_context.json.local_knowledge.scanned_paths` 为空，但本地 `knowledge/`、`synthesis/idea_seeds/`、`library/nodes/` 或 `library/seeds/` 实际上有内容。
+
+## 同步流程必须检查
+
+- 检查 `knowledge_sync.json` 是否记录 `created`、`updated`、`skipped` 三个字段。当天无可同步内容时，列表可以为空。
+
+## 新知库沉淀规则
+
+- 报告生成必须读取旧知识：`report_context.json.local_knowledge.scanned_paths` 不能为空，除非 `knowledge/`、`synthesis/idea_seeds/`、`library/nodes/`、`library/seeds/` 确实都是空目录。
+- 日报通过质量检查后，必须运行 `python scripts/sync-knowledge-from-report.py --date YYYY-MM-DD`，并生成 `knowledge_sync.json`。
+- 同步脚本只写 `knowledge/` 和 `synthesis/idea_seeds/`；`library/nodes/` 和 `library/seeds/` 只读兼容，不再写入。
+- 新知识节点默认 `Status: candidate`，权重最高只写到 `3`；已有人工设置的 `4/5` 不被自动降低或覆盖。
+- 新点子种子默认 `Status: raw`。
+- 新写入内容只使用“补充信息”这个字段名；历史“上下文”只允许作为旧输入兼容读取。

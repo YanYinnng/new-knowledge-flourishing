@@ -1,0 +1,9 @@
+{
+  "smtp_host": "smtp.163.com",
+  "smtp_port": 465,
+  "use_ssl": true,
+  "username": "sender@example.com",
+  "password": "replace-with-163-smtp-authorization-code",
+  "from_email": "sender@example.com",
+  "to_emails": ["recipient@example.com"]
+}

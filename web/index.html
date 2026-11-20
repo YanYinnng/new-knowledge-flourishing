@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>点子发芽 · 今日收集台</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main id="login-view" class="auth-shell" hidden>
+      <section class="auth-panel">
+        <p class="eyebrow">本地入口</p>
+        <h1>点子发芽</h1>
+        <form id="login-form" class="stack">
+          <label class="field" for="password">
+            <span>密码</span>
+            <input id="password" name="password" type="password" autocomplete="current-password" required>
+          </label>
+          <button type="submit">进入工作台</button>
+          <p id="login-message" class="message" role="status"></p>
+        </form>
+      </section>
+    </main>
+
+    <main id="app-view" class="app-shell" hidden>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">个人新知孵化</p>
+          <h1>点子发芽</h1>
+        </div>
+        <div class="topbar-actions">
+          <button id="refresh-button" type="button" class="secondary">刷新</button>
+          <button id="logout-button" type="button" class="secondary">退出登录</button>
+        </div>
+      </header>
+
+      <section class="input-band">
+        <div class="input-shell">
+          <div class="input-brief">
+            <p class="eyebrow">Today</p>
+            <h2>今日收集台</h2>
+            <p class="brief-copy">关键词用于今晚日报主体；随心记只进入最后的温和复盘。</p>
+            <div class="input-stats" aria-label="输入分类">
+              <span>关键词</span>
+              <span>补充信息</span>
+              <span>随心记</span>
+            </div>
+          </div>
+
+          <div class="input-console">
+            <section class="entry-panel keyword-panel" aria-labelledby="keyword-panel-title">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Signal</p>
+                  <h3 id="keyword-panel-title">关键词输入</h3>
+                </div>
+                <span class="entry-mark">01</span>
+              </div>
+              <form id="keyword-form" class="keyword-grid">
+                <label class="field">
+                  <span>关键词</span>
+                  <textarea id="keywords" rows="7" placeholder="每行一个关键词、人物、项目或问题"></textarea>
+                </label>
+                <label class="field">
+                  <span>补充信息</span>
+                  <textarea id="supplemental-info" rows="7" placeholder="从哪里看到、为什么注意、它触发了什么思考"></textarea>
+                </label>
+                <label class="field compact">
+                  <span>权重</span>
+                  <select id="weight">
+                    <option value="">默认 3</option>
+                    <option value="1">1 · 存档</option>
+                    <option value="2">2 · 轻度关注</option>
+                    <option value="3">3 · 稳定关注</option>
+                    <option value="4">4 · 高优先级</option>
+                    <option value="5">5 · 核心主题</option>
+                  </select>
+                </label>
+                <div class="submit-row">
+                  <button type="submit">追加关键词</button>
+                  <p id="keyword-message" class="message" role="status"></p>
+                </div>
+              </form>
+            </section>
+
+            <section class="entry-panel note-panel" aria-labelledby="free-note-title">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Reflection</p>
+                  <h3 id="free-note-title">随心记</h3>
+                </div>
+                <span class="entry-mark">02</span>
+              </div>
+              <form id="free-note-form" class="free-note-form">
+                <label class="field">
+                  <span>自由记录</span>
+                  <textarea id="free-note-text" rows="6" maxlength="8000" placeholder="突然冒出来的想法、感受、判断或困惑"></textarea>
+                </label>
+                <div class="note-tools">
+                  <span id="free-note-count" class="counter">0 / 8000</span>
+                </div>
+                <div class="submit-row">
+                  <button type="submit">追加随心记</button>
+                  <p id="free-note-message" class="message" role="status"></p>
+                </div>
+              </form>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="secretary-band" aria-label="秘书工作台">
+        <div class="secretary-grid">
+          <section class="secretary-panel review-panel" aria-labelledby="review-queue-title">
+            <div class="panel-heading">
+              <div>
+                <p class="eyebrow">Review</p>
+                <h3 id="review-queue-title">待确认</h3>
+              </div>
+            </div>
+            <div id="review-list" class="review-list"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="workspace-grid" class="workspace-grid" aria-label="阅读工作区">
+        <aside class="panel library-panel" aria-label="资料索引">
+          <div class="section-title library-title">
+            <p class="eyebrow">Library</p>
+            <h2>阅读索引</h2>
+          </div>
+
+          <section class="library-group" aria-labelledby="reports-panel-title">
+            <div class="library-heading">
+              <p class="eyebrow">Reports</p>
+              <h3 id="reports-panel-title">最近日报</h3>
+            </div>
+            <div id="reports-list" class="list"></div>
+          </section>
+
+          <section class="library-group" aria-labelledby="knowledge-panel-title">
+            <div class="library-heading">
+              <p class="eyebrow">Knowledge</p>
+              <h3 id="knowledge-panel-title">知识节点</h3>
+            </div>
+            <div id="knowledge-list" class="list"></div>
+          </section>
+
+          <section class="library-group" aria-labelledby="seeds-panel-title">
+            <div class="library-heading">
+              <p class="eyebrow">Seeds</p>
+              <h3 id="seeds-panel-title">点子种子</h3>
+            </div>
+            <div id="seeds-list" class="list"></div>
+          </section>
+        </aside>
+
+        <section class="panel reader-panel" aria-labelledby="shared-reader-title">
+          <div class="reader-heading">
+            <div>
+              <p id="shared-reader-kind" class="eyebrow">Reader</p>
+              <h2 id="shared-reader-title">选择内容后阅读</h2>
+            </div>
+            <p id="shared-reader-meta" class="reader-meta">左侧选择日报、知识节点或点子种子。</p>
+          </div>
+          <article id="shared-reader-content" class="reader empty">阅读内容会显示在这里。</article>
+        </section>
+      </section>
+    </main>
+
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>
